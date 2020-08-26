@@ -1,5 +1,15 @@
 version: "3.8"
 services:
+  database:
+    container_name: riffy-database
+    build: ./database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=sogood
+      - POSTGRES_DB=riffy
+    volumes:
+      - riffy-pg:/var/lib/postgres/data
+      - ./database:/service
   ingress:
     container_name: riffy-ingress
     image: nginx:stable-alpine
@@ -13,3 +23,6 @@ services:
     command: npm start
     volumes: 
       - ./server:/service
+
+volumes: 
+  riffy-pg:
