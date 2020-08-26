@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  ingress:
+    container_name: riffy-ingress
+    image: nginx:stable-alpine
+    volumes:
+      - ./docker-nginx.conf:/etc/nginx/nginx.conf
+    ports: 
+      - "3030:80"
+  server:
+    container_name: riffy-server
+    build: ./server
+    command: npm start
+    volumes: 
+      - ./server:/service

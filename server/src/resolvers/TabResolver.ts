@@ -1,7 +1,17 @@
-import { Resolver } from 'type-graphql';
+import { Field, ObjectType, Query, Resolver } from 'type-graphql';
 
-@Resolver()
-class TabResolver {
-  asd = '';
-  asde = '';
+@ObjectType()
+class Tab {
+  @Field(() => String)
+  body: string;
+
+  // TODO
+}
+
+@Resolver(Tab)
+export class TabResolver {
+  @Query(() => Boolean)
+  test() {
+    return true;
+  }
 }
