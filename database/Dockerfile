@@ -7,4 +7,6 @@ RUN apk add --no-cache --virtual build-deps g++ make perl-dev tzdata && \
 	cpan App::Sqitch && \
 	apk del build-deps
 
+RUN apk add --no-cache perl-dbd-pg postgresql-client 
+
 WORKDIR /service
