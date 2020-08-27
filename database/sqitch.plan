@@ -2,4 +2,5 @@
 %project=riffy
 
 uuid 2020-08-27T18:14:24Z root <root@426444c0d3be> # Add uuid-extension
+users 2020-08-27T18:48:25Z root <root@426444c0d3be> # Add table for users
 tabs 2020-08-26T21:09:05Z root <root@ceac4b96c540> # Add table for tabs
