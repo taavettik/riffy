@@ -1,14 +1,6 @@
 import pgp from 'pg-promise';
 import { config } from './config';
 
-declare module 'koa' {
-  interface DefaultContext {
-    state: {
-      tx: Db;
-    };
-  }
-}
-
 export function createDb() {
   const pg = pgp();
   const db = pg({

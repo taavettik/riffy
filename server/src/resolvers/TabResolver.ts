@@ -1,4 +1,12 @@
-import { Authorized, Field, ObjectType, Query, Resolver } from 'type-graphql';
+import { Context } from 'koa';
+import {
+  Authorized,
+  Ctx,
+  Field,
+  ObjectType,
+  Query,
+  Resolver,
+} from 'type-graphql';
 
 @ObjectType()
 class Tab {
@@ -12,7 +20,7 @@ class Tab {
 export class TabResolver {
   @Authorized()
   @Query(() => Boolean)
-  test() {
+  test(@Ctx() ctx: Context) {
     return true;
   }
 }

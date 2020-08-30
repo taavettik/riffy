@@ -9,6 +9,7 @@ import pgp from 'pg-promise';
 import Container from 'typedi';
 import { config } from './common/config';
 import { createDb } from './common/db';
+import { decode } from 'jsonwebtoken';
 
 async function bootstrap() {
   const db = createDb();
@@ -23,11 +24,15 @@ async function bootstrap() {
     schema,
     playground: { settings: { 'request.credentials': 'include' } },
     context: (ctx) => {
+      const authCookie = ctx.ctx.cookies.get('auth');
+      const user = authCookie ? (decode(authCookie) as any) : undefined;
+
       return {
         ...ctx.ctx,
         cookies: ctx.ctx.cookies,
         state: {
           tx: db,
+          user: user?.id,
         },
       };
     },

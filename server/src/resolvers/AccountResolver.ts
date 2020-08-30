@@ -54,7 +54,7 @@ export class AccountResolver {
 
     const token = jwt.sign(
       {
-        name,
+        id: account.id,
       },
       config.JWT_SECRET,
       {
