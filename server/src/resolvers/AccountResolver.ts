@@ -1,5 +1,6 @@
 import { ValidationContext } from 'graphql';
 import * as jwt from 'jsonwebtoken';
+import { Context, DefaultContext } from 'koa';
 import {
   Arg,
   Ctx,
@@ -10,6 +11,7 @@ import {
   Resolver,
   UseMiddleware,
 } from 'type-graphql';
+import { config } from '../common/config';
 
 @ObjectType()
 export class Account {
@@ -20,32 +22,37 @@ export class Account {
   name: string;
 }
 
-const AuthenticationMiddleware: MiddlewareFn = async (req, next) => {
-  const result = await next();
-  console.log(result);
-  return true;
-};
-
 @Resolver()
 export class AccountResolver {
   @Query(() => String)
-  @UseMiddleware(AuthenticationMiddleware)
   login(
     @Arg('name') name: string,
     @Arg('password') password: string,
-    @Ctx() ctx: any,
+    @Ctx() ctx: Context,
   ) {
-    console.log(ctx);
+    const existingToken = ctx.cookies.get('auth');
+
+    try {
+      if (
+        existingToken &&
+        jwt.verify(existingToken, config.JWT_SECRET, { algorithms: ['HS512'] })
+      ) {
+        return true;
+      }
+    } catch {
+      //
+    }
+
     const token = jwt.sign(
       {
         name,
       },
-      'secret',
+      config.JWT_SECRET,
       {
         algorithm: 'HS512',
       },
     );
-    console.log(ctx);
-    return token;
+    ctx.cookies.set('auth', token);
+    return true;
   }
 }
