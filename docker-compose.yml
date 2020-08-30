@@ -26,6 +26,12 @@ services:
     command: npm start
     volumes: 
       - ./server:/service
+  client:
+    container_name: riffy-client
+    build: ./client
+    command: npm run dev
+    volumes:
+      - ./client:/service
 
 volumes: 
   riffy-pg:
