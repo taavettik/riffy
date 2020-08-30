@@ -1,4 +1,4 @@
-import { Field, ObjectType, Query, Resolver } from 'type-graphql';
+import { Authorized, Field, ObjectType, Query, Resolver } from 'type-graphql';
 
 @ObjectType()
 class Tab {
@@ -10,6 +10,7 @@ class Tab {
 
 @Resolver(Tab)
 export class TabResolver {
+  @Authorized()
   @Query(() => Boolean)
   test() {
     return true;

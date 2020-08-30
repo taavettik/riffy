@@ -11,6 +11,7 @@ import {
   Resolver,
   UseMiddleware,
 } from 'type-graphql';
+import { authChecker } from '../common/auth';
 import { config } from '../common/config';
 
 @ObjectType()
@@ -30,17 +31,8 @@ export class AccountResolver {
     @Arg('password') password: string,
     @Ctx() ctx: Context,
   ) {
-    const existingToken = ctx.cookies.get('auth');
-
-    try {
-      if (
-        existingToken &&
-        jwt.verify(existingToken, config.JWT_SECRET, { algorithms: ['HS512'] })
-      ) {
-        return true;
-      }
-    } catch {
-      //
+    if (authChecker({ context: ctx } as any, [])) {
+      return true;
     }
 
     const token = jwt.sign(

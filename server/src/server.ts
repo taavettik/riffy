@@ -4,10 +4,12 @@ import Koa, { DefaultContext } from 'koa';
 import Router from 'koa-router';
 import bodyparser from 'koa-bodyparser';
 import { buildSchema } from 'type-graphql';
+import { authChecker } from './common/auth';
 
 async function bootstrap() {
   const schema = await buildSchema({
     resolvers: [__dirname + '/resolvers/**/*.{ts,js}'],
+    authChecker,
   });
 
   const server = new ApolloServer({
