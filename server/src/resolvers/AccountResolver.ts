@@ -32,18 +32,12 @@ export class AccountResolver {
   constructor(private readonly accountService: AccountService) {}
 
   @Query(() => String)
-  async hash(@Arg('text') text: string) {
-    return argon.hash(text);
-  }
-
-  @Query(() => String)
   async login(
     @Arg('name') name: string,
     @Arg('password') password: string,
     @Ctx() ctx: Context,
   ) {
     const account = await this.accountService.getByName(name, ctx.state.tx);
-    console.log(account);
 
     if (!account) {
       return false;
