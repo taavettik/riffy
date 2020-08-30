@@ -1,3 +1,4 @@
+import * as argon from 'argon2';
 import { ValidationContext } from 'graphql';
 import * as jwt from 'jsonwebtoken';
 import { Context, DefaultContext } from 'koa';
@@ -22,6 +23,8 @@ export class Account {
 
   @Field()
   name: string;
+
+  passwordHash: string;
 }
 
 @Resolver()
@@ -29,18 +32,30 @@ export class AccountResolver {
   constructor(private readonly accountService: AccountService) {}
 
   @Query(() => String)
+  async hash(@Arg('text') text: string) {
+    return argon.hash(text);
+  }
+
+  @Query(() => String)
   async login(
     @Arg('name') name: string,
     @Arg('password') password: string,
     @Ctx() ctx: Context,
   ) {
-    if (authChecker({ context: ctx } as any, [])) {
-      return true;
-    }
-
     const account = await this.accountService.getByName(name, ctx.state.tx);
+    console.log(account);
+
     if (!account) {
       return false;
+    }
+
+    const passwordValid = await argon.verify(account.passwordHash, password);
+    if (!passwordValid) {
+      return false;
+    }
+
+    if (authChecker({ context: ctx } as any, [])) {
+      return true;
     }
 
     const token = jwt.sign(
