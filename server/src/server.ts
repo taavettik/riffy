@@ -18,6 +18,7 @@ async function bootstrap() {
     resolvers: [__dirname + '/resolvers/**/*.{ts,js}'],
     authChecker,
     container: Container,
+    emitSchemaFile: true,
   });
 
   const server = new ApolloServer({

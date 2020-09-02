@@ -8,7 +8,8 @@
     "serve": "sirv build --port 4759 --cors --single",
     "dev": "preact watch -p 80",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
-    "test": "jest ./tests"
+    "test": "jest ./tests",
+    "apollo:generate": "apollo client:codegen --includes='./src/**/*.{ts,tsx}' --localSchemaFile=../server/schema.gql --outputFlat src/generated --target typescript --tagName=gql"
   },
   "husky": {
     "hooks": {
@@ -23,9 +24,12 @@
     "build/*"
   ],
   "dependencies": {
+    "@apollo/client": "^3.1.4",
     "@types/react-router-dom": "^5.1.5",
     "@types/styled-components": "^5.1.2",
     "@types/styled-system": "^5.1.10",
+    "apollo": "^2.30.3",
+    "graphql": "^15.3.0",
     "preact": "^10.4.7",
     "preact-jsx-chai": "^3.0.0",
     "preact-markup": "^2.0.0",
