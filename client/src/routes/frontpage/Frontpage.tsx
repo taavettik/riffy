@@ -4,6 +4,13 @@ import { Card } from '../../common/components/Card';
 import { Container } from '../../common/components/Container';
 import { Heading, Subheading } from '../../common/components/Typography';
 import { Tabs } from './Tabs';
+import { gql } from '@apollo/client';
+
+const LOGIN_QUERY = gql`
+  query Login($name: String!, $password: String!) {
+    login(name: $username, password: $password)
+  }
+`;
 
 export const Frontpage = () => {
   const gridAreas = ``;
