@@ -22,8 +22,8 @@ const client = new ApolloClient({
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
-    font-size: ${props => props.theme.typography.body.fontSize}px;
-    background-color: ${props => props.theme.colors.gray.lighter};
+    font-size: ${(props) => props.theme.typography.body.fontSize}px;
+    background-color: ${(props) => props.theme.colors.gray.lighter};
     font-family: 'Noto Sans', sans-serif;
   }
 `;

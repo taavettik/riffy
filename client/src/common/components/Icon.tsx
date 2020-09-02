@@ -26,10 +26,10 @@ export const Icon = ({
 };
 
 const Svg = styled.div<{ src: string; fill?: string }>`
-  mask: url(${props => props.src});
+  mask: url(${(props) => props.src});
   mask-repeat: no-repeat;
   mask-size: cover;
-  background-color: ${props => props.fill ?? 'black'};
+  background-color: ${(props) => props.fill ?? 'black'};
   width: 32px;
   height: 32px;
 `;
