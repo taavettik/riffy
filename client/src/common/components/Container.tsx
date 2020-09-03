@@ -11,6 +11,8 @@ import {
   background,
   BordersProps,
   borders,
+  typography,
+  TypographyProps,
 } from 'styled-system';
 import styled from 'styled-components';
 
@@ -19,10 +21,12 @@ export type ContainerProps = FlexboxProps &
   SizeProps &
   LayoutProps &
   BackgroundProps &
-  BordersProps;
+  BordersProps &
+  TypographyProps;
 
 export const Container = styled.div<ContainerProps>`
   display: flex;
+  ${typography}
   ${flexbox}
   ${space}
   ${size}
