@@ -13,9 +13,10 @@ type Mutation {
 }
 
 type Query {
+  currentAccount: Account!
   getTab(id: String!): Tab!
+  getTabs: [Tab!]!
   login(name: String!, password: String!): String!
-  searchTabs(accountId: String, trackTitle: String): [Tab!]!
   test: Boolean!
 }
 

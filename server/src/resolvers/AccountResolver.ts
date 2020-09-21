@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import { Context, DefaultContext } from 'koa';
 import {
   Arg,
+  Authorized,
   Ctx,
   Field,
   MiddlewareFn,
@@ -63,5 +64,11 @@ export class AccountResolver {
     );
     ctx.cookies.set('auth', token);
     return true;
+  }
+
+  @Authorized()
+  @Query(() => Account)
+  currentAccount(@Ctx() ctx: Context) {
+    return this.accountService.get(ctx.state.user, ctx.state.tx);
   }
 }

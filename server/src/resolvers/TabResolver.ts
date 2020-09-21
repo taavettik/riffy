@@ -30,15 +30,6 @@ export class Tab {
   accountId: string;
 }
 
-@ArgsType()
-export class TabSearchCriteria {
-  @Field(() => String, { nullable: true })
-  accountId: string | undefined;
-
-  @Field(() => String, { nullable: true })
-  trackTitle: string | undefined;
-}
-
 @Resolver(Tab)
 export class TabResolver {
   constructor(private readonly tabService: TabService) {}
@@ -70,8 +61,8 @@ export class TabResolver {
 
   @Authorized()
   @Query(() => [Tab])
-  async searchTabs(@Args() criteria: TabSearchCriteria, @Ctx() ctx: Context) {
-    return this.tabService.search(criteria, ctx.state.tx);
+  async getTabs(@Ctx() ctx: Context) {
+    return this.tabService.getByAccount(ctx.state.user, ctx.state.tx);
   }
 
   @Authorized()

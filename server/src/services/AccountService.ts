@@ -11,4 +11,9 @@ export class AccountService {
       name,
     });
   }
+
+  @CamelCase
+  get(id: string, tx: Db) {
+    return tx.one<Account>(`select * from account where id = $(id)`, { id });
+  }
 }

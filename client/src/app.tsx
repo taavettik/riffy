@@ -1,13 +1,22 @@
 import { FunctionalComponent, h } from 'preact';
-import { Router, Switch, BrowserRouter, Route } from 'react-router-dom';
+import {
+  Router,
+  Switch,
+  BrowserRouter,
+  Route,
+  RouteProps,
+  useHistory,
+} from 'react-router-dom';
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { theme } from './common/theme';
 import { Frontpage } from './routes/frontpage/Frontpage';
 import { LeftDock } from './common/navigation/LeftDock';
 import { Container } from './common/components/Container';
 import { ApolloClient } from '@apollo/client/core/ApolloClient';
-import { ApolloProvider, gql, InMemoryCache } from '@apollo/client';
+import { ApolloProvider, gql, InMemoryCache, useQuery } from '@apollo/client';
 import { config } from './common/config';
+import { useEffect } from 'preact/hooks';
+import { LoginPage } from './routes/login/Login';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if ((module as any).hot) {
@@ -28,6 +37,27 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const CURRENT_ACCOUNT = gql`
+  query CurrentAccount {
+    currentAccount {
+      id
+    }
+  }
+`;
+
+const ProtectedRoute = (props: RouteProps) => {
+  const { data: currentAccount, loading } = useQuery(CURRENT_ACCOUNT);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (!currentAccount && !loading) {
+      history.replace('/login');
+    }
+  }, [currentAccount, loading]);
+
+  return <Route {...props}></Route>;
+};
+
 const App = () => {
   return (
     <Page id="app">
@@ -37,9 +67,12 @@ const App = () => {
           <Container margin="0 auto" maxWidth={1200} width={'100%'}>
             <BrowserRouter>
               <Switch>
-                <Route path="/" default>
-                  <Frontpage />
+                <Route path="/login">
+                  <LoginPage />
                 </Route>
+                <ProtectedRoute path="/">
+                  <Frontpage />
+                </ProtectedRoute>
               </Switch>
             </BrowserRouter>
           </Container>

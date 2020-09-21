@@ -22,6 +22,9 @@ export const theme = {
     },
     primary: {
       main: '#83c5be',
+      light: '#9ad0ca',
+      lighter: '#b6ddd9',
+      lightest: '#c1e2de',
     },
   },
   borderRadius: '4px',

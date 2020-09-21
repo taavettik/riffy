@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Db } from '../common/db';
 import { CamelCase } from '../common/formatters';
-import { Tab, TabSearchCriteria } from '../resolvers/TabResolver';
+import { Tab } from '../resolvers/TabResolver';
 
 @Service()
 export class TabService {
@@ -26,15 +26,12 @@ export class TabService {
   }
 
   @CamelCase
-  async search(criteria: TabSearchCriteria, tx: Db) {
-    return tx.any(`
-    select * from tab where
-    ${criteria.accountId ? 'account_id=$(accountId)' : 'true'} and
-    ${
-      criteria.trackTitle
-        ? 'similarity(track_title, $(trackTitle)) > 0.2'
-        : 'true'
-    }
-    `);
+  async getByAccount(accountId: string, tx: Db) {
+    return tx.manyOrNone(
+      `
+      select * from tab where account_id=$(accountId);
+    `,
+      { accountId },
+    );
   }
 }
