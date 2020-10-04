@@ -57,6 +57,16 @@ export const CreateTab = () => {
     fetchPolicy: 'no-cache',
   });
 
+  const trackItems =
+    tracks?.searchTracks.map((track) => ({
+      id: track.name,
+      label: `${track.name} - ${track.artist}`,
+    })) ?? [];
+
+  const onTrackChange = (value: string) => {
+    setTrack(value);
+  };
+
   return (
     <Page title="Create tab">
       <Container width="100%" height="100%" flexDirection="row">
@@ -64,24 +74,19 @@ export const CreateTab = () => {
           <Body>Artist</Body>
           <Spacing dir="y" amount={4} />
           <Search
-            items={artists?.searchArtists ?? []}
+            items={
+              artists?.searchArtists.map((artist) => ({
+                id: artist,
+                label: artist,
+              })) ?? []
+            }
             onChange={(value) => setArtist(value)}
-            onSelect={(value) => setArtist(value)}
             value={artist}
           />
           <Spacing dir="y" amount={8} />
           <Body>Title</Body>
           <Spacing dir="y" amount={4} />
-          <Search
-            items={
-              tracks?.searchTracks.map(
-                (track) => `${track.name} - ${track.artist}`,
-              ) ?? []
-            }
-            onChange={(value) => setTrack(value)}
-            onSelect={(value) => setTrack(value)}
-            value={track}
-          />
+          <Search items={trackItems} onChange={onTrackChange} value={track} />
         </Container>
         <Spacing dir="x" amount={16} />
         <Container width="100%" flexDirection="column">

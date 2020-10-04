@@ -13,6 +13,7 @@ import {
 } from 'type-graphql';
 import { MBService } from '../services/MBService';
 import { TabService } from '../services/TabService';
+import { uniqBy } from 'lodash';
 
 @ObjectType()
 export class Tab {
@@ -91,9 +92,10 @@ export class TabResolver {
   @Query(() => [Track])
   async searchTracks(@Arg('query') query: string) {
     const data = await this.mb.search('recording', query);
-    return data.recordings.map((r) => ({
+    const formatted = data.recordings.map((r) => ({
       name: r.title,
       artist: r['artist-credit'][0]?.name,
     }));
+    return uniqBy(formatted, (entry) => `${entry.name}, ${entry.artist}`);
   }
 }

@@ -9,6 +9,7 @@
   "dependencies": {
     "@types/jsonwebtoken": "^8.5.0",
     "@types/koa-router": "^7.4.1",
+    "@types/lodash": "^4.14.161",
     "@types/redis": "^2.8.26",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
@@ -25,6 +26,7 @@
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^9.4.0",
+    "lodash": "^4.17.20",
     "nodemon": "^2.0.4",
     "pg-promise": "^10.6.1",
     "prettier": "^2.1.1",

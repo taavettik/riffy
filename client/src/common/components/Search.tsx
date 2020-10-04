@@ -1,14 +1,6 @@
 import { Input } from './Input';
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-  ComboboxOptionText,
-} from '@reach/combobox';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import styled from 'styled-components';
 import { Body } from './Typography';
 import { Container } from './Container';
@@ -24,52 +16,102 @@ export const Search = ({
   onSelect,
   value,
 }: {
-  items: string[];
-  onChange?: (value: string) => void;
-  onSelect?: (value: string) => void;
-  value?: string;
+  items: Item[];
+  onChange: (value: string) => void;
+  onSelect?: (item: Item) => void;
+  value: string;
 }) => {
+  const inputRef = useRef<HTMLInputElement>();
+  const anchorRef = useRef<HTMLDivElement>();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    function clickListener(e: MouseEvent) {
+      const clicked = e.target;
+      if (
+        !anchorRef.current ||
+        !inputRef.current ||
+        !clicked ||
+        !(clicked instanceof HTMLElement)
+      ) {
+        return;
+      }
+      if (
+        !inputRef.current.contains(clicked) &&
+        !anchorRef.current.contains(clicked)
+      ) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener('click', clickListener);
+    return () => document.removeEventListener('click', clickListener);
+  }, [anchorRef, inputRef]);
+
+  const onItemSelect = (id: string) => {
+    const item = items.find((item) => item.id === id);
+    if (!item) {
+      return;
+    }
+    setOpen(false);
+    onChange(item.label);
+  };
+
   return (
-    <Combobox
-      style={{
-        display: 'flex',
-      }}
-      onSelect={onSelect}
-    >
-      <ComboboxInput
-        as={Input}
+    <>
+      <Input
+        ref={inputRef}
         value={value}
-        onChange={(e: any) => onChange && onChange(e.target.value)}
-        style={{ width: '100%' }}
+        onChange={(e) => {
+          if (onChange) {
+            onChange(e.target.value);
+          }
+          setOpen(true);
+        }}
       />
-      <Popover>
-        {items.length === 0 && (
-          <Container paddingLeft="8px">
-            <Body>No suggestions found</Body>
-          </Container>
+      <Anchor ref={anchorRef}>
+        {open && (
+          <Popover>
+            <List>
+              {items.length === 0 && (
+                <Container paddingLeft="8px">
+                  <Body>No results found</Body>
+                </Container>
+              )}
+              {items.map((item) => (
+                <Option key={item.id} onClick={() => onItemSelect(item.id)}>
+                  {item.label}
+                </Option>
+              ))}
+            </List>
+          </Popover>
         )}
-        <List>
-          {items.map((item, i) => (
-            <Option key={i} value={item} />
-          ))}
-        </List>
-      </Popover>
-    </Combobox>
+      </Anchor>
+    </>
   );
 };
 
-const Popover = styled(ComboboxPopover)`
+const Popover = styled.div`
+  position: absolute;
   background-color: white;
+  width: 100%;
   border: 1px solid ${(props) => props.theme.colors.gray.main};
+  z-index: 100;
 `;
 
-const List = styled(ComboboxList)`
+const Anchor = styled.div`
+  position: relative;
+  width: 100%;
+  height: 0;
+`;
+
+const List = styled.ul`
   list-style-type: none;
   padding: 0;
   margin: 0;
 `;
 
-const Option = styled(ComboboxOption)`
+const Option = styled.li`
   padding-left: 8px;
   cursor: pointer;
   :focus,
