@@ -10,6 +10,7 @@ type SearchResponse<K extends string> = {
   [key in K]: {
     id: string;
     name: string;
+    score: string;
   }[];
 };
 

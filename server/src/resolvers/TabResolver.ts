@@ -73,6 +73,8 @@ export class TabResolver {
   @Query(() => [String])
   async searchArtists(@Arg('query') query: string) {
     const data = await this.mb.search('artist', query);
-    return data.artists.map((artist) => artist.name);
+    return data.artists
+      .filter((result) => Number(result.score) > 80)
+      .map((artist) => artist.name);
   }
 }
