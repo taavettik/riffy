@@ -11,6 +11,7 @@ import {
   Query,
   Resolver,
 } from 'type-graphql';
+import { MBService } from '../services/MBService';
 import { TabService } from '../services/TabService';
 
 @ObjectType()
@@ -32,7 +33,10 @@ export class Tab {
 
 @Resolver(Tab)
 export class TabResolver {
-  constructor(private readonly tabService: TabService) {}
+  constructor(
+    private readonly tabService: TabService,
+    private readonly mb: MBService,
+  ) {}
 
   @Authorized()
   @Mutation(() => Tab)
@@ -66,8 +70,9 @@ export class TabResolver {
   }
 
   @Authorized()
-  @Query(() => Boolean)
-  test(@Ctx() ctx: Context) {
-    return true;
+  @Query(() => [String])
+  async searchArtists(@Arg('query') query: string) {
+    const data = await this.mb.search('artist', query);
+    return data.artists.map((artist) => artist.name);
   }
 }

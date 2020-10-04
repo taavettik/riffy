@@ -17,7 +17,7 @@ type Query {
   getTab(id: String!): Tab!
   getTabs: [Tab!]!
   login(name: String!, password: String!): String!
-  test: Boolean!
+  searchArtists(query: String!): [String!]!
 }
 
 type Tab {
