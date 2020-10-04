@@ -30,5 +30,6 @@ type Tab {
 
 type Track {
   artist: String
+  id: String!
   name: String!
 }

@@ -27,6 +27,7 @@ const GET_ARTIST_SUGGESTIONS = gql`
 const GET_TRACK_SUGGETSIONS = gql`
   query GetTrackSuggestions($query: String!) {
     searchTracks(query: $query) {
+      id
       artist
       name
     }
@@ -60,7 +61,7 @@ export const CreateTab = () => {
 
   const trackItems =
     tracks?.searchTracks.map((track) => ({
-      id: track.name,
+      id: track.id,
       track: track.name,
       artist: track.artist,
       label: `${track.name} - ${track.artist}`,

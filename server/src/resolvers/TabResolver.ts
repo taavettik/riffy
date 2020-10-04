@@ -34,6 +34,9 @@ export class Tab {
 
 @ObjectType()
 export class Track {
+  @Field()
+  id: string;
+
   @Field({ nullable: true })
   artist?: string;
 
@@ -93,6 +96,7 @@ export class TabResolver {
   async searchTracks(@Arg('query') query: string) {
     const data = await this.mb.search('recording', query);
     const formatted = data.recordings.map((r) => ({
+      id: r.id,
       name: r.title,
       artist: r['artist-credit'][0]?.name,
     }));
