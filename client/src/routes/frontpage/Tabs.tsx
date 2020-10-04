@@ -2,6 +2,8 @@ import { gql, useQuery } from '@apollo/client';
 import { h } from 'preact';
 import styled from 'styled-components';
 import { Container } from '../../common/components/Container';
+import { Icon } from '../../common/components/Icon';
+import { Spacing } from '../../common/components/Spacing';
 import { Body } from '../../common/components/Typography';
 import { GetTabs } from '../../generated/GetTabs';
 import { Tab } from './Tab';
@@ -20,8 +22,7 @@ export const Tabs = () => {
   const { data } = useQuery<GetTabs>(GET_TABS);
 
   return (
-    <Container maxWidth={800} width={'100%'}>
-      {data?.getTabs.length === 0 && <Body>No tabs yet</Body>}
+    <Container maxWidth={800} width={'100%'} flexDirection="column">
       <Table>
         <tbody>
           {data?.getTabs.map((tab) => (
@@ -30,6 +31,15 @@ export const Tabs = () => {
               <td>{tab.trackArtist}</td>
             </tr>
           ))}
+          <tr>
+            <td colSpan={2}>
+              <Container alignItems="center">
+                <Icon icon="add_circle" />
+                <Spacing dir="x" amount={16} />
+                <Body>Create tab</Body>
+              </Container>
+            </td>
+          </tr>
         </tbody>
       </Table>
     </Container>
