@@ -60,6 +60,8 @@ export const CreateTab = () => {
   const trackItems =
     tracks?.searchTracks.map((track) => ({
       id: track.name,
+      track: track.name,
+      artist: track.artist,
       label: `${track.name} - ${track.artist}`,
     })) ?? [];
 
@@ -86,7 +88,17 @@ export const CreateTab = () => {
           <Spacing dir="y" amount={8} />
           <Body>Title</Body>
           <Spacing dir="y" amount={4} />
-          <Search items={trackItems} onChange={onTrackChange} value={track} />
+          <Search
+            items={trackItems}
+            onChange={(value) => setTrack(value)}
+            onSelect={(item) => {
+              setTrack(item.track);
+              if (item.artist) {
+                setArtist(item.artist);
+              }
+            }}
+            value={track}
+          />
         </Container>
         <Spacing dir="x" amount={16} />
         <Container width="100%" flexDirection="column">

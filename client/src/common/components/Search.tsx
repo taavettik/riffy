@@ -10,15 +10,17 @@ interface Item {
   label: string;
 }
 
-export const Search = ({
+// TODO: accessibility
+
+export const Search = <I extends Item>({
   items,
   onChange,
   onSelect,
   value,
 }: {
-  items: Item[];
+  items: I[];
   onChange: (value: string) => void;
-  onSelect?: (item: Item) => void;
+  onSelect?: (item: I) => void;
   value: string;
 }) => {
   const inputRef = useRef<HTMLInputElement>();
@@ -53,8 +55,12 @@ export const Search = ({
     if (!item) {
       return;
     }
+    if (onSelect) {
+      onSelect(item);
+    } else {
+      onChange(item.label);
+    }
     setOpen(false);
-    onChange(item.label);
   };
 
   return (
@@ -78,8 +84,8 @@ export const Search = ({
                   <Body>No results found</Body>
                 </Container>
               )}
-              {items.map((item) => (
-                <Option key={item.id} onClick={() => onItemSelect(item.id)}>
+              {items.map((item, i) => (
+                <Option key={i} onClick={() => onItemSelect(item.id)}>
                   {item.label}
                 </Option>
               ))}
