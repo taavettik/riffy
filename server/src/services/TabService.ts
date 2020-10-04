@@ -10,16 +10,25 @@ export class TabService {
     return tx.one<Tab>(`select * from tab where id=$(id)`, { id });
   }
 
-  async create(accountId: string, trackTitle: string, chords: string, tx: Db) {
+  async create(
+    accountId: string,
+    data: {
+      chords: string;
+      title: string;
+      artist?: string;
+      mbTrackId?: string;
+      mbArtistId?: string;
+    },
+    tx: Db,
+  ) {
     const { id } = await tx.one(
       `
-      insert into tab (track_title, chords, account_id)
-      values ($(trackTitle), $(chords), $(accountId))
+      insert into tab (track_title, chords, account_id, track_artist, mb_track_id, mb_artist_id)
+      values ($(title), $(chords), $(accountId), $(artist), $(mbTrackId), $(mbArtistId))
       returning id`,
       {
         accountId,
-        trackTitle,
-        chords,
+        ...data,
       },
     );
     return id as string;

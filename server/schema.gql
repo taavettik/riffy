@@ -8,8 +8,14 @@ type Account {
   name: String!
 }
 
+type MBTrack {
+  artist: String
+  id: String!
+  name: String!
+}
+
 type Mutation {
-  createTab(chords: String!, trackTitle: String!): Tab!
+  createTab(artist: String!, chords: String!, mbId: String, title: String!): Tab!
 }
 
 type Query {
@@ -18,7 +24,7 @@ type Query {
   getTabs: [Tab!]!
   login(name: String!, password: String!): String!
   searchArtists(query: String!): [String!]!
-  searchTracks(query: String!): [Track!]!
+  searchTracks(query: String!): [MBTrack!]!
 }
 
 type Tab {
@@ -26,10 +32,4 @@ type Tab {
   id: String!
   trackArtist: String
   trackTitle: String!
-}
-
-type Track {
-  artist: String
-  id: String!
-  name: String!
 }

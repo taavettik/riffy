@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface GetTrackSuggestions_searchTracks {
-  __typename: "Track";
+  __typename: "MBTrack";
   id: string;
   artist: string | null;
   name: string;

@@ -33,7 +33,7 @@ export class Tab {
 }
 
 @ObjectType()
-export class Track {
+export class MBTrack {
   @Field()
   id: string;
 
@@ -54,19 +54,27 @@ export class TabResolver {
   @Authorized()
   @Mutation(() => Tab)
   async createTab(
-    @Arg('trackTitle') trackTitle: string,
+    @Arg('title') title: string,
     @Arg('chords') chords: string,
+    @Arg('artist') artist: string,
+    @Arg('mbId', () => String, { nullable: true }) mbId: string | undefined,
     @Ctx() ctx: Context,
   ) {
+    const mbArtist = mbId
+      ? await this.mb.getRecordingArtists(mbId).then((artists) => artists[0].id)
+      : undefined;
     const id = await this.tabService.create(
       ctx.state.user,
-      trackTitle,
-      chords,
+      {
+        title,
+        artist,
+        chords,
+        mbTrackId: mbId,
+        mbArtistId: mbArtist,
+      },
       ctx.state.tx,
     );
-    console.log(id);
     const tab = await this.tabService.get(id, ctx.state.tx);
-    console.log(tab);
     return tab;
   }
 
@@ -92,7 +100,7 @@ export class TabResolver {
   }
 
   @Authorized()
-  @Query(() => [Track])
+  @Query(() => [MBTrack])
   async searchTracks(@Arg('query') query: string) {
     const data = await this.mb.search('recording', query);
     const formatted = data.recordings.map((r) => ({
