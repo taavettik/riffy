@@ -4,6 +4,7 @@ import { theme } from '../theme';
 import { h } from 'preact';
 
 const Typography = styled.span<TypographyProps>`
+  width: 100%;
   ${typography}
 `;
 
