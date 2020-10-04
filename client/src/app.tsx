@@ -17,6 +17,7 @@ import { ApolloProvider, gql, InMemoryCache, useQuery } from '@apollo/client';
 import { config } from './common/config';
 import { useEffect } from 'preact/hooks';
 import { LoginPage } from './routes/login/Login';
+import { CurrentAccount } from './generated/CurrentAccount';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if ((module as any).hot) {
@@ -46,7 +47,9 @@ const CURRENT_ACCOUNT = gql`
 `;
 
 const ProtectedRoute = (props: RouteProps) => {
-  const { data: currentAccount, loading } = useQuery(CURRENT_ACCOUNT);
+  const { data: currentAccount, loading } = useQuery<CurrentAccount>(
+    CURRENT_ACCOUNT,
+  );
   const history = useHistory();
 
   useEffect(() => {

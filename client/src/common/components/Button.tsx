@@ -12,7 +12,7 @@ export const Button = styled.button<
   ${({ variant = 'primary', theme }) => {
     if (variant === 'primary') {
       return `
-        background-color: ${theme.colors.primary.light};
+        background-color: ${theme.colors.primary.lighter};
         border: 1px solid ${theme.colors.primary.dark};
         &:focus {
           box-shadow: 0 0 0 1px ${theme.colors.primary.dark};

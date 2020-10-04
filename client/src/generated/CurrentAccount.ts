@@ -4,14 +4,14 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: Login
+// GraphQL query operation: CurrentAccount
 // ====================================================
 
-export interface Login {
-  login: string;
+export interface CurrentAccount_currentAccount {
+  __typename: "Account";
+  id: string;
 }
 
-export interface LoginVariables {
-  username: string;
-  password: string;
+export interface CurrentAccount {
+  currentAccount: CurrentAccount_currentAccount;
 }
