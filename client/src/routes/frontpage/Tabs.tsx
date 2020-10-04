@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { h } from 'preact';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container } from '../../common/components/Container';
 import { Icon } from '../../common/components/Icon';
@@ -33,11 +34,11 @@ export const Tabs = () => {
           ))}
           <tr>
             <td colSpan={2}>
-              <Container alignItems="center">
+              <CreateLink to="/create">
                 <Icon icon="add_circle" />
                 <Spacing dir="x" amount={16} />
                 <Body>Create tab</Body>
-              </Container>
+              </CreateLink>
             </td>
           </tr>
         </tbody>
@@ -45,6 +46,15 @@ export const Tabs = () => {
     </Container>
   );
 };
+
+const CreateLink = styled(Link)`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: row;
+  text-decoration: none;
+  color: black;
+`;
 
 const Table = styled.table`
   border-spacing: 0;

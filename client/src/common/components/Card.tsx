@@ -15,7 +15,7 @@ const CardComponent: React.FC<
         <Subheading>{heading}</Subheading>
       </Container>
       <Spacing dir="y" amount={32} />
-      <Container>{children}</Container>
+      <Container height="100%">{children}</Container>
     </Container>
   );
 };
