@@ -10,7 +10,7 @@ const Typography = styled.span<TypographyProps>`
 const createTypographyComponent = (name: keyof typeof theme['typography']) => {
   const style = theme.typography[name];
   const component: React.FC<TypographyProps> = ({ children, ...props }) => (
-    <Typography {...style} {...props}>
+    <Typography style={style} {...props}>
       {children}
     </Typography>
   );
@@ -19,4 +19,5 @@ const createTypographyComponent = (name: keyof typeof theme['typography']) => {
 
 export const Heading = createTypographyComponent('heading');
 export const Subheading = createTypographyComponent('subheading');
+export const Label = createTypographyComponent('label');
 export const Body = createTypographyComponent('body');

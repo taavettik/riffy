@@ -1,12 +1,15 @@
 import { TypographyProps } from 'styled-system';
 import { CSSObject } from 'styled-components';
 
-const typography = {
+const typography: Record<string, React.CSSProperties> = {
   heading: {
     fontSize: 40,
   },
   subheading: {
     fontSize: 30,
+  },
+  label: {
+    fontSize: 20,
   },
   body: {
     fontSize: 16,
@@ -21,6 +24,9 @@ export const theme = {
       main: '#ced4da',
     },
     primary: {
+      darkest: '#377670',
+      darker: '#428f87',
+      dark: '#4faaa0',
       main: '#83c5be',
       light: '#9ad0ca',
       lighter: '#b6ddd9',
