@@ -2,21 +2,36 @@ import axios, { AxiosInstance } from 'axios';
 
 type Entity = 'artist' | 'recording';
 
-type SearchResponse<K extends string> = {
+type SearchResponse<K extends string, E = Record<string, any>> = {
   created: string;
   count: number;
   offset: number;
 } & {
-  [key in K]: {
+  [key in K]: ({
     id: string;
-    name: string;
     score: string;
-  }[];
+  } & E)[];
 };
+
+interface Artist {
+  name: string;
+}
+
+interface Recording {
+  title: string;
+  'artist-credit': {
+    name: string;
+  }[];
+}
 
 type EntityPlulars = {
   artist: 'artists';
   recording: 'recordings';
+};
+
+type Entities = {
+  artist: Artist;
+  recording: Recording;
 };
 
 export class MBService {
@@ -29,11 +44,14 @@ export class MBService {
   }
 
   search<E extends Entity>(entity: E, query: string, offset = 0, limit = 10) {
-    return this.get<SearchResponse<EntityPlulars[E]>>(`/${entity}`, {
-      query: this.escape(query),
-      offset,
-      limit,
-    });
+    return this.get<SearchResponse<EntityPlulars[E], Entities[E]>>(
+      `/${entity}`,
+      {
+        query: this.escape(query),
+        offset,
+        limit,
+      },
+    );
   }
 
   /**

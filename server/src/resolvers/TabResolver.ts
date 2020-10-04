@@ -31,6 +31,15 @@ export class Tab {
   accountId: string;
 }
 
+@ObjectType()
+export class Track {
+  @Field({ nullable: true })
+  artist?: string;
+
+  @Field()
+  name: string;
+}
+
 @Resolver(Tab)
 export class TabResolver {
   constructor(
@@ -76,5 +85,15 @@ export class TabResolver {
     return data.artists
       .filter((result) => Number(result.score) > 80)
       .map((artist) => artist.name);
+  }
+
+  @Authorized()
+  @Query(() => [Track])
+  async searchTracks(@Arg('query') query: string) {
+    const data = await this.mb.search('recording', query);
+    return data.recordings.map((r) => ({
+      name: r.title,
+      artist: r['artist-credit'][0]?.name,
+    }));
   }
 }

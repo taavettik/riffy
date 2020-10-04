@@ -12,6 +12,10 @@ import {
   GetArtistSuggestions,
   GetArtistSuggestionsVariables,
 } from '../../generated/GetArtistSuggestions';
+import {
+  GetTrackSuggestions,
+  GetTrackSuggestionsVariables,
+} from '../../generated/GetTrackSuggestions';
 
 const GET_ARTIST_SUGGESTIONS = gql`
   query GetArtistSuggestions($query: String!) {
@@ -19,10 +23,21 @@ const GET_ARTIST_SUGGESTIONS = gql`
   }
 `;
 
+const GET_TRACK_SUGGETSIONS = gql`
+  query GetTrackSuggestions($query: String!) {
+    searchTracks(query: $query) {
+      artist
+      name
+    }
+  }
+`;
+
 export const CreateTab = () => {
   const [artist, setArtist] = useState('');
+  const [track, setTrack] = useState('');
 
   const debouncedArtist = useDebounce(500, artist);
+  const debouncedTrack = useDebounce(500, track);
   const { data: artists } = useQuery<
     GetArtistSuggestions,
     GetArtistSuggestionsVariables
@@ -32,6 +47,16 @@ export const CreateTab = () => {
     },
     fetchPolicy: 'no-cache',
   });
+  const { data: tracks } = useQuery<
+    GetTrackSuggestions,
+    GetTrackSuggestionsVariables
+  >(GET_TRACK_SUGGETSIONS, {
+    variables: {
+      query: debouncedTrack,
+    },
+    fetchPolicy: 'no-cache',
+  });
+
   return (
     <Page title="Create tab">
       <Container width="100%" height="100%" flexDirection="row">
@@ -47,7 +72,16 @@ export const CreateTab = () => {
           <Spacing dir="y" amount={8} />
           <Body>Title</Body>
           <Spacing dir="y" amount={4} />
-          <Input></Input>
+          <Search
+            items={
+              tracks?.searchTracks.map(
+                (track) => `${track.name} - ${track.artist}`,
+              ) ?? []
+            }
+            onChange={(value) => setTrack(value)}
+            onSelect={(value) => setTrack(value)}
+            value={track}
+          />
         </Container>
         <Spacing dir="x" amount={16} />
         <Container width="100%" flexDirection="column">

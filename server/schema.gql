@@ -18,6 +18,7 @@ type Query {
   getTabs: [Tab!]!
   login(name: String!, password: String!): String!
   searchArtists(query: String!): [String!]!
+  searchTracks(query: String!): [Track!]!
 }
 
 type Tab {
@@ -25,4 +26,9 @@ type Tab {
   id: String!
   trackArtist: String
   trackTitle: String!
+}
+
+type Track {
+  artist: String
+  name: String!
 }
