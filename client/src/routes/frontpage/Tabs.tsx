@@ -30,7 +30,9 @@ export const Tabs = () => {
               <td>
                 <TableLink to={`/tab/${tab.id}`}>{tab.trackTitle}</TableLink>
               </td>
-              <td>{tab.trackArtist}</td>
+              <td>
+                <TableLink to={`/tab/${tab.id}`}>{tab.trackArtist}</TableLink>
+              </td>
             </tr>
           ))}
           <tr>
@@ -50,11 +52,16 @@ export const Tabs = () => {
 
 const TableLink = styled(Link)`
   display: flex;
-  width: 100%;
   align-items: center;
   flex-direction: row;
   text-decoration: none;
   color: black;
+  height: 40px;
+  display: flex;
+  padding-left: 4px;
+  &:hover {
+    background-color: ${(props) => props.theme.colors.primary.lightest};
+  }
 `;
 
 const Table = styled.table`
@@ -65,14 +72,10 @@ const Table = styled.table`
   td {
     border-bottom: 1px solid black;
     cursor: pointer;
-    padding: 4px;
     margin: 0;
-    height: 32px;
+    padding: 0;
   }
 
   tr {
-    &:hover {
-      background-color: ${(props) => props.theme.colors.primary.lightest};
-    }
   }
 `;

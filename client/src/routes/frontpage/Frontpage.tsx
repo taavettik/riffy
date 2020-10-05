@@ -6,23 +6,12 @@ import { Heading, Subheading } from '../../common/components/Typography';
 import { Tabs } from './Tabs';
 import { gql } from '@apollo/client';
 import { RouteProps } from 'react-router';
+import { Page } from '../../common/components/Page';
 
 export const Frontpage = () => {
-  const gridAreas = ``;
-
   return (
-    <Grid
-      padding={30}
-      width="100%"
-      gridTemplateRows={'1fr'}
-      gridTemplateColumns={'1fr'}
-      gridAreas={['test']}
-    >
-      <GridArea area={'test'}>
-        <Card heading={'My Tabs'} width={'100%'} height={'100%'}>
-          <Tabs />
-        </Card>
-      </GridArea>
-    </Grid>
+    <Page title="My Tabs">
+      <Tabs />
+    </Page>
   );
 };
