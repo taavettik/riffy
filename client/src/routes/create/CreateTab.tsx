@@ -1,6 +1,7 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { useHistory } from 'react-router';
 import { Button } from '../../common/components/Button';
 import { Container } from '../../common/components/Container';
 import { Input, TextArea } from '../../common/components/Input';
@@ -10,6 +11,10 @@ import { Spacing } from '../../common/components/Spacing';
 import { Body, Label } from '../../common/components/Typography';
 import { useDebounce } from '../../common/hooks';
 import {
+  CreateTab as ICreateTab,
+  CreateTabVariables,
+} from '../../generated/CreateTab';
+import {
   GetArtistSuggestions,
   GetArtistSuggestionsVariables,
 } from '../../generated/GetArtistSuggestions';
@@ -18,31 +23,10 @@ import {
   GetTrackSuggestionsVariables,
 } from '../../generated/GetTrackSuggestions';
 
-const GET_ARTIST_SUGGESTIONS = gql`
-  query GetArtistSuggestions($query: String!) {
-    searchArtists(query: $query) {
-      id
-      name
-    }
-  }
-`;
-
-const GET_TRACK_SUGGETSIONS = gql`
-  query GetTrackSuggestions($query: String!) {
-    searchTracks(query: $query) {
-      id
-      artist {
-        id
-        name
-      }
-      name
-    }
-  }
-`;
-
 export const CreateTab = () => {
   const [artist, setArtist] = useState<Item>({ id: '', label: '' });
   const [track, setTrack] = useState<Item>({ id: '', label: '' });
+  const [chords, setChords] = useState('');
 
   const debouncedArtist = useDebounce(500, artist.label);
   const debouncedTrack = useDebounce(500, track.label);
@@ -64,6 +48,24 @@ export const CreateTab = () => {
     },
     fetchPolicy: 'no-cache',
   });
+
+  const history = useHistory();
+
+  const [create] = useMutation<ICreateTab, CreateTabVariables>(CREATE_TAB, {
+    onCompleted: () => history.push('/'),
+  });
+
+  const onCreate = () => {
+    create({
+      variables: {
+        title: track.label,
+        artist: artist.label,
+        chords: chords,
+        trackId: track.id || undefined,
+        artistId: artist.id || undefined,
+      },
+    });
+  };
 
   const trackItems =
     tracks?.searchTracks.map((track) => ({
@@ -111,7 +113,7 @@ export const CreateTab = () => {
             />
           </Container>
           <Container width="100%">
-            <Button width="100%">
+            <Button onClick={() => onCreate()} width="100%">
               <Body>Create</Body>
             </Button>
           </Container>
@@ -125,9 +127,54 @@ export const CreateTab = () => {
             width="100%"
             height="100%"
             resize="none"
-          ></TextArea>
+            onChange={(e) => setChords(e.target.value)}
+          >
+            {chords}
+          </TextArea>
         </Container>
       </Container>
     </Page>
   );
 };
+
+const GET_ARTIST_SUGGESTIONS = gql`
+  query GetArtistSuggestions($query: String!) {
+    searchArtists(query: $query) {
+      id
+      name
+    }
+  }
+`;
+
+const GET_TRACK_SUGGETSIONS = gql`
+  query GetTrackSuggestions($query: String!) {
+    searchTracks(query: $query) {
+      id
+      artist {
+        id
+        name
+      }
+      name
+    }
+  }
+`;
+
+const CREATE_TAB = gql`
+  mutation CreateTab(
+    $title: String!
+    $chords: String!
+    $artist: String!
+    $trackId: String
+    $artistId: String
+  ) {
+    createTab(
+      title: $title
+      chords: $chords
+      artist: $artist
+      mbId: $trackId
+      mbArtistId: $artistId
+    ) {
+      id
+    }
+  }
+`;

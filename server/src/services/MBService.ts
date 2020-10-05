@@ -68,6 +68,10 @@ export class MBService {
       .filter(Boolean) as Artist[];
   }
 
+  getEntity<E extends Entity>(type: E, id: string) {
+    return this.get<Partial<Entities[E]>>(`/${type}/${id}`, {});
+  }
+
   /**
    * Escape chars with special meaning in Luscene query strings
    */

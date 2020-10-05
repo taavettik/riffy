@@ -67,10 +67,12 @@ export class TabResolver {
     @Arg('chords') chords: string,
     @Arg('artist') artist: string,
     @Arg('mbId', () => String, { nullable: true }) mbId: string | undefined,
+    @Arg('mbArtistId', () => String, { nullable: true })
+    mbArtistId: string | undefined,
     @Ctx() ctx: Context,
   ) {
-    const mbArtist = mbId
-      ? await this.mb.getRecordingArtists(mbId).then((artists) => artists[0].id)
+    const mbArtist = mbArtistId
+      ? await this.mb.getEntity('artist', mbArtistId)
       : undefined;
     const id = await this.tabService.create(
       ctx.state.user,
@@ -79,7 +81,7 @@ export class TabResolver {
         artist,
         chords,
         mbTrackId: mbId,
-        mbArtistId: mbArtist,
+        mbArtistId: mbArtist?.id,
       },
       ctx.state.tx,
     );
