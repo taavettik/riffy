@@ -8,8 +8,13 @@ type Account {
   name: String!
 }
 
+type MBArtist {
+  id: String!
+  name: String!
+}
+
 type MBTrack {
-  artist: String
+  artist: MBArtist
   id: String!
   name: String!
 }
@@ -23,7 +28,7 @@ type Query {
   getTab(id: String!): Tab!
   getTabs: [Tab!]!
   login(name: String!, password: String!): String!
-  searchArtists(query: String!): [String!]!
+  searchArtists(query: String!): [MBArtist!]!
   searchTracks(query: String!): [MBTrack!]!
 }
 

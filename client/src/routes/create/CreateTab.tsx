@@ -5,7 +5,7 @@ import { Button } from '../../common/components/Button';
 import { Container } from '../../common/components/Container';
 import { Input, TextArea } from '../../common/components/Input';
 import { Page } from '../../common/components/Page';
-import { Search } from '../../common/components/Search';
+import { Item, Search } from '../../common/components/Search';
 import { Spacing } from '../../common/components/Spacing';
 import { Body, Label } from '../../common/components/Typography';
 import { useDebounce } from '../../common/hooks';
@@ -20,7 +20,10 @@ import {
 
 const GET_ARTIST_SUGGESTIONS = gql`
   query GetArtistSuggestions($query: String!) {
-    searchArtists(query: $query)
+    searchArtists(query: $query) {
+      id
+      name
+    }
   }
 `;
 
@@ -28,18 +31,21 @@ const GET_TRACK_SUGGETSIONS = gql`
   query GetTrackSuggestions($query: String!) {
     searchTracks(query: $query) {
       id
-      artist
+      artist {
+        id
+        name
+      }
       name
     }
   }
 `;
 
 export const CreateTab = () => {
-  const [artist, setArtist] = useState('');
-  const [track, setTrack] = useState('');
+  const [artist, setArtist] = useState<Item>({ id: '', label: '' });
+  const [track, setTrack] = useState<Item>({ id: '', label: '' });
 
-  const debouncedArtist = useDebounce(500, artist);
-  const debouncedTrack = useDebounce(500, track);
+  const debouncedArtist = useDebounce(500, artist.label);
+  const debouncedTrack = useDebounce(500, track.label);
   const { data: artists } = useQuery<
     GetArtistSuggestions,
     GetArtistSuggestionsVariables
@@ -64,12 +70,8 @@ export const CreateTab = () => {
       id: track.id,
       track: track.name,
       artist: track.artist,
-      label: `${track.name} - ${track.artist}`,
+      label: `${track.name} - ${track.artist?.name}`,
     })) ?? [];
-
-  const onTrackChange = (value: string) => {
-    setTrack(value);
-  };
 
   return (
     <Page title="Create tab">
@@ -81,26 +83,31 @@ export const CreateTab = () => {
             <Search
               items={
                 artists?.searchArtists.map((artist) => ({
-                  id: artist,
-                  label: artist,
+                  id: artist.id,
+                  label: artist.name,
                 })) ?? []
               }
-              onChange={(value) => setArtist(value)}
-              value={artist}
+              onSelect={(item) => setArtist(item)}
+              onChange={(value) =>
+                value !== artist.label && setArtist({ id: '', label: value })
+              }
+              value={artist.label}
             />
             <Spacing dir="y" amount={8} />
             <Body>Title</Body>
             <Spacing dir="y" amount={4} />
             <Search
               items={trackItems}
-              onChange={(value) => setTrack(value)}
+              onChange={(value) =>
+                value !== track.label && setTrack({ id: '', label: value })
+              }
               onSelect={(item) => {
-                setTrack(item.track);
+                setTrack({ id: item.id, label: item.track });
                 if (item.artist) {
-                  setArtist(item.artist);
+                  setArtist({ id: item.artist.id, label: item.artist.name });
                 }
               }}
-              value={track}
+              value={track.label}
             />
           </Container>
           <Container width="100%">

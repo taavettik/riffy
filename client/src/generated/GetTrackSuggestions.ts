@@ -7,10 +7,16 @@
 // GraphQL query operation: GetTrackSuggestions
 // ====================================================
 
+export interface GetTrackSuggestions_searchTracks_artist {
+  __typename: "MBArtist";
+  id: string;
+  name: string;
+}
+
 export interface GetTrackSuggestions_searchTracks {
   __typename: "MBTrack";
   id: string;
-  artist: string | null;
+  artist: GetTrackSuggestions_searchTracks_artist | null;
   name: string;
 }
 

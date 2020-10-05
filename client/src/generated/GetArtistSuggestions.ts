@@ -7,8 +7,14 @@
 // GraphQL query operation: GetArtistSuggestions
 // ====================================================
 
+export interface GetArtistSuggestions_searchArtists {
+  __typename: "MBArtist";
+  id: string;
+  name: string;
+}
+
 export interface GetArtistSuggestions {
-  searchArtists: string[];
+  searchArtists: GetArtistSuggestions_searchArtists[];
 }
 
 export interface GetArtistSuggestionsVariables {

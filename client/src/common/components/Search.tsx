@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Body } from './Typography';
 import { Container } from './Container';
 
-interface Item {
+export interface Item {
   id: string;
   label: string;
 }

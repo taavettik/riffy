@@ -33,12 +33,21 @@ export class Tab {
 }
 
 @ObjectType()
+export class MBArtist {
+  @Field()
+  id: string;
+
+  @Field()
+  name: string;
+}
+
+@ObjectType()
 export class MBTrack {
   @Field()
   id: string;
 
   @Field({ nullable: true })
-  artist?: string;
+  artist?: MBArtist;
 
   @Field()
   name: string;
@@ -91,12 +100,10 @@ export class TabResolver {
   }
 
   @Authorized()
-  @Query(() => [String])
+  @Query(() => [MBArtist])
   async searchArtists(@Arg('query') query: string) {
     const data = await this.mb.search('artist', query);
-    return data.artists
-      .filter((result) => Number(result.score) > 80)
-      .map((artist) => artist.name);
+    return data.artists.filter((result) => Number(result.score) > 80);
   }
 
   @Authorized()
@@ -106,8 +113,8 @@ export class TabResolver {
     const formatted = data.recordings.map((r) => ({
       id: r.id,
       name: r.title,
-      artist: r['artist-credit'][0]?.name,
+      artist: r['artist-credit'][0]?.artist,
     }));
-    return uniqBy(formatted, (entry) => `${entry.name}, ${entry.artist}`);
+    return uniqBy(formatted, (entry) => entry.id);
   }
 }
