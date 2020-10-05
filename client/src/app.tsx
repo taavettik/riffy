@@ -69,7 +69,7 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <ApolloProvider client={client}>
           <GlobalStyle />
-          <Container margin="0 auto" maxWidth={1200} width={'100%'}>
+          <Container margin="0 auto" maxWidth={1600} width={'100%'}>
             <BrowserRouter>
               <Switch>
                 <Route path="/login">
