@@ -74,11 +74,14 @@ export class TabResolver {
     const mbArtist = mbArtistId
       ? await this.mb.getEntity('artist', mbArtistId)
       : undefined;
+    const mbTrack = mbId
+      ? await this.mb.getEntity('recording', mbId)
+      : undefined;
     const id = await this.tabService.create(
       ctx.state.user,
       {
-        title,
-        artist,
+        title: mbTrack?.title ? mbTrack.title : title,
+        artist: mbArtist?.name ? mbArtist.name : artist,
         chords,
         mbTrackId: mbId,
         mbArtistId: mbArtist?.id,
