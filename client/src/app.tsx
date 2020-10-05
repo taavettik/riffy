@@ -19,6 +19,7 @@ import { useEffect } from 'preact/hooks';
 import { LoginPage } from './routes/login/Login';
 import { CurrentAccount } from './generated/CurrentAccount';
 import { CreateTab } from './routes/create/CreateTab';
+import { Tab } from './routes/tab/Tab';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if ((module as any).hot) {
@@ -74,6 +75,9 @@ const App = () => {
                 <Route path="/login">
                   <LoginPage />
                 </Route>
+                <ProtectedRoute path="/tab/:id">
+                  <Tab />
+                </ProtectedRoute>
                 <ProtectedRoute path="/create">
                   <CreateTab />
                 </ProtectedRoute>

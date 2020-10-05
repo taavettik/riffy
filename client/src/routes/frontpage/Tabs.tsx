@@ -7,7 +7,6 @@ import { Icon } from '../../common/components/Icon';
 import { Spacing } from '../../common/components/Spacing';
 import { Body } from '../../common/components/Typography';
 import { GetTabs } from '../../generated/GetTabs';
-import { Tab } from './Tab';
 
 const GET_TABS = gql`
   query GetTabs {
@@ -28,17 +27,19 @@ export const Tabs = () => {
         <tbody>
           {data?.getTabs.map((tab) => (
             <tr key={tab.id}>
-              <td>{tab.trackTitle}</td>
+              <td>
+                <TableLink to={`/tab/${tab.id}`}>{tab.trackTitle}</TableLink>
+              </td>
               <td>{tab.trackArtist}</td>
             </tr>
           ))}
           <tr>
             <td colSpan={2}>
-              <CreateLink to="/create">
+              <TableLink to="/create">
                 <Icon icon="add_circle" />
                 <Spacing dir="x" amount={16} />
                 <Body>Create tab</Body>
-              </CreateLink>
+              </TableLink>
             </td>
           </tr>
         </tbody>
@@ -47,7 +48,7 @@ export const Tabs = () => {
   );
 };
 
-const CreateLink = styled(Link)`
+const TableLink = styled(Link)`
   display: flex;
   width: 100%;
   align-items: center;
@@ -66,6 +67,7 @@ const Table = styled.table`
     cursor: pointer;
     padding: 4px;
     margin: 0;
+    height: 32px;
   }
 
   tr {
