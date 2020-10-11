@@ -64,6 +64,7 @@ export const Tab = () => {
   /**
    * Chord rows grouped so that chords and corresponding lyrics are in
    * the same block
+   *
    */
   const blocks = parsed.reduce((arr, cur, i) => {
     const curChunk = arr.slice(-1)[0];
@@ -74,7 +75,10 @@ export const Tab = () => {
   }, [] as ChordRow[][]);
 
   return (
-    <Page title={`${data.getTab.trackArtist} - ${data.getTab.trackTitle}`}>
+    <Page
+      title={`${data.getTab.trackArtist} - ${data.getTab.trackTitle}`}
+      showBackButton
+    >
       <ChordsContainer>
         {blocks.map((block, i) =>
           block[0].type === 'separator' ? (

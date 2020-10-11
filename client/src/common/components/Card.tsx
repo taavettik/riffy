@@ -6,13 +6,17 @@ import { Spacing } from './Spacing';
 
 const CardComponent: React.FC<
   ContainerProps & {
-    heading: React.ReactElement | string;
+    heading: JSX.Element | string;
   }
 > = ({ children, heading, ...props }) => {
   return (
     <Container {...props} flexDirection={'column'} padding={4}>
       <Container>
-        <Subheading>{heading}</Subheading>
+        {typeof heading === 'string' ? (
+          <Subheading>{heading}</Subheading>
+        ) : (
+          heading
+        )}
       </Container>
       <Spacing dir="y" amount={32} />
       <Container height="100%">{children}</Container>

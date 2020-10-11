@@ -76,7 +76,7 @@ export const CreateTab = () => {
     })) ?? [];
 
   return (
-    <Page title="Create tab">
+    <Page title="Create tab" showBackButton>
       <Container width="100%" height="100%" flexDirection="row">
         <Container maxWidth="300px" width="100%" flexDirection="column">
           <Container width="100%" flexDirection="column" height="100%">

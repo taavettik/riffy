@@ -2,8 +2,9 @@ import { gql, useQuery } from '@apollo/client';
 import { h } from 'preact';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { MdAddCircleOutline } from 'react-icons/md';
+
 import { Container } from '../../common/components/Container';
-import { Icon } from '../../common/components/Icon';
 import { Spacing } from '../../common/components/Spacing';
 import { Body } from '../../common/components/Typography';
 import { GetTabs } from '../../generated/GetTabs';
@@ -38,7 +39,7 @@ export const Tabs = () => {
           <tr>
             <td colSpan={2}>
               <TableLink to="/create">
-                <Icon icon="add_circle" />
+                <MdAddCircleOutline size={32} />
                 <Spacing dir="x" amount={16} />
                 <Body>Create tab</Body>
               </TableLink>
