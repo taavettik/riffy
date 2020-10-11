@@ -20,6 +20,7 @@ import { LoginPage } from './routes/login/Login';
 import { CurrentAccount } from './generated/CurrentAccount';
 import { CreateTab } from './routes/create/CreateTab';
 import { Tab } from './routes/tab/Tab';
+import { EditTab } from './routes/edit/EditTab';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if ((module as any).hot) {
@@ -77,6 +78,9 @@ const App = () => {
                 </Route>
                 <ProtectedRoute path="/tab/:id">
                   <Tab />
+                </ProtectedRoute>
+                <ProtectedRoute path="/edit/:id">
+                  <EditTab />
                 </ProtectedRoute>
                 <ProtectedRoute path="/create">
                   <CreateTab />

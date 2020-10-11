@@ -1,10 +1,13 @@
 import { Page } from '../../common/components/Page';
 import { h } from 'preact';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { gql, useQuery } from '@apollo/client';
 import { GetTab, GetTabVariables } from '../../generated/GetTab';
 import { Container } from '../../common/components/Container';
 import styled from 'styled-components';
+import { MdEdit } from 'react-icons/md';
+import { IconButton } from '../../common/components/IconButton';
+import { GET_TAB } from '../../common/queries';
 
 type ChordRow =
   | {
@@ -56,6 +59,8 @@ export const Tab = () => {
     },
   });
 
+  const history = useHistory();
+
   if (!data) {
     return <div></div>;
   }
@@ -77,6 +82,15 @@ export const Tab = () => {
   return (
     <Page
       title={`${data.getTab.trackArtist} - ${data.getTab.trackTitle}`}
+      actions={
+        <>
+          <IconButton
+            icon={MdEdit}
+            size={24}
+            onClick={() => history.push(`/edit/${id}`)}
+          />
+        </>
+      }
       showBackButton
     >
       <ChordsContainer>
@@ -113,15 +127,4 @@ const Row = styled.span`
 const Separator = styled(Row)`
   min-height: 24px;
   height: 24px;
-`;
-
-const GET_TAB = gql`
-  query GetTab($id: String!) {
-    getTab(id: $id) {
-      id
-      chords
-      trackTitle
-      trackArtist
-    }
-  }
 `;

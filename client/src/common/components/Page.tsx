@@ -8,11 +8,11 @@ import { IconButton } from './IconButton';
 import { Spacing } from './Spacing';
 import { Subheading } from './Typography';
 
-export const Page: React.FC<{ title: string; showBackButton?: boolean }> = ({
-  children,
-  title,
-  showBackButton,
-}) => {
+export const Page: React.FC<{
+  title: string;
+  showBackButton?: boolean;
+  actions?: JSX.Element;
+}> = ({ children, title, showBackButton, actions }) => {
   const history = useHistory();
   return (
     <Grid
@@ -25,18 +25,21 @@ export const Page: React.FC<{ title: string; showBackButton?: boolean }> = ({
       <GridArea area={'page'}>
         <Card
           heading={
-            <Container alignItems="center">
-              {showBackButton ? (
-                <>
-                  <IconButton
-                    onClick={() => history.goBack()}
-                    icon={MdArrowBack}
-                    size={32}
-                  />
-                  <Spacing dir="x" amount={16} />{' '}
-                </>
-              ) : null}
-              <Subheading>{title}</Subheading>
+            <Container width="100%" justifyContent="space-between">
+              <Container alignItems="center">
+                {showBackButton ? (
+                  <>
+                    <IconButton
+                      onClick={() => history.goBack()}
+                      icon={MdArrowBack}
+                      size={32}
+                    />
+                    <Spacing dir="x" amount={16} />{' '}
+                  </>
+                ) : null}
+                <Subheading>{title}</Subheading>
+              </Container>
+              <Container>{actions ?? null}</Container>
             </Container>
           }
           width={'100%'}
