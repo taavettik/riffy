@@ -24,32 +24,28 @@ export const Tabs = () => {
 
   return (
     <Container maxWidth={800} width={'100%'} flexDirection="column">
-      <Table>
-        <tbody>
-          {data?.getTabs.map((tab) => (
-            <tr key={tab.id}>
-              <td>
-                <TableLink to={`/tab/${tab.id}`}>{tab.trackTitle}</TableLink>
-              </td>
-              <td>
-                <TableLink to={`/tab/${tab.id}`}>{tab.trackArtist}</TableLink>
-              </td>
-            </tr>
-          ))}
-          <tr>
-            <td colSpan={2}>
-              <TableLink to="/create">
-                <MdAddCircleOutline size={32} />
-                <Spacing dir="x" amount={16} />
-                <Body>Create tab</Body>
-              </TableLink>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
+      {data?.getTabs.map((tab) => (
+        <Row key={tab.id}>
+          <TableLink to={`/tab/${tab.id}`}>{tab.trackTitle}</TableLink>
+          <TableLink to={`/tab/${tab.id}`}>{tab.trackArtist}</TableLink>
+        </Row>
+      ))}
+      <Row>
+        <TableLink to="/create">
+          <MdAddCircleOutline size={32} />
+          <Spacing dir="x" amount={16} />
+          <Body>Create tab</Body>
+        </TableLink>
+      </Row>
     </Container>
   );
 };
+
+const Row = styled(Container)`
+  border-bottom: 1px solid black;
+  width: 100%;
+  flex-wrap: wrap;
+`;
 
 const TableLink = styled(Link)`
   display: flex;
@@ -57,12 +53,14 @@ const TableLink = styled(Link)`
   flex-direction: row;
   text-decoration: none;
   color: black;
-  height: 40px;
+  min-height: 40px;
+  min-width: 200px;
   display: flex;
   padding-left: 4px;
   &:hover {
     background-color: ${(props) => props.theme.colors.primary.lightest};
   }
+  flex: 1;
 `;
 
 const Table = styled.table`

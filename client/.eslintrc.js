@@ -22,7 +22,6 @@ module.exports = {
     project: "./tsconfig.eslint.json",
   },
   rules: {
-    "react/no-unknown-property": ["error", { ignore: ["class"] }],
     "@typescript-eslint/explicit-function-return-type": "off",
     "react/prop-types": "off",
     "@typescript-eslint/no-use-before-define": "off",
