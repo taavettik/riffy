@@ -26,6 +26,8 @@ services:
     command: npm start
     volumes: 
       - ./server:/service
+    environment:
+      - PORT=1024
   client:
     container_name: riffy-client
     build: ./client

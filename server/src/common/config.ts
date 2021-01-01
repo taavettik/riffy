@@ -7,4 +7,5 @@ export const config = {
   DB_NAME: 'riffy',
   DB_USER: 'postgres',
   DB_PASSWORD: 'sogood',
+  PORT: process.env.PORT,
 };

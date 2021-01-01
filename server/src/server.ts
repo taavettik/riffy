@@ -45,7 +45,7 @@ async function bootstrap() {
   });
   server.applyMiddleware({ app, path: '/server/' });
 
-  app.listen({ port: 80 }, () =>
+  app.listen({ port: config.PORT }, () =>
     console.log(
       `🚀 Server ready at http://localhost:4000${server.graphqlPath}`,
     ),
