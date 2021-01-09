@@ -12,7 +12,7 @@ export function toCamelCase<O = any, I = any>(obj: I): O {
   }
 
   if (Array.isArray(obj)) {
-    return obj.map((o) => toCamelCase(o)) as any;
+    return (obj as any[]).map((o) => toCamelCase(o)) as any;
   }
   const newObj: any = {};
   for (const key in obj) {

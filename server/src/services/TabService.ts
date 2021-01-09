@@ -35,6 +35,30 @@ export class TabService {
   }
 
   @CamelCase
+  async edit(
+    id: string,
+    accountId: string,
+    data: {
+      chords?: string;
+    },
+    tx: Db,
+  ) {
+    return tx.one(
+      `update tab set
+        ${data.chords ? 'chords = $(chords)' : 'chords = chords'}
+      where
+        account_id = $(accountId) and
+        id = $(id)
+      returning *`,
+      {
+        ...data,
+        id,
+        accountId,
+      },
+    );
+  }
+
+  @CamelCase
   async getByAccount(accountId: string, tx: Db) {
     return tx.manyOrNone(
       `

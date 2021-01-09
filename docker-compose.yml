@@ -27,7 +27,7 @@ services:
     volumes: 
       - ./server:/service
     environment:
-      - PORT=1024
+      - PORT=1234
   client:
     container_name: riffy-client
     build: ./client

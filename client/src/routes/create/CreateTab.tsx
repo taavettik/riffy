@@ -53,6 +53,7 @@ export const CreateTab = () => {
 
   const [create] = useMutation<ICreateTab, CreateTabVariables>(CREATE_TAB, {
     onCompleted: () => history.push('/'),
+    refetchQueries: ['GetTabs'],
   });
 
   const onCreate = () => {

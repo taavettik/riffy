@@ -21,6 +21,7 @@ type MBTrack {
 
 type Mutation {
   createTab(artist: String!, chords: String!, mbArtistId: String, mbId: String, title: String!): Tab!
+  editTab(chords: String!, id: String!): Tab!
 }
 
 type Query {

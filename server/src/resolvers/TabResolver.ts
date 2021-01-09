@@ -93,6 +93,16 @@ export class TabResolver {
   }
 
   @Authorized()
+  @Mutation(() => Tab)
+  async editTab(
+    @Arg('id') id: string,
+    @Arg('chords') chords: string,
+    @Ctx() ctx: Context,
+  ) {
+    return this.tabService.edit(id, ctx.state.user, { chords }, ctx.state.tx);
+  }
+
+  @Authorized()
   @Query(() => Tab)
   async getTab(@Arg('id') id: string, @Ctx() ctx: Context) {
     return this.tabService.get(id, ctx.state.tx);

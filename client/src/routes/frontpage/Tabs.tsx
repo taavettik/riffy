@@ -8,6 +8,7 @@ import { Container } from '../../common/components/Container';
 import { Spacing } from '../../common/components/Spacing';
 import { Body } from '../../common/components/Typography';
 import { GetTabs } from '../../generated/GetTabs';
+import { useEffect } from 'preact/hooks';
 
 const GET_TABS = gql`
   query GetTabs {
@@ -20,7 +21,11 @@ const GET_TABS = gql`
 `;
 
 export const Tabs = () => {
-  const { data } = useQuery<GetTabs>(GET_TABS);
+  const { data, refetch } = useQuery<GetTabs>(GET_TABS);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <Container maxWidth={800} width={'100%'} flexDirection="column">

@@ -1,11 +1,16 @@
-import { useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
+import { Button } from '../../common/components/Button';
+import { Container } from '../../common/components/Container';
 import { TextArea } from '../../common/components/Input';
 
 import { Page } from '../../common/components/Page';
+import { Spacing } from '../../common/components/Spacing';
+import { Body } from '../../common/components/Typography';
 import { GET_TAB } from '../../common/queries';
+import { EditTab as IEditTab, EditTabVariables } from '../../generated/EditTab';
 import { GetTab, GetTabVariables } from '../../generated/GetTab';
 
 export const EditTab = () => {
@@ -20,6 +25,16 @@ export const EditTab = () => {
   const [initialChords, setInitialChords] = useState('');
   const [chords, setChords] = useState<string | undefined>(undefined);
 
+  const history = useHistory();
+
+  const [edit] = useMutation<IEditTab, EditTabVariables>(EDIT_TAB, {
+    variables: {
+      id,
+      chords: chords || '',
+    },
+    onCompleted: () => history.push(`/tab/${id}`),
+  });
+
   useEffect(() => {
     if (!data || chords) {
       return;
@@ -27,6 +42,10 @@ export const EditTab = () => {
     setChords(data.getTab.chords);
     setInitialChords(data.getTab.chords);
   }, [data, chords]);
+
+  const onSubmit = () => {
+    edit();
+  };
 
   if (!data) {
     return <div></div>;
@@ -39,14 +58,32 @@ export const EditTab = () => {
       title={`Editing ${tab.trackArtist} - ${tab.trackTitle}`}
       showBackButton
     >
-      <TextArea
-        spellCheck="false"
-        width="100%"
-        resize="none"
-        onChange={(e) => setChords(e.target.value)}
-      >
-        {chords}
-      </TextArea>
+      <Container width="100%" height="100%" flexDirection="column">
+        <TextArea
+          spellCheck="false"
+          width="100%"
+          height="100%"
+          resize="none"
+          onChange={(e) => setChords(e.target.value)}
+        >
+          {chords}
+        </TextArea>
+
+        <Spacing dir="y" amount={16} />
+
+        <Button onClick={() => onSubmit()} width="100px">
+          <Body>Save</Body>
+        </Button>
+      </Container>
     </Page>
   );
 };
+
+const EDIT_TAB = gql`
+  mutation EditTab($id: String!, $chords: String!) {
+    editTab(id: $id, chords: $chords) {
+      id
+      chords
+    }
+  }
+`;
