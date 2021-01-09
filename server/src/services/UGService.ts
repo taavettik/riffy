@@ -1,10 +1,12 @@
-import Axios, { AxiosInstance } from 'axios';
+import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import parse from 'node-html-parser';
+import qs from 'querystring';
 import { URL } from 'url';
 import { Service } from 'typedi';
 import { RedisClient } from 'redis';
 import { promisify } from 'util';
 import { PromiseRedisClient } from '../common/redis';
+import { UgSearchResult } from '../resolvers/TabResolver';
 
 const UG_URL = 'https://tabs.ultimate-guitar.com/';
 
@@ -18,6 +20,44 @@ export class UGService {
     });
   }
 
+  private async fetch(url: string, config?: AxiosRequestConfig) {
+    const html = await this.http.get(url, config);
+    const dom = parse(html.data);
+    const jsStore = dom.querySelector('.js-store');
+    const json = jsStore.getAttribute('data-content');
+    if (!json) {
+      return;
+    }
+    return JSON.parse(json);
+  }
+
+  async search(query: string) {
+    const data = await this.fetch(
+      `https://www.ultimate-guitar.com/search.php?${qs.stringify({
+        search_type: 'title',
+        value: query,
+      })}`,
+    );
+    const results = data.store.page.data.results;
+
+    console.log(results);
+
+    return results
+      .map((r: any) =>
+        r.type === 'Chords' || r.type === 'Tabs'
+          ? {
+              trackTitle: r.song_name,
+              trackArtist: r.artist_name,
+              votes: r.votes,
+              version: r.version ?? 1,
+              url: r.tab_url,
+            }
+          : undefined,
+      )
+      .filter(Boolean)
+      .slice(0, 10) as UgSearchResult[];
+  }
+
   async getTab(url: string, redis: PromiseRedisClient) {
     const parsedUrl = new URL(url, UG_URL);
     const cacheKey = parsedUrl.pathname;
@@ -28,14 +68,7 @@ export class UGService {
       return JSON.parse(cached);
     }
 
-    const html = await this.http.get(url);
-    const dom = parse(html.data);
-    const jsStore = dom.querySelector('.js-store');
-    const json = jsStore.getAttribute('data-content');
-    if (!json) {
-      return;
-    }
-    const data = JSON.parse(json);
+    const data = await this.fetch(url);
     const tab = data.store.page.data.tab;
     const chords = data.store.page.data.tab_view.wiki_tab.content;
     const parsed = this.parseChords(chords);

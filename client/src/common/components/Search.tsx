@@ -18,12 +18,14 @@ export const Search = <I extends Item>({
   onChange,
   onSelect,
   value,
+  inputProps,
   ...props
 }: LayoutProps & {
   items: I[];
   onChange: (value: string) => void;
   onSelect?: (item: I) => void;
   value: string;
+  inputProps?: React.HTMLAttributes<HTMLInputElement>;
 }) => {
   const inputRef = useRef<HTMLInputElement>();
   const anchorRef = useRef<HTMLDivElement>();
@@ -77,6 +79,7 @@ export const Search = <I extends Item>({
           setOpen(true);
         }}
         {...props}
+        {...(inputProps as any)}
       />
       <Anchor ref={anchorRef}>
         {open && (

@@ -64,6 +64,24 @@ export class MBTrack {
   name: string;
 }
 
+@ObjectType()
+export class UgSearchResult {
+  @Field()
+  trackTitle: string;
+
+  @Field()
+  trackArtist: string;
+
+  @Field()
+  url: string;
+
+  @Field()
+  votes: number;
+
+  @Field()
+  version: number;
+}
+
 const RecentTab = createUnionType({
   name: 'RecentTab',
   types: () => [ExternalTab, Tab],
@@ -158,6 +176,16 @@ export class TabResolver {
       ...tab,
       url,
     };
+  }
+
+  @Authorized()
+  @Query(() => [UgSearchResult])
+  async searchUgTabs(@Arg('query') query: string, @Ctx() ctx: Context) {
+    const results = await this.ug.search(query);
+    return results.map((r) => ({
+      ...r,
+      chords: '',
+    }));
   }
 
   @Authorized()

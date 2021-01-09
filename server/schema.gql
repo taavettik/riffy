@@ -48,6 +48,7 @@ type Query {
   recentTabs: [RecentTab!]!
   searchArtists(query: String!): [MBArtist!]!
   searchTracks(query: String!): [MBTrack!]!
+  searchUgTabs(query: String!): [UgSearchResult!]!
 }
 
 union RecentTab = ExternalTab | Tab
@@ -57,4 +58,12 @@ type Tab {
   id: String!
   trackArtist: String
   trackTitle: String!
+}
+
+type UgSearchResult {
+  trackArtist: String!
+  trackTitle: String!
+  url: String!
+  version: Float!
+  votes: Float!
 }
