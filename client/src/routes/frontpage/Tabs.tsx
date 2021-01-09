@@ -6,7 +6,7 @@ import { MdAddCircleOutline } from 'react-icons/md';
 
 import { Container } from '../../common/components/Container';
 import { Spacing } from '../../common/components/Spacing';
-import { Body } from '../../common/components/Typography';
+import { Body, Heading, Subheading } from '../../common/components/Typography';
 import { GetTabs } from '../../generated/GetTabs';
 import { useEffect } from 'preact/hooks';
 
@@ -29,6 +29,10 @@ export const Tabs = () => {
 
   return (
     <Container maxWidth={800} width={'100%'} flexDirection="column">
+      <Subheading>My tabs</Subheading>
+
+      <Spacing dir="y" amount={16} />
+
       {data?.getTabs.map((tab) => (
         <Row key={tab.id}>
           <TableLink to={`/tab/${tab.id}`}>{tab.trackTitle}</TableLink>

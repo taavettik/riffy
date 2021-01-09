@@ -26,7 +26,7 @@ export const Ug = () => {
   const chords = data.getUgTab?.chords;
 
   return (
-    <Page title={trackName}>
+    <Page title={trackName} backButtonLink={'/'} showBackButton>
       <Chords chords={chords || 'No chords found'} />
     </Page>
   );

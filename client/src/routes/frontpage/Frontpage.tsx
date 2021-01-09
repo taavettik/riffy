@@ -9,11 +9,23 @@ import { RouteProps } from 'react-router';
 import { Page } from '../../common/components/Page';
 import { Input } from '../../common/components/Input';
 import { SongSearch } from './SongSearch';
+import { RecentTabs } from './RecentTabs';
 
 export const Frontpage = () => {
   return (
-    <Page title="My Tabs" actions={<SongSearch />}>
-      <Tabs />
+    <Page title="Overview" actions={<SongSearch />}>
+      <Grid
+        width="100%"
+        gridAreas={['tabs recent']}
+        gridTemplateColumns="2fr 1fr"
+      >
+        <GridArea area="tabs">
+          <Tabs />
+        </GridArea>
+        <GridArea area="recent">
+          <RecentTabs />
+        </GridArea>
+      </Grid>
     </Page>
   );
 };
