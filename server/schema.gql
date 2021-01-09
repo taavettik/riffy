@@ -8,6 +8,18 @@ type Account {
   name: String!
 }
 
+type BaseTab {
+  chords: String!
+  trackArtist: String
+  trackTitle: String!
+}
+
+type ExternalTab {
+  chords: String!
+  trackArtist: String
+  trackTitle: String!
+}
+
 type MBArtist {
   id: String!
   name: String!
@@ -28,6 +40,7 @@ type Query {
   currentAccount: Account!
   getTab(id: String!): Tab!
   getTabs: [Tab!]!
+  getUgTab(url: String!): ExternalTab
   login(name: String!, password: String!): String!
   searchArtists(query: String!): [MBArtist!]!
   searchTracks(query: String!): [MBTrack!]!

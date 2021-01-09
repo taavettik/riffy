@@ -14,23 +14,30 @@ import {
 import { MBService } from '../services/MBService';
 import { TabService } from '../services/TabService';
 import { uniqBy } from 'lodash';
+import { UGService } from '../services/UGService';
 
 @ObjectType()
-export class Tab {
+class BaseTab {
   @Field(() => String)
   chords: string;
-
-  @Field(() => String)
-  id: string;
 
   @Field()
   trackTitle: string;
 
   @Field(() => String, { nullable: true })
   trackArtist: string | null;
+}
+
+@ObjectType()
+export class Tab extends BaseTab {
+  @Field(() => String)
+  id: string;
 
   accountId: string;
 }
+
+@ObjectType()
+export class ExternalTab extends BaseTab {}
 
 @ObjectType()
 export class MBArtist {
@@ -58,6 +65,7 @@ export class TabResolver {
   constructor(
     private readonly tabService: TabService,
     private readonly mb: MBService,
+    private readonly ug: UGService,
   ) {}
 
   @Authorized()
@@ -131,5 +139,10 @@ export class TabResolver {
       artist: r['artist-credit'][0]?.artist,
     }));
     return uniqBy(formatted, (entry) => entry.id);
+  }
+
+  @Query(() => ExternalTab, { nullable: true })
+  async getUgTab(@Arg('url') url: string) {
+    return this.ug.getTab(url);
   }
 }

@@ -11,8 +11,9 @@ import { Subheading } from './Typography';
 export const Page: React.FC<{
   title: string;
   showBackButton?: boolean;
+  backButtonLink?: string;
   actions?: JSX.Element;
-}> = ({ children, title, showBackButton, actions }) => {
+}> = ({ children, backButtonLink, title, showBackButton, actions }) => {
   const history = useHistory();
   return (
     <Container padding={30} width="100%">
@@ -23,7 +24,11 @@ export const Page: React.FC<{
               {showBackButton ? (
                 <>
                   <IconButton
-                    onClick={() => history.goBack()}
+                    onClick={() =>
+                      backButtonLink
+                        ? history.push(backButtonLink)
+                        : history.goBack()
+                    }
                     icon={MdArrowBack}
                     size={32}
                   />

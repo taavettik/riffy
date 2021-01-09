@@ -91,6 +91,7 @@ export const Tab = () => {
           />
         </>
       }
+      backButtonLink="/"
       showBackButton
     >
       <ChordsContainer>
