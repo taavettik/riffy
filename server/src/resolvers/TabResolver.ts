@@ -38,7 +38,10 @@ export class Tab extends BaseTab {
 }
 
 @ObjectType()
-export class ExternalTab extends BaseTab {}
+export class ExternalTab extends BaseTab {
+  @Field()
+  url: string;
+}
 
 @ObjectType()
 export class MBArtist {
@@ -61,15 +64,9 @@ export class MBTrack {
   name: string;
 }
 
-@ObjectType()
-class ExternalTabReference {
-  @Field()
-  url: string;
-}
-
 const RecentTab = createUnionType({
   name: 'RecentTab',
-  types: () => [ExternalTabReference, Tab],
+  types: () => [ExternalTab, Tab],
 });
 
 @Resolver(Tab)
@@ -156,12 +153,16 @@ export class TabResolver {
   @Authorized()
   @Query(() => ExternalTab, { nullable: true })
   async getUgTab(@Arg('url') url: string, @Ctx() ctx: Context) {
-    return this.ug.getTab(url, ctx.state.redis);
+    const tab = await this.ug.getTab(url, ctx.state.redis);
+    return {
+      ...tab,
+      url,
+    };
   }
 
   @Authorized()
   @Mutation(() => Boolean)
-  async addRecentTab(@Arg('tabId') tabId: string, @Ctx() ctx: Context) {
+  async addRecentTab(@Arg('id') tabId: string, @Ctx() ctx: Context) {
     await this.tabService.addRecent(
       ctx.state.user,
       { id: tabId },
@@ -172,10 +173,7 @@ export class TabResolver {
 
   @Authorized()
   @Mutation(() => Boolean)
-  async addRecentExternalTab(
-    @Arg('tabUrl') tabUrl: string,
-    @Ctx() ctx: Context,
-  ) {
+  async addRecentExternalTab(@Arg('url') tabUrl: string, @Ctx() ctx: Context) {
     await this.tabService.addRecent(
       ctx.state.user,
       { url: tabUrl },
@@ -192,16 +190,27 @@ export class TabResolver {
       ctx.state.tx,
     );
 
-    return Promise.all(
+    const resolvedTabs = await Promise.all(
       tabs.map(async (tab) => {
         if (tab.tabId) {
           const obj = await this.tabService.get(tab.tabId, ctx.state.tx);
           return Object.assign(new Tab(), obj);
         }
-        return Object.assign(new ExternalTabReference(), {
-          url: tab.tabUrl || '',
-        });
+        if (!tab.tabUrl) {
+          return;
+        }
+        try {
+          const ugTab = await this.ug.getTab(tab.tabUrl, ctx.state.redis);
+          return Object.assign(new ExternalTab(), {
+            ...ugTab,
+            url: tab.tabUrl,
+          });
+        } catch {
+          return;
+        }
       }),
     );
+
+    return resolvedTabs.filter(Boolean);
   }
 }

@@ -114,7 +114,10 @@ export class TabService {
       timeStamp: Date;
     }>(
       `
-      select * from view_history where account_id = $(accountId) limit 10
+      select * from view_history
+      where account_id = $(accountId)
+      order by view_history.timestamp desc
+      limit 10
     `,
       {
         accountId,
