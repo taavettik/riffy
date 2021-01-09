@@ -10,6 +10,7 @@ import Container from 'typedi';
 import { config } from './common/config';
 import { createDb } from './common/db';
 import { decode } from 'jsonwebtoken';
+import { createRedisClient, PromiseRedisClient } from './common/redis';
 
 async function bootstrap() {
   const db = createDb();
@@ -34,6 +35,7 @@ async function bootstrap() {
         state: {
           tx: db,
           user: user?.id,
+          redis: new PromiseRedisClient(createRedisClient()),
         },
       };
     },

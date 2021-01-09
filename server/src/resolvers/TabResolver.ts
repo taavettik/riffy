@@ -142,7 +142,7 @@ export class TabResolver {
   }
 
   @Query(() => ExternalTab, { nullable: true })
-  async getUgTab(@Arg('url') url: string) {
-    return this.ug.getTab(url);
+  async getUgTab(@Arg('url') url: string, @Ctx() ctx: Context) {
+    return this.ug.getTab(url, ctx.state.redis);
   }
 }
