@@ -67,4 +67,58 @@ export class TabService {
       { accountId },
     );
   }
+
+  async addRecent(
+    accountId: string,
+    tab: { url: string } | { id: string },
+    tx: Db,
+  ) {
+    // Couldn't figure out how to do this with a ON CONFLICT -clause
+    await tx.none(
+      `
+      delete from view_history where
+        account_id = $(accountId) and
+        (
+          (tab_url is not null and tab_url = $(url)) or
+          (tab_id is not null and tab_id = $(id))
+          )
+    `,
+      {
+        accountId,
+        url: null,
+        id: null,
+        ...tab,
+      },
+    );
+
+    return tx.none(
+      `
+      insert into view_history (account_id, tab_url, tab_id) values
+      ($(accountId), $(url), $(id))
+    `,
+      {
+        accountId,
+        url: null,
+        id: null,
+        ...tab,
+      },
+    );
+  }
+
+  @CamelCase
+  async getRecentTabs(accountId: string, tx: Db) {
+    return tx.any<{
+      tabId: string | null;
+      tabUrl: string | null;
+      accountId: string;
+      timeStamp: Date;
+    }>(
+      `
+      select * from view_history where account_id = $(accountId) limit 10
+    `,
+      {
+        accountId,
+      },
+    );
+  }
 }

@@ -4,6 +4,7 @@ import {
   Args,
   ArgsType,
   Authorized,
+  createUnionType,
   Ctx,
   Field,
   Mutation,
@@ -59,6 +60,17 @@ export class MBTrack {
   @Field()
   name: string;
 }
+
+@ObjectType()
+class ExternalTabReference {
+  @Field()
+  url: string;
+}
+
+const RecentTab = createUnionType({
+  name: 'RecentTab',
+  types: () => [ExternalTabReference, Tab],
+});
 
 @Resolver(Tab)
 export class TabResolver {
@@ -141,8 +153,55 @@ export class TabResolver {
     return uniqBy(formatted, (entry) => entry.id);
   }
 
+  @Authorized()
   @Query(() => ExternalTab, { nullable: true })
   async getUgTab(@Arg('url') url: string, @Ctx() ctx: Context) {
     return this.ug.getTab(url, ctx.state.redis);
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean)
+  async addRecentTab(@Arg('tabId') tabId: string, @Ctx() ctx: Context) {
+    await this.tabService.addRecent(
+      ctx.state.user,
+      { id: tabId },
+      ctx.state.tx,
+    );
+    return true;
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean)
+  async addRecentExternalTab(
+    @Arg('tabUrl') tabUrl: string,
+    @Ctx() ctx: Context,
+  ) {
+    await this.tabService.addRecent(
+      ctx.state.user,
+      { url: tabUrl },
+      ctx.state.tx,
+    );
+    return true;
+  }
+
+  @Authorized()
+  @Query(() => [RecentTab])
+  async recentTabs(@Ctx() ctx: Context): Promise<typeof RecentTab[]> {
+    const tabs = await this.tabService.getRecentTabs(
+      ctx.state.user,
+      ctx.state.tx,
+    );
+
+    return Promise.all(
+      tabs.map(async (tab) => {
+        if (tab.tabId) {
+          const obj = await this.tabService.get(tab.tabId, ctx.state.tx);
+          return Object.assign(new Tab(), obj);
+        }
+        return Object.assign(new ExternalTabReference(), {
+          url: tab.tabUrl || '',
+        });
+      }),
+    );
   }
 }

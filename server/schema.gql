@@ -20,6 +20,10 @@ type ExternalTab {
   trackTitle: String!
 }
 
+type ExternalTabReference {
+  url: String!
+}
+
 type MBArtist {
   id: String!
   name: String!
@@ -32,6 +36,8 @@ type MBTrack {
 }
 
 type Mutation {
+  addRecentExternalTab(tabUrl: String!): Boolean!
+  addRecentTab(tabId: String!): Boolean!
   createTab(artist: String!, chords: String!, mbArtistId: String, mbId: String, title: String!): Tab!
   editTab(chords: String!, id: String!): Tab!
 }
@@ -42,9 +48,12 @@ type Query {
   getTabs: [Tab!]!
   getUgTab(url: String!): ExternalTab
   login(name: String!, password: String!): String!
+  recentTabs: [RecentTab!]!
   searchArtists(query: String!): [MBArtist!]!
   searchTracks(query: String!): [MBTrack!]!
 }
+
+union RecentTab = ExternalTabReference | Tab
 
 type Tab {
   chords: String!
