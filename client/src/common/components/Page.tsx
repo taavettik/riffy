@@ -9,7 +9,7 @@ import { Spacing } from './Spacing';
 import { Subheading } from './Typography';
 
 export const Page: React.FC<{
-  title: string;
+  title: JSX.Element | string;
   showBackButton?: boolean;
   backButtonLink?: string;
   actions?: JSX.Element;

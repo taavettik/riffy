@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { Container } from '../../common/components/Container';
 import { Spacing } from '../../common/components/Spacing';
 import { Subheading } from '../../common/components/Typography';
+import { UgIcon } from '../../common/components/UgIcon';
 import { GetRecentTabs } from '../../generated/GetRecentTabs';
 
 export const RecentTabs = () => {
@@ -39,7 +40,7 @@ export const RecentTabs = () => {
         }
         return (
           <TabLink key={i} to={`/ug/${encodeURIComponent(tab.url)}`}>
-            {label}
+            {label} <Spacing dir="x" amount={8} /> <UgIcon />
           </TabLink>
         );
       })}

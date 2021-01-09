@@ -3,7 +3,10 @@ import { h } from 'preact';
 import { useEffect } from 'preact/hooks';
 import { useParams } from 'react-router';
 import { Chords } from '../../common/components/Chords';
+import { Container } from '../../common/components/Container';
 import { Page } from '../../common/components/Page';
+import { Spacing } from '../../common/components/Spacing';
+import { UgIcon } from '../../common/components/UgIcon';
 import { GetUgTab, GetUgTabVariables } from '../../generated/GetUgTab';
 
 export const Ug = () => {
@@ -39,7 +42,17 @@ export const Ug = () => {
   const chords = data.getUgTab?.chords;
 
   return (
-    <Page title={trackName} backButtonLink={'/'} showBackButton>
+    <Page
+      title={
+        <Container alignItems="center">
+          {trackName} <Spacing dir="x" amount={8} /> <UgIcon />
+        </Container>
+      }
+      backButtonLink={'/'}
+      showBackButton
+    >
+      <Spacing dir="y" amount={16} />
+
       <Chords chords={chords || 'No chords found'} />
     </Page>
   );
