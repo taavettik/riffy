@@ -1,9 +1,10 @@
 import { Input } from './Input';
-import { h } from 'preact';
+import { ComponentProps, h } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import styled from 'styled-components';
 import { Body } from './Typography';
 import { Container } from './Container';
+import { LayoutProps } from 'styled-system';
 
 export interface Item {
   id: string;
@@ -17,7 +18,8 @@ export const Search = <I extends Item>({
   onChange,
   onSelect,
   value,
-}: {
+  ...props
+}: LayoutProps & {
   items: I[];
   onChange: (value: string) => void;
   onSelect?: (item: I) => void;
@@ -64,7 +66,7 @@ export const Search = <I extends Item>({
   };
 
   return (
-    <>
+    <Container flexDirection="column">
       <Input
         ref={inputRef}
         value={value}
@@ -74,6 +76,7 @@ export const Search = <I extends Item>({
           }
           setOpen(true);
         }}
+        {...props}
       />
       <Anchor ref={anchorRef}>
         {open && (
@@ -93,7 +96,7 @@ export const Search = <I extends Item>({
           </Popover>
         )}
       </Anchor>
-    </>
+    </Container>
   );
 };
 
@@ -118,6 +121,7 @@ const List = styled.ul`
 `;
 
 const Option = styled.li`
+  word-break: break-all;
   padding-left: 8px;
   cursor: pointer;
   :focus,

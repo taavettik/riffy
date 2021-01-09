@@ -7,10 +7,12 @@ import { Tabs } from './Tabs';
 import { gql } from '@apollo/client';
 import { RouteProps } from 'react-router';
 import { Page } from '../../common/components/Page';
+import { Input } from '../../common/components/Input';
+import { SongSearch } from './SongSearch';
 
 export const Frontpage = () => {
   return (
-    <Page title="My Tabs">
+    <Page title="My Tabs" actions={<SongSearch />}>
       <Tabs />
     </Page>
   );
