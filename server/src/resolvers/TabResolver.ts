@@ -8,6 +8,7 @@ import {
   Ctx,
   Field,
   FieldResolver,
+  InputType,
   Mutation,
   ObjectType,
   Query,
@@ -100,6 +101,18 @@ const RecentTab = createUnionType({
   types: () => [ExternalTab, Tab],
 });
 
+@InputType()
+class TabData {
+  @Field()
+  trackArtist: string;
+
+  @Field()
+  trackTitle: string;
+
+  @Field()
+  chords: string;
+}
+
 @Resolver(Tab)
 export class TabResolver {
   constructor(
@@ -119,6 +132,34 @@ export class TabResolver {
       tab.artistId,
       ctx.state.tx,
     );
+  }
+
+  @Authorized()
+  @Mutation(() => [Tab])
+  async createTabs(
+    @Arg('tabs', () => [TabData]) tabs: TabData[],
+    @Ctx() ctx: Context,
+  ) {
+    const ids = await Promise.all(
+      tabs.map((tab) =>
+        this.tabService.create(
+          ctx.state.user,
+          {
+            title: tab.trackTitle,
+            artist: tab.trackArtist,
+            chords: tab.chords,
+            mbTrackId: undefined,
+            mbArtistId: undefined,
+          },
+          ctx.state.tx,
+        ),
+      ),
+    );
+
+    const result = await Promise.all(
+      ids.map((id) => this.tabService.get(id, ctx.state.tx)),
+    );
+    return result;
   }
 
   @Authorized()

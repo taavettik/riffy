@@ -1,6 +1,7 @@
+import { gql, useMutation } from '@apollo/client';
 import { h } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { useLocation } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import styled from 'styled-components';
 import { Button } from '../../common/components/Button';
 import { Container } from '../../common/components/Container';
@@ -9,21 +10,31 @@ import { Input, TextArea } from '../../common/components/Input';
 import { Page } from '../../common/components/Page';
 import { Spacing } from '../../common/components/Spacing';
 import { Body, Label } from '../../common/components/Typography';
-
-interface Tab {
-  chords: string;
-  trackArtist: string;
-  trackTitle: string;
-}
+import { CreateTabs, CreateTabsVariables } from '../../generated/CreateTabs';
+import { TabData } from '../../generated/globalTypes';
 
 export const Upload = () => {
-  const { state } = useLocation<{ tabs: Tab[] }>();
+  const { state } = useLocation<{ tabs: TabData[] }>();
 
-  const [tabs, setTabs] = useState<Tab[]>([]);
+  const [tabs, setTabs] = useState<TabData[]>([]);
 
   const [selected, setSelected] = useState(0);
 
   const textAreaRef = useRef<HTMLTextAreaElement>();
+
+  const history = useHistory();
+
+  const [createTabs] = useMutation<CreateTabs, CreateTabsVariables>(
+    CREATE_TABS,
+    {
+      variables: {
+        tabs,
+      },
+      onCompleted: () => {
+        history.goBack();
+      },
+    },
+  );
 
   useEffect(() => {
     if (!state?.tabs) {
@@ -32,10 +43,10 @@ export const Upload = () => {
     setTabs(state.tabs);
   }, [state?.tabs]);
 
-  const onTabChange = (tab: Tab, index: number) =>
+  const onTabChange = (tab: TabData, index: number) =>
     setTabs((tabs) => tabs.map((t, i) => (index === i ? tab : t)));
 
-  const selectedTab = tabs[selected] as Tab | undefined;
+  const selectedTab = tabs[selected] as TabData | undefined;
 
   useEffect(() => {
     if (!selectedTab || !textAreaRef.current) {
@@ -44,7 +55,9 @@ export const Upload = () => {
     textAreaRef.current.value = selectedTab.chords;
   }, [selected]);
 
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    createTabs();
+  };
 
   return (
     <Page title="Upload tabs" showBackButton>
@@ -67,7 +80,7 @@ export const Upload = () => {
           <Spacing dir="y" amount={16} />
 
           <Container justifyContent="center">
-            <Button width={200}>
+            <Button onClick={() => onSubmit()} width={200}>
               <Body>Submit</Body>
             </Button>
           </Container>
@@ -107,9 +120,9 @@ const TabRow = ({
   onChange,
   onFocus,
 }: {
-  tab: Tab;
+  tab: TabData;
   selected: boolean;
-  onChange: (tab: Tab) => void;
+  onChange: (tab: TabData) => void;
   onFocus: () => void;
 }) => {
   return (
@@ -148,4 +161,17 @@ const RowContainer = styled(Container)<{ selected: boolean }>`
   border-width: 4px;
   `}
   padding: 16px;
+`;
+
+const CREATE_TABS = gql`
+  mutation CreateTabs($tabs: [TabData!]!) {
+    createTabs(tabs: $tabs) {
+      id
+      artist {
+        tabs {
+          id
+        }
+      }
+    }
+  }
 `;

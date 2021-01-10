@@ -7,6 +7,12 @@
 // START Enums and Input Objects
 //==============================================================
 
+export interface TabData {
+  chords: string;
+  trackArtist: string;
+  trackTitle: string;
+}
+
 //==============================================================
 // END Enums and Input Objects
 //==============================================================
