@@ -53,7 +53,6 @@ export const Tab = () => {
           />
         </>
       }
-      backButtonLink="/"
       showBackButton
     >
       <Chords chords={data.getTab.chords} />

@@ -1,6 +1,6 @@
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { h } from 'preact';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Container } from '../../common/components/Container';
@@ -20,8 +20,12 @@ export const Tabs = () => {
     GetTabsVariables
   >(GET_TABS);
 
+  const { state, pathname } = useLocation<{
+    selected: { id: string; name: string } | null;
+  }>();
+
   const [selected, setSelected] = useState<null | { id: string; name: string }>(
-    null,
+    state?.selected ?? null,
   );
 
   const history = useHistory();
@@ -83,7 +87,19 @@ export const Tabs = () => {
             <TabLink
               key={artist.id}
               as="button"
-              onClick={() => setSelected({ name: artist.name, id: artist.id })}
+              onClick={() => {
+                const selected = {
+                  id: artist.id,
+                  name: artist.name,
+                };
+                setSelected(selected);
+                history.replace({
+                  pathname,
+                  state: {
+                    selected,
+                  },
+                });
+              }}
             >
               {artist.name}
             </TabLink>

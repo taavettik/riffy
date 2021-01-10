@@ -32,7 +32,7 @@ export const EditTab = () => {
       id,
       chords: chords || '',
     },
-    onCompleted: () => history.push(`/tab/${id}`),
+    onCompleted: () => history.goBack(),
   });
 
   useEffect(() => {
