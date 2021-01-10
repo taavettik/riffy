@@ -1,5 +1,6 @@
 import { Context } from 'koa';
 import {
+  Arg,
   Authorized,
   Ctx,
   Field,
@@ -35,6 +36,12 @@ export class ArtistResolver {
       artist.id,
       ctx.state.tx,
     );
+  }
+
+  @Authorized()
+  @Query(() => Artist, { nullable: true })
+  async getArtist(@Arg('id') id: string, @Ctx() ctx: Context) {
+    return this.artistService.getArtist(ctx.state.user, id, ctx.state.tx);
   }
 
   @Authorized()

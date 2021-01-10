@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { h } from 'preact';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -6,42 +6,77 @@ import styled from 'styled-components';
 import { Container } from '../../common/components/Container';
 import { Spacing } from '../../common/components/Spacing';
 import { Body, Heading, Subheading } from '../../common/components/Typography';
-import { GetTabs } from '../../generated/GetTabs';
-import { useEffect } from 'preact/hooks';
+import { GetTabs, GetTabsVariables } from '../../generated/GetTabs';
+import { useEffect, useState } from 'preact/hooks';
 import { AddIcon } from '../../common/icons';
 import { TabLink } from '../../common/components/TabLink';
-
-const GET_TABS = gql`
-  query GetTabs {
-    getTabs {
-      id
-      trackTitle
-      artist {
-        name
-      }
-    }
-  }
-`;
+import { GetArtists } from '../../generated/GetArtists';
 
 export const Tabs = () => {
-  const { data, refetch } = useQuery<GetTabs>(GET_TABS);
+  const { data, refetch } = useQuery<GetArtists>(GET_ARTISTS);
+  const [getTabs, { data: tabData, loading: tabDataLoading }] = useLazyQuery<
+    GetTabs,
+    GetTabsVariables
+  >(GET_TABS);
+
+  const [selected, setSelected] = useState<null | { id: string; name: string }>(
+    null,
+  );
+
+  useEffect(() => {
+    if (!selected) {
+      return;
+    }
+    getTabs({
+      variables: {
+        artistId: selected.id,
+      },
+    });
+  }, [selected?.id]);
 
   useEffect(() => {
     refetch();
   }, []);
 
+  const showTabs = selected && tabData?.getArtist?.id === selected.id;
+
   return (
     <Container maxWidth={800} width={'100%'} flexDirection="column">
-      <Subheading>My tabs</Subheading>
+      <Subheading>{showTabs ? selected?.name : 'My Artists'}</Subheading>
 
       <Spacing dir="y" amount={16} />
 
-      {data?.getTabs.map((tab) => (
-        <TabLink key={tab.id} to={`/tab/${tab.id}`}>
-          {tab.artist?.name} - {tab.trackTitle}
-        </TabLink>
-      ))}
-      <TabLink to={'/create'}>
+      {showTabs ? (
+        <>
+          <TabLink as="button" onClick={() => setSelected(null)}>
+            ..
+          </TabLink>
+          {tabData?.getArtist?.tabs.map((tab) => (
+            <TabLink key={tab.id} to={`/tab/${tab.id}`}>
+              {tab.trackTitle}
+            </TabLink>
+          ))}
+        </>
+      ) : (
+        data?.getArtists.map((artist) => (
+          <TabLink
+            key={artist.id}
+            as="button"
+            onClick={() => setSelected({ name: artist.name, id: artist.id })}
+          >
+            {artist.name}
+          </TabLink>
+        ))
+      )}
+
+      <TabLink
+        to={{
+          pathname: '/create',
+          state: {
+            trackArtist: selected ? selected.name : undefined,
+          },
+        }}
+      >
         <AddIcon size={32} />
         <Spacing dir="x" amount={16} />
         <Body>Create tab</Body>
@@ -49,6 +84,28 @@ export const Tabs = () => {
     </Container>
   );
 };
+
+const GET_ARTISTS = gql`
+  query GetArtists {
+    getArtists {
+      id
+      name
+    }
+  }
+`;
+
+const GET_TABS = gql`
+  query GetTabs($artistId: String!) {
+    getArtist(id: $artistId) {
+      id
+      name
+      tabs {
+        id
+        trackTitle
+      }
+    }
+  }
+`;
 
 const Row = styled(Container)`
   border-bottom: 1px solid black;

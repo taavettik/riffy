@@ -10,6 +10,14 @@ export const TabLink = styled(Link)`
   border-bottom: 1px solid black;
   vertical-align: middle;
   align-items: center;
+  background: none;
+  border-width: 0 0 1px 0;
+  font-size: 1em;
+  cursor: pointer;
+
+  :focus {
+    outline: none;
+  }
 
   :hover {
     color: ${(p) => p.theme.colors.primary.darkest};

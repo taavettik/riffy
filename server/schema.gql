@@ -46,6 +46,7 @@ type Mutation {
 
 type Query {
   currentAccount: Account!
+  getArtist(id: String!): Artist
   getArtists: [Artist!]!
   getTab(id: String!): Tab!
   getTabs: [Tab!]!
