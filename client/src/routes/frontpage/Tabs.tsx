@@ -2,13 +2,13 @@ import { gql, useQuery } from '@apollo/client';
 import { h } from 'preact';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { MdAddCircleOutline } from 'react-icons/md';
 
 import { Container } from '../../common/components/Container';
 import { Spacing } from '../../common/components/Spacing';
 import { Body, Heading, Subheading } from '../../common/components/Typography';
 import { GetTabs } from '../../generated/GetTabs';
 import { useEffect } from 'preact/hooks';
+import { AddIcon } from '../../common/icons';
 
 const GET_TABS = gql`
   query GetTabs {
@@ -41,7 +41,7 @@ export const Tabs = () => {
       ))}
       <Row>
         <TableLink to="/create">
-          <MdAddCircleOutline size={32} />
+          <AddIcon size={32} />
           <Spacing dir="x" amount={16} />
           <Body>Create tab</Body>
         </TableLink>

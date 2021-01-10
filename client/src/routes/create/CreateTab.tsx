@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { Button } from '../../common/components/Button';
 import { Container } from '../../common/components/Container';
 import { Input, TextArea } from '../../common/components/Input';
@@ -24,9 +24,21 @@ import {
 } from '../../generated/GetTrackSuggestions';
 
 export const CreateTab = () => {
+  const loc = useLocation<{
+    chords?: string;
+    trackArtist?: string;
+    trackTitle?: string;
+  }>();
+
   const [artist, setArtist] = useState<Item>({ id: '', label: '' });
   const [track, setTrack] = useState<Item>({ id: '', label: '' });
   const [chords, setChords] = useState('');
+
+  useEffect(() => {
+    setArtist({ id: '', label: loc.state.trackArtist || '' });
+    setTrack({ id: '', label: loc.state.trackTitle || '' });
+    setChords(loc.state.chords || '');
+  }, [loc.state]);
 
   const debouncedArtist = useDebounce(500, artist.label);
   const debouncedTrack = useDebounce(500, track.label);

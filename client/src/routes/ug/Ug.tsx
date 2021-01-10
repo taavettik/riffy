@@ -1,12 +1,14 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { h } from 'preact';
 import { useEffect } from 'preact/hooks';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { Chords } from '../../common/components/Chords';
 import { Container } from '../../common/components/Container';
+import { IconButton } from '../../common/components/IconButton';
 import { Page } from '../../common/components/Page';
 import { Spacing } from '../../common/components/Spacing';
 import { UgIcon } from '../../common/components/UgIcon';
+import { DownloadIcon } from '../../common/icons';
 import { GetUgTab, GetUgTabVariables } from '../../generated/GetUgTab';
 
 export const Ug = () => {
@@ -30,6 +32,8 @@ export const Ug = () => {
     addRecent();
   }, []);
 
+  const history = useHistory();
+
   if (!data) {
     return <div></div>;
   }
@@ -41,12 +45,23 @@ export const Ug = () => {
 
   const chords = data.getUgTab?.chords;
 
+  const onImport = () => {
+    history.push('/create', {
+      trackTitle: data.getUgTab?.trackTitle,
+      trackArtist: data.getUgTab?.trackArtist,
+      chords,
+    });
+  };
+
   return (
     <Page
       title={
         <Container alignItems="center">
           {trackName} <Spacing dir="x" amount={8} /> <UgIcon />
         </Container>
+      }
+      actions={
+        <IconButton onClick={() => onImport()} size={32} icon={DownloadIcon} />
       }
       backButtonLink={'/'}
       showBackButton
