@@ -1,6 +1,7 @@
 import { ComponentChildren, h } from 'preact';
 import { useState } from 'preact/hooks';
 import styled from 'styled-components';
+import chardet from 'jschardet';
 import { AddIcon } from '../icons';
 
 interface FileData {
@@ -29,10 +30,19 @@ export const DropZone = ({
 
     const fileData = await Promise.all(
       files.map(async (f) => {
-        const content = await f.text();
+        // Detect file encoding and read contents properly
+        const buffer = await f.arrayBuffer();
+        const arr = new Uint8Array(buffer);
+        let string = '';
+        for (let i = 0; i < arr.length; i++) {
+          string += String.fromCharCode(arr[i]);
+        }
+        const charset = chardet.detect(string);
+        const decoder = new TextDecoder(charset.encoding);
+
         return {
           name: f.name,
-          content,
+          content: decoder.decode(buffer),
           file: f,
         };
       }),
