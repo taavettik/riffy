@@ -15,7 +15,8 @@ export class ArtistService {
       `select * from tab where
         ${ARTIST_ID_FRAGMENT} = $(artistId) and
         account_id = $(accountId) and
-        deleted_at is null`,
+        deleted_at is null
+      order by track_title`,
       {
         artistId,
         accountId,
