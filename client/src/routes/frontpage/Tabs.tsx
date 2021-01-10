@@ -9,6 +9,7 @@ import { Body, Heading, Subheading } from '../../common/components/Typography';
 import { GetTabs } from '../../generated/GetTabs';
 import { useEffect } from 'preact/hooks';
 import { AddIcon } from '../../common/icons';
+import { TabLink } from '../../common/components/TabLink';
 
 const GET_TABS = gql`
   query GetTabs {
@@ -34,18 +35,15 @@ export const Tabs = () => {
       <Spacing dir="y" amount={16} />
 
       {data?.getTabs.map((tab) => (
-        <Row key={tab.id}>
-          <TableLink to={`/tab/${tab.id}`}>{tab.trackTitle}</TableLink>
-          <TableLink to={`/tab/${tab.id}`}>{tab.trackArtist}</TableLink>
-        </Row>
+        <TabLink key={tab.id} to={`/tab/${tab.id}`}>
+          {tab.trackArtist} - {tab.trackTitle}
+        </TabLink>
       ))}
-      <Row>
-        <TableLink to="/create">
-          <AddIcon size={32} />
-          <Spacing dir="x" amount={16} />
-          <Body>Create tab</Body>
-        </TableLink>
-      </Row>
+      <TabLink to={'/create'}>
+        <AddIcon size={32} />
+        <Spacing dir="x" amount={16} />
+        <Body>Create tab</Body>
+      </TabLink>
     </Container>
   );
 };

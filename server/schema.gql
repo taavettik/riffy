@@ -8,6 +8,12 @@ type Account {
   name: String!
 }
 
+type Artist {
+  id: String!
+  name: String!
+  tabs: [Tab!]!
+}
+
 type BaseTab {
   chords: String!
   trackArtist: String
@@ -41,6 +47,7 @@ type Mutation {
 
 type Query {
   currentAccount: Account!
+  getArtists: [Artist!]!
   getTab(id: String!): Tab!
   getTabs: [Tab!]!
   getUgTab(url: String!): ExternalTab
