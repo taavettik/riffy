@@ -64,7 +64,16 @@ export const CreateTab = () => {
   const history = useHistory();
 
   const [create] = useMutation<ICreateTab, CreateTabVariables>(CREATE_TAB, {
-    onCompleted: () => history.goBack(),
+    onCompleted: (data) => {
+      history.push('/', {
+        selected: data.createTab.artist
+          ? {
+              id: data.createTab.artist.id,
+              name: data.createTab.artist.name,
+            }
+          : undefined,
+      });
+    },
     refetchQueries: ['GetTabs'],
   });
 
@@ -188,6 +197,10 @@ const CREATE_TAB = gql`
       mbArtistId: $artistId
     ) {
       id
+      artist {
+        id
+        name
+      }
     }
   }
 `;

@@ -7,9 +7,16 @@
 // GraphQL mutation operation: CreateTab
 // ====================================================
 
+export interface CreateTab_createTab_artist {
+  __typename: "Artist";
+  id: string;
+  name: string;
+}
+
 export interface CreateTab_createTab {
   __typename: "Tab";
   id: string;
+  artist: CreateTab_createTab_artist | null;
 }
 
 export interface CreateTab {

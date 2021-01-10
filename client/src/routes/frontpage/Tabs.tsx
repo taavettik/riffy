@@ -53,8 +53,11 @@ export const Tabs = () => {
         // TODO: support for bulk uploading
         const [file] = files;
 
-        const fileNameParts = file.name.split('.').slice(0, -1);
-        const filename = fileNameParts.join('.');
+        const nameParts = file.name.split('.');
+        const filename =
+          nameParts.length === 1
+            ? nameParts[0]
+            : nameParts.slice(0, -1).join('.');
         const parts = filename.split(/\s*-\s*/g);
         const artist = parts.length === 1 ? selected?.name : parts[0];
         const title = parts.slice(-1)[0];
