@@ -16,7 +16,9 @@ const GET_TABS = gql`
     getTabs {
       id
       trackTitle
-      trackArtist
+      artist {
+        name
+      }
     }
   }
 `;
@@ -36,7 +38,7 @@ export const Tabs = () => {
 
       {data?.getTabs.map((tab) => (
         <TabLink key={tab.id} to={`/tab/${tab.id}`}>
-          {tab.trackArtist} - {tab.trackTitle}
+          {tab.artist?.name} - {tab.trackTitle}
         </TabLink>
       ))}
       <TabLink to={'/create'}>

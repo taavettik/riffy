@@ -10,14 +10,19 @@
 export interface GetRecentTabs_recentTabs_ExternalTab {
   __typename: "ExternalTab";
   trackTitle: string;
-  trackArtist: string | null;
+  trackArtist: string;
   url: string;
+}
+
+export interface GetRecentTabs_recentTabs_Tab_artist {
+  __typename: "Artist";
+  name: string;
 }
 
 export interface GetRecentTabs_recentTabs_Tab {
   __typename: "Tab";
   trackTitle: string;
-  trackArtist: string | null;
+  artist: GetRecentTabs_recentTabs_Tab_artist | null;
   id: string;
 }
 

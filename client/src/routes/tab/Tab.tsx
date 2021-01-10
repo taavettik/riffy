@@ -43,7 +43,7 @@ export const Tab = () => {
 
   return (
     <Page
-      title={`${data.getTab.trackArtist} - ${data.getTab.trackTitle}`}
+      title={`${data.getTab.artist?.name} - ${data.getTab.trackTitle}`}
       actions={
         <>
           <IconButton

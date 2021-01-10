@@ -28,7 +28,10 @@ export const RecentTabs = () => {
       <Spacing dir="y" amount={16} />
 
       {data.recentTabs.map((tab, i) => {
-        const label = [tab.trackArtist, tab.trackTitle]
+        const label = [
+          'trackArtist' in tab ? tab.trackArtist : tab.artist?.name,
+          tab.trackTitle,
+        ]
           .filter(Boolean)
           .join(' - ');
 
@@ -60,7 +63,9 @@ const RECENT_TABS = gql`
       }
       ... on Tab {
         trackTitle
-        trackArtist
+        artist {
+          name
+        }
         id
       }
     }

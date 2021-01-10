@@ -10,7 +10,7 @@
 export interface GetUgTab_getUgTab {
   __typename: "ExternalTab";
   trackTitle: string;
-  trackArtist: string | null;
+  trackArtist: string;
   chords: string;
 }
 

@@ -7,12 +7,17 @@
 // GraphQL query operation: GetTab
 // ====================================================
 
+export interface GetTab_getTab_artist {
+  __typename: "Artist";
+  name: string;
+}
+
 export interface GetTab_getTab {
   __typename: "Tab";
   id: string;
   chords: string;
   trackTitle: string;
-  trackArtist: string | null;
+  artist: GetTab_getTab_artist | null;
 }
 
 export interface GetTab {

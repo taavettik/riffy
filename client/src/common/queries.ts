@@ -6,7 +6,9 @@ export const GET_TAB = gql`
       id
       chords
       trackTitle
-      trackArtist
+      artist {
+        name
+      }
     }
   }
 `;

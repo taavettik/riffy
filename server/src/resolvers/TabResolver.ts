@@ -51,6 +51,9 @@ export class Tab extends BaseTab {
 export class ExternalTab extends BaseTab {
   @Field()
   url: string;
+
+  @Field()
+  trackArtist: string;
 }
 
 @ObjectType()

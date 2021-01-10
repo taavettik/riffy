@@ -55,7 +55,7 @@ export const EditTab = () => {
 
   return (
     <Page
-      title={`Editing ${tab.trackArtist} - ${tab.trackTitle}`}
+      title={`Editing ${tab.artist?.name} - ${tab.trackTitle}`}
       showBackButton
     >
       <Container width="100%" height="100%" flexDirection="column">
