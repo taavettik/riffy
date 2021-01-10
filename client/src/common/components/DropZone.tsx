@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import chardet from 'jschardet';
 import { AddIcon } from '../icons';
 
-interface FileData {
+export interface FileData {
   name: string;
   content: string;
   file: File;

@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { layout, LayoutProps } from 'styled-system';
+import { flexbox, FlexboxProps, layout, LayoutProps } from 'styled-system';
 
-export const Input = styled.input<LayoutProps>`
-  ${layout};
+export const Input = styled.input<LayoutProps & FlexboxProps>`
+  ${layout}
+  ${flexbox}
   border: 1px solid ${(props) => props.theme.colors.gray.main};
   padding: 8px;
   border-radius: 4px;

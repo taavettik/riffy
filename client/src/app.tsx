@@ -22,6 +22,7 @@ import { CreateTab } from './routes/create/CreateTab';
 import { Tab } from './routes/tab/Tab';
 import { EditTab } from './routes/edit/EditTab';
 import { Ug } from './routes/ug/Ug';
+import { Upload } from './routes/upload/Upload';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if ((module as any).hot) {
@@ -36,7 +37,7 @@ const client = new ApolloClient({
 const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
-    font-size: ${(props) => props.theme.typography.body.fontSize}px;
+    font-size: ${(props) => props.theme.typography.body.fontSize as any}px;
     background-color: ${(props) => props.theme.colors.gray.lighter};
     font-family: 'Noto Sans', sans-serif;
   }
@@ -85,6 +86,9 @@ const App = () => {
                 </ProtectedRoute>
                 <ProtectedRoute path="/create">
                   <CreateTab />
+                </ProtectedRoute>
+                <ProtectedRoute path="/upload">
+                  <Upload />
                 </ProtectedRoute>
                 <ProtectedRoute path="/ug/:url">
                   <Ug />

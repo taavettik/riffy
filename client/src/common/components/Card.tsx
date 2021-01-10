@@ -19,7 +19,7 @@ const CardComponent: React.FC<
         )}
       </Container>
       <Spacing dir="y" amount={32} />
-      <Container height="100%">{children}</Container>
+      <Container height={'calc(100% - 64px)'}>{children}</Container>
     </Container>
   );
 };
