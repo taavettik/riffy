@@ -1,7 +1,7 @@
 import { TypographyProps } from 'styled-system';
 import { CSSObject } from 'styled-components';
 
-const typography: Record<string, React.CSSProperties> = {
+const typography: Record<string, TypographyProps> = {
   heading: {
     fontSize: 40,
   },

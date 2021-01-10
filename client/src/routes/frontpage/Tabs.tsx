@@ -12,13 +12,13 @@ import { AddIcon } from '../../common/icons';
 import { TabLink } from '../../common/components/TabLink';
 import { GetArtists } from '../../generated/GetArtists';
 import { DropZone } from '../../common/components/DropZone';
+import { Modal } from '../../common/components/Modal';
 
 export const Tabs = () => {
   const { data, refetch } = useQuery<GetArtists>(GET_ARTISTS);
-  const [getTabs, { data: tabData, loading: tabDataLoading }] = useLazyQuery<
-    GetTabs,
-    GetTabsVariables
-  >(GET_TABS);
+  const [getTabs, { data: tabData }] = useLazyQuery<GetTabs, GetTabsVariables>(
+    GET_TABS,
+  );
 
   const { state, pathname } = useLocation<{
     selected: { id: string; name: string } | null;

@@ -200,6 +200,10 @@ const CREATE_TAB = gql`
       artist {
         id
         name
+        tabs {
+          id
+          trackTitle
+        }
       }
     }
   }

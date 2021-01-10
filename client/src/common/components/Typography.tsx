@@ -11,7 +11,7 @@ const Typography = styled.span<TypographyProps>`
 const createTypographyComponent = (name: keyof typeof theme['typography']) => {
   const style = theme.typography[name];
   const component: React.FC<TypographyProps> = ({ children, ...props }) => (
-    <Typography style={style} {...props}>
+    <Typography {...style} {...props}>
       {children}
     </Typography>
   );

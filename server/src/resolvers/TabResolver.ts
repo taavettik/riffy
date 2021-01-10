@@ -237,10 +237,16 @@ export class TabResolver {
   }
 
   @Authorized()
-  @Mutation(() => Boolean)
+  @Mutation(() => Artist)
   async deleteTab(@Arg('id') id: string, @Ctx() ctx: Context) {
+    const tab = await this.tabService.get(id, ctx.state.tx);
+    const artist = await this.artistService.getArtist(
+      ctx.state.user,
+      formatArtistId(tab.trackArtist || ''),
+      ctx.state.tx,
+    );
     await this.tabService.delete(id, ctx.state.user, ctx.state.tx);
-    return true;
+    return artist;
   }
 
   @Authorized()
