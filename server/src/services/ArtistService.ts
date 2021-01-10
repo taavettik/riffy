@@ -4,12 +4,11 @@ import { CamelCase } from '../common/formatters';
 
 const ARTIST_ID_FRAGMENT = `regexp_replace(trim(lower(track_artist)), '\\s+', '-', 'g')`;
 
+export const formatArtistId = (name: string) =>
+  name.trim().toLocaleLowerCase().replace(/\s+/g, '-');
+
 @Service()
 export class ArtistService {
-  getId(artistName: string) {
-    return artistName.trim().toLocaleLowerCase().replace(/\s+/g, '-');
-  }
-
   @CamelCase
   getTabsByArtist(accountId: string, artistId: string, tx: Db) {
     return tx.any(
@@ -20,6 +19,20 @@ export class ArtistService {
         artistId,
         accountId,
       },
+    );
+  }
+
+  @CamelCase
+  getArtist(accountId: string, artistId: string, tx: Db) {
+    return tx.oneOrNone(
+      `
+      select ${ARTIST_ID_FRAGMENT} as id, track_artist as name
+      from tab where
+        account_id = $(accountId) and
+        ${ARTIST_ID_FRAGMENT} = $(artistId)
+      limit 1
+    `,
+      { accountId, artistId },
     );
   }
 

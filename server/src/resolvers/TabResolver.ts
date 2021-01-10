@@ -7,15 +7,19 @@ import {
   createUnionType,
   Ctx,
   Field,
+  FieldResolver,
   Mutation,
   ObjectType,
   Query,
   Resolver,
+  Root,
 } from 'type-graphql';
 import { MBService } from '../services/MBService';
 import { TabService } from '../services/TabService';
 import { uniqBy } from 'lodash';
 import { UGService } from '../services/UGService';
+import { ArtistService, formatArtistId } from '../services/ArtistService';
+import { Artist } from './ArtistResolver';
 
 @ObjectType()
 class BaseTab {
@@ -25,7 +29,6 @@ class BaseTab {
   @Field()
   trackTitle: string;
 
-  @Field(() => String, { nullable: true })
   trackArtist: string | null;
 }
 
@@ -34,7 +37,14 @@ export class Tab extends BaseTab {
   @Field(() => String)
   id: string;
 
+  @Field(() => Artist, { nullable: true })
+  artist: Artist;
+
   accountId: string;
+
+  get artistId() {
+    return this.trackArtist ? formatArtistId(this.trackArtist) : null;
+  }
 }
 
 @ObjectType()
@@ -91,9 +101,22 @@ const RecentTab = createUnionType({
 export class TabResolver {
   constructor(
     private readonly tabService: TabService,
+    private readonly artistService: ArtistService,
     private readonly mb: MBService,
     private readonly ug: UGService,
   ) {}
+
+  @FieldResolver(() => Artist)
+  async artist(@Root() tab: Tab, @Ctx() ctx: Context) {
+    if (!tab.artistId) {
+      return null;
+    }
+    return this.artistService.getArtist(
+      ctx.state.user,
+      tab.artistId,
+      ctx.state.tx,
+    );
+  }
 
   @Authorized()
   @Mutation(() => Tab)
