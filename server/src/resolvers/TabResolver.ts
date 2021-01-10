@@ -237,6 +237,13 @@ export class TabResolver {
   }
 
   @Authorized()
+  @Mutation(() => Boolean)
+  async deleteTab(@Arg('id') id: string, @Ctx() ctx: Context) {
+    await this.tabService.delete(id, ctx.state.user, ctx.state.tx);
+    return true;
+  }
+
+  @Authorized()
   @Query(() => [RecentTab])
   async recentTabs(@Ctx() ctx: Context): Promise<typeof RecentTab[]> {
     const tabs = await this.tabService.getRecentTabs(

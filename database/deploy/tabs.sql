@@ -10,6 +10,7 @@ CREATE TABLE tab (
   mb_track_id   text,
   mb_artist_id  text,
   chords        text NOT NULL,
+  deleted_at    TIMESTAMP,
   CONSTRAINT fk_account FOREIGN KEY(account_id) REFERENCES account(id)
 );
 

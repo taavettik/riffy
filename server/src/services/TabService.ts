@@ -7,7 +7,10 @@ import { Tab } from '../resolvers/TabResolver';
 export class TabService {
   @CamelCase
   get(id: string, tx: Db) {
-    return tx.one<Tab>(`select * from tab where id=$(id)`, { id });
+    return tx.one<Tab>(
+      `select * from tab where id=$(id) and deleted_at is null`,
+      { id },
+    );
   }
 
   async create(
@@ -59,10 +62,28 @@ export class TabService {
   }
 
   @CamelCase
+  async delete(id: string, accountId: string, tx: Db) {
+    await tx.none(
+      `delete from view_history where tab_id = $(id) and account_id = $(accountId)`,
+      { accountId, id },
+    );
+    return tx.one(
+      `update tab set
+        deleted_at = now()
+      where
+        id = $(id) and
+        account_id = $(accountId) and
+        deleted_at is null
+      returning id`,
+      { id, accountId },
+    );
+  }
+
+  @CamelCase
   async getByAccount(accountId: string, tx: Db) {
     return tx.manyOrNone(
       `
-      select * from tab where account_id=$(accountId);
+      select * from tab where account_id=$(accountId) and deleted_at is null;
     `,
       { accountId },
     );

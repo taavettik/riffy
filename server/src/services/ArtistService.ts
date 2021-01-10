@@ -14,7 +14,8 @@ export class ArtistService {
     return tx.any(
       `select * from tab where
         ${ARTIST_ID_FRAGMENT} = $(artistId) and
-        account_id = $(accountId)`,
+        account_id = $(accountId) and
+        deleted_at is null`,
       {
         artistId,
         accountId,
@@ -29,7 +30,8 @@ export class ArtistService {
       select ${ARTIST_ID_FRAGMENT} as id, track_artist as name
       from tab where
         account_id = $(accountId) and
-        ${ARTIST_ID_FRAGMENT} = $(artistId)
+        ${ARTIST_ID_FRAGMENT} = $(artistId) and
+        deleted_at is null
       limit 1
     `,
       { accountId, artistId },
@@ -45,7 +47,7 @@ export class ArtistService {
       `
       select
         distinct on (${ARTIST_ID_FRAGMENT}) ${ARTIST_ID_FRAGMENT} as artist_id, track_artist as artist_name from tab
-        where account_id=$(accountId); 
+        where account_id=$(accountId) and deleted_at is null 
     `,
       { accountId },
     );

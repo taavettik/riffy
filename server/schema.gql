@@ -41,6 +41,7 @@ type Mutation {
   addRecentExternalTab(url: String!): Boolean!
   addRecentTab(id: String!): Boolean!
   createTab(artist: String!, chords: String!, mbArtistId: String, mbId: String, title: String!): Tab!
+  deleteTab(id: String!): Boolean!
   editTab(chords: String!, id: String!): Tab!
 }
 
