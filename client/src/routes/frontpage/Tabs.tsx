@@ -1,6 +1,6 @@
 import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import { h } from 'preact';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Container } from '../../common/components/Container';
@@ -11,6 +11,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { AddIcon } from '../../common/icons';
 import { TabLink } from '../../common/components/TabLink';
 import { GetArtists } from '../../generated/GetArtists';
+import { DropZone } from '../../common/components/DropZone';
 
 export const Tabs = () => {
   const { data, refetch } = useQuery<GetArtists>(GET_ARTISTS);
@@ -22,6 +23,8 @@ export const Tabs = () => {
   const [selected, setSelected] = useState<null | { id: string; name: string }>(
     null,
   );
+
+  const history = useHistory();
 
   useEffect(() => {
     if (!selected) {
@@ -41,47 +44,66 @@ export const Tabs = () => {
   const showTabs = selected && tabData?.getArtist?.id === selected.id;
 
   return (
-    <Container maxWidth={800} width={'100%'} flexDirection="column">
-      <Subheading>{showTabs ? selected?.name : 'My Artists'}</Subheading>
+    <DropZone
+      onDrop={(files) => {
+        // TODO: support for bulk uploading
+        const [file] = files;
 
-      <Spacing dir="y" amount={16} />
+        const fileNameParts = file.name.split('.').slice(0, -1);
+        const filename = fileNameParts.join('.');
+        const parts = filename.split(/\s*-\s*/g);
+        const artist = parts.length === 1 ? selected?.name : parts[0];
+        const title = parts.slice(-1)[0];
 
-      {showTabs ? (
-        <>
-          <TabLink as="button" onClick={() => setSelected(null)}>
-            ..
-          </TabLink>
-          {tabData?.getArtist?.tabs.map((tab) => (
-            <TabLink key={tab.id} to={`/tab/${tab.id}`}>
-              {tab.trackTitle}
+        history.push('/create', {
+          chords: file.content,
+          trackArtist: artist,
+          trackTitle: title,
+        });
+      }}
+    >
+      <Container maxWidth={800} width={'100%'} flexDirection="column">
+        <Subheading>{showTabs ? selected?.name : 'My Artists'}</Subheading>
+
+        <Spacing dir="y" amount={16} />
+
+        {showTabs ? (
+          <>
+            <TabLink as="button" onClick={() => setSelected(null)}>
+              ..
             </TabLink>
-          ))}
-        </>
-      ) : (
-        data?.getArtists.map((artist) => (
-          <TabLink
-            key={artist.id}
-            as="button"
-            onClick={() => setSelected({ name: artist.name, id: artist.id })}
-          >
-            {artist.name}
-          </TabLink>
-        ))
-      )}
+            {tabData?.getArtist?.tabs.map((tab) => (
+              <TabLink key={tab.id} to={`/tab/${tab.id}`}>
+                {tab.trackTitle}
+              </TabLink>
+            ))}
+          </>
+        ) : (
+          data?.getArtists.map((artist) => (
+            <TabLink
+              key={artist.id}
+              as="button"
+              onClick={() => setSelected({ name: artist.name, id: artist.id })}
+            >
+              {artist.name}
+            </TabLink>
+          ))
+        )}
 
-      <TabLink
-        to={{
-          pathname: '/create',
-          state: {
-            trackArtist: selected ? selected.name : undefined,
-          },
-        }}
-      >
-        <AddIcon size={32} />
-        <Spacing dir="x" amount={16} />
-        <Body>Create tab</Body>
-      </TabLink>
-    </Container>
+        <TabLink
+          to={{
+            pathname: '/create',
+            state: {
+              trackArtist: selected ? selected.name : undefined,
+            },
+          }}
+        >
+          <AddIcon size={32} />
+          <Spacing dir="x" amount={16} />
+          <Body>Create tab</Body>
+        </TabLink>
+      </Container>
+    </DropZone>
   );
 };
 
