@@ -76,7 +76,18 @@ export const Tabs = () => {
 
         {showTabs ? (
           <>
-            <TabLink as="button" onClick={() => setSelected(null)}>
+            <TabLink
+              as="button"
+              onClick={() => {
+                setSelected(null);
+                history.replace({
+                  pathname,
+                  state: {
+                    selected: null,
+                  },
+                });
+              }}
+            >
               ..
             </TabLink>
             {tabData?.getArtist?.tabs.map((tab) => (
