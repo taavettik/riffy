@@ -75,69 +75,76 @@ export const Tabs = () => {
         });
       }}
     >
-      <Container maxWidth={800} width={'100%'} flexDirection="column">
+      <Container
+        maxWidth={800}
+        width={'100%'}
+        height="100%"
+        flexDirection="column"
+      >
         <Subheading>{showTabs ? selected?.name : 'My Artists'}</Subheading>
 
         <Spacing dir="y" amount={16} />
 
-        {showTabs ? (
-          <>
-            <TabLink
-              as="button"
-              onClick={() => {
-                setSelected(null);
-                history.replace({
-                  pathname,
-                  state: {
-                    selected: null,
-                  },
-                });
-              }}
-            >
-              ..
-            </TabLink>
-            {tabData?.getArtist?.tabs.map((tab) => (
-              <TabLink key={tab.id} to={`/tab/${tab.id}`}>
-                {tab.trackTitle}
+        <Container overflowY="auto" flexDirection="column">
+          {showTabs ? (
+            <>
+              <TabLink
+                as="button"
+                onClick={() => {
+                  setSelected(null);
+                  history.replace({
+                    pathname,
+                    state: {
+                      selected: null,
+                    },
+                  });
+                }}
+              >
+                ..
               </TabLink>
-            ))}
-          </>
-        ) : (
-          data?.getArtists.map((artist) => (
-            <TabLink
-              key={artist.id}
-              as="button"
-              onClick={() => {
-                const selected = {
-                  id: artist.id,
-                  name: artist.name,
-                };
-                setSelected(selected);
-                history.replace({
-                  pathname,
-                  state: {
-                    selected,
-                  },
-                });
-              }}
-            >
-              {artist.name}
-            </TabLink>
-          ))
-        )}
+              {tabData?.getArtist?.tabs.map((tab) => (
+                <TabLink key={tab.id} to={`/tab/${tab.id}`}>
+                  {tab.trackTitle}
+                </TabLink>
+              ))}
+            </>
+          ) : (
+            data?.getArtists.map((artist) => (
+              <TabLink
+                key={artist.id}
+                as="button"
+                onClick={() => {
+                  const selected = {
+                    id: artist.id,
+                    name: artist.name,
+                  };
+                  setSelected(selected);
+                  history.replace({
+                    pathname,
+                    state: {
+                      selected,
+                    },
+                  });
+                }}
+              >
+                {artist.name}
+              </TabLink>
+            ))
+          )}
 
-        <TabLink
-          to={{
-            pathname: '/create',
-            state: {
-              trackArtist: selected ? selected.name : undefined,
-            },
-          }}
-        >
-          <AddIcon size={32} />
-          <Spacing dir="x" amount={16} />
-          <Body>Create tab</Body>
-        </TabLink>
+          <TabLink
+            to={{
+              pathname: '/create',
+              state: {
+                trackArtist: selected ? selected.name : undefined,
+              },
+            }}
+          >
+            <AddIcon size={32} />
+            <Spacing dir="x" amount={16} />
+            <Body>Create tab</Body>
+          </TabLink>
+        </Container>
       </Container>
     </DropZone>
   );

@@ -4,6 +4,7 @@ import { Container } from './Container';
 
 export const GridArea = styled.div<{ area: string }>`
   grid-area: ${(props) => props.area};
+  overflow: hidden;
 `;
 
 export const Grid = styled(Container)<GridProps & { gridAreas: string[] }>`

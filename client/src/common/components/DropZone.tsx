@@ -68,6 +68,7 @@ export const DropZone = ({
 
 const DropZoneContainer = styled.div`
   position: relative;
+  height: 100%;
   z-index: 2;
 `;
 
