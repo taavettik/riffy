@@ -1,17 +1,21 @@
 import styled from 'styled-components';
-import { TypographyProps, typography } from 'styled-system';
+import { TypographyProps, typography, color, ColorProps } from 'styled-system';
 import { theme } from '../theme';
 import { h } from 'preact';
 
-const Typography = styled.span<TypographyProps>`
+const Typography = styled.span<TypographyProps & ColorProps>`
   width: 100%;
   ${typography}
+  ${color}
 `;
 
 const createTypographyComponent = (name: keyof typeof theme['typography']) => {
   const style = theme.typography[name];
-  const component: React.FC<TypographyProps> = ({ children, ...props }) => (
-    <Typography {...style} {...props}>
+  const component: React.FC<TypographyProps & ColorProps> = ({
+    children,
+    ...props
+  }) => (
+    <Typography {...(style as any)} {...props}>
       {children}
     </Typography>
   );

@@ -23,7 +23,37 @@ export class TabService {
       mbArtistId?: string;
     },
     tx: Db,
-  ) {
+  ): Promise<string> {
+    const existing = await tx.oneOrNone(
+      `
+      select
+        id, track_title, track_artist
+      from tab where
+        track_title = $(title) and
+        track_artist = $(artist) and
+        account_id = $(accountId)`,
+      {
+        title: data.title,
+        artist: data.artist,
+        accountId,
+      },
+    );
+
+    if (existing) {
+      await tx.none(
+        `
+      update tab set
+        chords = $(chords)
+      where id = $(id)
+      `,
+        {
+          id: existing.id,
+          chords: data.chords,
+        },
+      );
+      return existing.id;
+    }
+
     const { id } = await tx.one(
       `
       insert into tab (track_title, chords, account_id, track_artist, mb_track_id, mb_artist_id)
@@ -35,6 +65,24 @@ export class TabService {
       },
     );
     return id as string;
+  }
+
+  async getConflicts(accountId: string, artist: string, title: string, tx: Db) {
+    const tabs = await tx.any(
+      `
+      select id from tab where
+        track_artist = $(artist) and
+        track_title = $(title) and
+        account_id = $(accountId)
+    `,
+      {
+        title,
+        artist,
+        accountId,
+      },
+    );
+
+    return Promise.all(tabs.map((tab) => this.get(tab.id, tx)));
   }
 
   @CamelCase

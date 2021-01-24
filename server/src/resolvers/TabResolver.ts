@@ -236,6 +236,22 @@ export class TabResolver {
   }
 
   @Authorized()
+  @Query(() => [Tab])
+  async getConflictingTabs(
+    @Arg('artist') artist: string,
+    @Arg('title') title: string,
+    @Ctx() ctx: Context,
+  ) {
+    const conflictingTabs = await this.tabService.getConflicts(
+      ctx.state.user,
+      artist,
+      title,
+      ctx.state.tx,
+    );
+    return conflictingTabs;
+  }
+
+  @Authorized()
   @Query(() => ExternalTab, { nullable: true })
   async getUgTab(@Arg('url') url: string, @Ctx() ctx: Context) {
     const tab = await this.ug.getTab(url, ctx.state.redis);

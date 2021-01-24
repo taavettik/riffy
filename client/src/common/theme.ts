@@ -32,6 +32,9 @@ export const theme = {
       lighter: '#a8d6d1',
       lightest: '#c7e4e1',
     },
+    error: {
+      main: '#e63946',
+    },
   },
   borderRadius: '4px',
   typography,

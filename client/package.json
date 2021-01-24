@@ -76,5 +76,8 @@
     "react": "preact/compat",
     "react-dom/test-utils": "preact/test-utils",
     "react-dom": "preact/compat"
-  }
+  },
+  "browserslist": [
+    "last 1 Chrome version"
+  ]
 }

@@ -24,6 +24,7 @@ export interface CreateTab_createTab {
   __typename: "Tab";
   id: string;
   artist: CreateTab_createTab_artist | null;
+  chords: string;
 }
 
 export interface CreateTab {

@@ -10,6 +10,7 @@ import { Item, Search } from '../../common/components/Search';
 import { Spacing } from '../../common/components/Spacing';
 import { Body, Label } from '../../common/components/Typography';
 import { useDebounce } from '../../common/hooks';
+import { theme } from '../../common/theme';
 import {
   CreateTab as ICreateTab,
   CreateTabVariables,
@@ -18,6 +19,10 @@ import {
   GetArtistSuggestions,
   GetArtistSuggestionsVariables,
 } from '../../generated/GetArtistSuggestions';
+import {
+  GetConflictingTabs,
+  GetConflictingTabsVariables,
+} from '../../generated/GetConflictingTabs';
 import {
   GetTrackSuggestions,
   GetTrackSuggestionsVariables,
@@ -59,6 +64,16 @@ export const CreateTab = () => {
       query: debouncedTrack,
     },
     fetchPolicy: 'no-cache',
+  });
+
+  const { data: conflicts } = useQuery<
+    GetConflictingTabs,
+    GetConflictingTabsVariables
+  >(GET_CONFLICTING_TABS, {
+    variables: {
+      title: track.label,
+      artist: artist.label,
+    },
   });
 
   const history = useHistory();
@@ -133,6 +148,15 @@ export const CreateTab = () => {
               }}
               value={track.label}
             />
+
+            <Spacing dir="y" amount={8} />
+
+            {(conflicts?.getConflictingTabs.length ?? 0) > 0 && (
+              <Body color={theme.colors.error.main}>
+                A tab with this name already exists. The contents will be
+                overwritten.
+              </Body>
+            )}
           </Container>
           <Container width="100%">
             <Button onClick={() => onCreate()} width="100%">
@@ -181,6 +205,14 @@ const GET_TRACK_SUGGETSIONS = gql`
   }
 `;
 
+const GET_CONFLICTING_TABS = gql`
+  query GetConflictingTabs($title: String!, $artist: String!) {
+    getConflictingTabs(title: $title, artist: $artist) {
+      id
+    }
+  }
+`;
+
 const CREATE_TAB = gql`
   mutation CreateTab(
     $title: String!
@@ -205,6 +237,7 @@ const CREATE_TAB = gql`
           trackTitle
         }
       }
+      chords
     }
   }
 `;

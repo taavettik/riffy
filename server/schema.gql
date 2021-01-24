@@ -50,6 +50,7 @@ type Query {
   currentAccount: Account!
   getArtist(id: String!): Artist
   getArtists: [Artist!]!
+  getConflictingTabs(artist: String!, title: String!): [Tab!]!
   getTab(id: String!): Tab!
   getTabs: [Tab!]!
   getUgTab(url: String!): ExternalTab
