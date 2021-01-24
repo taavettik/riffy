@@ -24,9 +24,11 @@ import { EditTab } from './routes/edit/EditTab';
 import { Ug } from './routes/ug/Ug';
 import { Upload } from './routes/upload/Upload';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-if ((module as any).hot) {
-  require('preact/debug');
+if (process.env.NODE_ENV === 'development') {
+  console.log('Hot reload enabled');
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
+  import('preact/debug');
 }
 
 const client = new ApolloClient({
