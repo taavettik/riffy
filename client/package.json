@@ -53,12 +53,12 @@
     "@types/enzyme": "^3.10.5",
     "@types/jest": "^26.0.8",
     "@types/webpack-env": "^1.15.1",
-    "@typescript-eslint/eslint-plugin": "^2.25.0",
-    "@typescript-eslint/parser": "^2.25.0",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
     "css-loader": "^3.5.3",
     "enzyme": "^3.11.0",
     "enzyme-adapter-preact-pure": "^2.2.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.18.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
@@ -70,7 +70,7 @@
     "preact-cli": "^3.0.0",
     "prettier": "^2.1.1",
     "sirv-cli": "^1.0.0-next.3",
-    "typescript": "4"
+    "typescript": "^4.1.3"
   },
   "alias": {
     "react": "preact/compat",

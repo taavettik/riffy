@@ -26,7 +26,7 @@ import { Upload } from './routes/upload/Upload';
 
 if (process.env.NODE_ENV === 'development') {
   console.log('Hot reload enabled');
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   import('preact/debug');
 }

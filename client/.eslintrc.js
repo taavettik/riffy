@@ -19,17 +19,20 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    project: "./tsconfig.eslint.json",
   },
   rules: {
     "@typescript-eslint/explicit-function-return-type": "off",
     "react/prop-types": "off",
     "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   },
   settings: {
     react: {
       pragma: "h",
-      version: "detect",
+      version: "latest",
     },
   },
   overrides: [
