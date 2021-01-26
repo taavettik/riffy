@@ -3,6 +3,11 @@ import { useState } from 'preact/hooks';
 import styled from 'styled-components';
 import chardet from 'jschardet';
 import { AddIcon } from '../icons';
+import { gql, useApolloClient, useLazyQuery } from '@apollo/client';
+import {
+  DetectEncoding,
+  DetectEncodingVariables,
+} from '../../generated/DetectEncoding';
 
 export interface FileData {
   name: string;
@@ -18,6 +23,8 @@ export const DropZone = ({
   onDrop: (files: FileData[]) => void;
 }) => {
   const [hover, setHover] = useState(false);
+
+  const client = useApolloClient();
 
   const onDropHandler = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -37,8 +44,20 @@ export const DropZone = ({
         for (let i = 0; i < arr.length; i++) {
           string += String.fromCharCode(arr[i]);
         }
-        const charset = chardet.detect(string);
-        const decoder = new TextDecoder(charset.encoding);
+
+        const encoding = await client.query<
+          DetectEncoding,
+          DetectEncodingVariables
+        >({
+          query: DETECT_ENCODING,
+          variables: {
+            data: btoa(string),
+          },
+        });
+
+        const decoder = new TextDecoder(
+          encoding.data?.detectEncoding ?? 'UTF-8',
+        );
 
         return {
           name: f.name,
@@ -65,6 +84,18 @@ export const DropZone = ({
     </DropZoneContainer>
   );
 };
+
+const CONVERT_TEXT_QUERY = gql`
+  query ConvertToEncoding($data: String!, $encoding: String!) {
+    convertToEncoding(data: $data, encoding: $encoding)
+  }
+`;
+
+const DETECT_ENCODING = gql`
+  query DetectEncoding($data: String!) {
+    detectEncoding(data: $data)
+  }
+`;
 
 const DropZoneContainer = styled.div`
   position: relative;

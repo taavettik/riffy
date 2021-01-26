@@ -47,7 +47,9 @@ type Mutation {
 }
 
 type Query {
+  convertToEncoding(data: String!, encoding: String!): String!
   currentAccount: Account!
+  detectEncoding(data: String!): String!
   getArtist(id: String!): Artist
   getArtists: [Artist!]!
   getConflictingTabs(artist: String!, title: String!): [Tab!]!
