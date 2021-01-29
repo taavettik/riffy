@@ -20,7 +20,11 @@ function parseChords(raw: string): ChordRow[] {
   const parsed = rows.map((row) => {
     const words = row.split(/\s+/g).filter((row) => row.trim() !== '');
     const chords = words.map((word) =>
-      word.toLocaleLowerCase().match(/^([abcdefgh]#?m?)$/g),
+      word
+        .toLocaleLowerCase()
+        .match(
+          /^([abcdefgh]#?m?(sus)?)[1-9]?(\/([abcdefgh]#?m?(sus)?)[1-9]?)?$/g,
+        ),
     );
     if (row.trim() === '') {
       return {
@@ -60,13 +64,42 @@ export const Chords = ({ chords }: { chords: string }) => {
 
   return (
     <ChordsContainer>
-      {blocks.map((block, i) =>
-        block[0].type === 'separator' ? (
-          <Separator />
-        ) : (
-          <Row>{block.map((b) => ('text' in b ? b.text : '')).join('\n')}</Row>
-        ),
-      )}
+      {blocks.map((block, i) => {
+        if (block[0].type === 'separator') {
+          return <Separator key={i} />;
+        }
+        return (
+          <Row key={i}>
+            {block.map((row, j) => {
+              if (row.type === 'separator') {
+                return null;
+              }
+              if (row.type === 'chords') {
+                const words = row.text.split(/(\s+)/g);
+                return (
+                  <span key={`${i}-${j}`}>
+                    {words.map((word) =>
+                      word.trim() === '' ? (
+                        <span>{word}</span>
+                      ) : (
+                        <Chord>{word}</Chord>
+                      ),
+                    )}
+                    <br />
+                  </span>
+                );
+              }
+              return (
+                <span key={`${i}-${j}`}>
+                  {row.text}
+                  <br />
+                </span>
+              );
+            })}
+            {/*rows.join('\n')*/}
+          </Row>
+        );
+      })}
     </ChordsContainer>
   );
 };
@@ -85,6 +118,12 @@ const Row = styled.span`
   white-space: pre;
   margin-right: 16px;
   border-right: 1px solid ${(props) => props.theme.colors.gray.main};
+`;
+
+const Chord = styled.span`
+  background-color: ${(props) => props.theme.colors.gray.light};
+  box-shadow: ${(props) =>
+    `1px 0px 0px ${props.theme.colors.gray.light}, -1px 0px 0px ${props.theme.colors.gray.light}`};
 `;
 
 const Separator = styled(Row)`
