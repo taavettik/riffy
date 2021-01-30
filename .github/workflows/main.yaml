@@ -18,15 +18,11 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
-        name: Login to GitHub Container Registry
+        name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-      -
-        name: Debug
-        run: ls && ls ./client
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
         uses: docker/build-push-action@v2
@@ -35,7 +31,7 @@ jobs:
           file: ./client/Dockerfile.build
           platforms: linux/amd64
           push: true
-          tags: ghcr.io/taavettik/riffy-client:latest
+          tags: taavettik/riffy-client:latest
   
   build-server:
     runs-on: ubuntu-latest
@@ -50,15 +46,11 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
-        name: Login to GitHub Container Registry
+        name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-      -
-        name: Debug
-        run: ls && ls ./client
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
         uses: docker/build-push-action@v2
@@ -67,4 +59,4 @@ jobs:
           file: ./server/Dockerfile.build
           platforms: linux/amd64
           push: true
-          tags: ghcr.io/taavettik/riffy-server:latest
+          tags: taavettik/riffy-server:latest
