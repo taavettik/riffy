@@ -1,6 +1,6 @@
 import { Arg, Query, Resolver } from 'type-graphql';
 import iconv from 'iconv-lite';
-import detectCharacterEncoding from 'detect-character-encoding';
+import ced from 'ced';
 
 @Resolver()
 export class UtilsResolver {
@@ -18,6 +18,6 @@ export class UtilsResolver {
   async detectEncoding(@Arg('data') data: string) {
     const buffer = Buffer.from(data, 'base64');
 
-    return detectCharacterEncoding(buffer).encoding;
+    return ced(buffer);
   }
 }
