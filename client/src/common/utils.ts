@@ -13,6 +13,13 @@ const chords = [
   'D#',
 ];
 
+export function cap(index: number): number {
+  if (index < 0) {
+    return cap(chords.length + index);
+  }
+  return index % chords.length;
+}
+
 export function transposeChord(chord: string, steps: number) {
   const matchingChords = chords.filter((c) => {
     const comparison = chord.slice(0, c.length).toLocaleUpperCase();
@@ -31,7 +38,7 @@ export function transposeChord(chord: string, steps: number) {
   // but why though
   const index = chords.indexOf(match);
 
-  const newIndex = (index + steps) % chords.length;
+  const newIndex = cap(index + steps);
   const newChord = chords[newIndex];
 
   return `${Array.isArray(newChord) ? newChord[0] : newChord}${chord.slice(

@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { h } from 'preact';
 import { Container } from './Container';
-import { transposeChord } from '../utils';
+import { cap, transposeChord } from '../utils';
 import { useState } from 'preact/hooks';
 import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
+import { Body } from './Typography';
 
 type ChordRow =
   | {
@@ -117,6 +118,10 @@ export const Chords = ({ chords }: { chords: string }) => {
         <Button onClick={() => setTransposed((transposed) => transposed + 1)}>
           <PlusIcon size={16} />
         </Button>
+
+        <Container width={40} alignItems="center">
+          <Body textAlign="center">+{cap(transposed)}</Body>
+        </Container>
 
         <Button onClick={() => setTransposed((transposed) => transposed - 1)}>
           <MinusIcon size={16} />
