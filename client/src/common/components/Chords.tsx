@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 import { h } from 'preact';
 import { Container } from './Container';
+import { transposeChord } from '../utils';
+import { useState } from 'preact/hooks';
+import { Button } from './Button';
+import { PlusIcon, MinusIcon } from '../icons';
 
 type ChordRow =
   | {
@@ -50,6 +54,8 @@ function parseChords(raw: string): ChordRow[] {
 export const Chords = ({ chords }: { chords: string }) => {
   const parsed = parseChords(chords);
 
+  const [transposed, setTransposed] = useState(0);
+
   /**
    * Chord rows grouped so that chords and corresponding lyrics are in
    * the same block
@@ -63,44 +69,60 @@ export const Chords = ({ chords }: { chords: string }) => {
   }, [] as ChordRow[][]);
 
   return (
-    <ChordsContainer>
-      {blocks.map((block, i) => {
-        if (block[0].type === 'separator') {
-          return <Separator key={i} />;
-        }
-        return (
-          <Row key={i}>
-            {block.map((row, j) => {
-              if (row.type === 'separator') {
-                return null;
-              }
-              if (row.type === 'chords') {
-                const words = row.text.split(/(\s+)/g);
+    <Container flexDirection="column" width="100%">
+      <ChordsContainer>
+        {blocks.map((block, i) => {
+          if (block[0].type === 'separator') {
+            return <Separator key={i} />;
+          }
+          return (
+            <Row key={i}>
+              {block.map((row, j) => {
+                if (row.type === 'separator') {
+                  return null;
+                }
+                if (row.type === 'chords') {
+                  const words = row.text.split(/(\s+)/g);
+                  return (
+                    <span key={`${i}-${j}`}>
+                      {words.map((word) =>
+                        word.trim() === '' ? (
+                          <span>{word}</span>
+                        ) : (
+                          <Chord>
+                            {transposed
+                              ? transposeChord(word, transposed)
+                              : word}
+                          </Chord>
+                        ),
+                      )}
+                      <br />
+                    </span>
+                  );
+                }
                 return (
                   <span key={`${i}-${j}`}>
-                    {words.map((word) =>
-                      word.trim() === '' ? (
-                        <span>{word}</span>
-                      ) : (
-                        <Chord>{word}</Chord>
-                      ),
-                    )}
+                    {row.text}
                     <br />
                   </span>
                 );
-              }
-              return (
-                <span key={`${i}-${j}`}>
-                  {row.text}
-                  <br />
-                </span>
-              );
-            })}
-            {/*rows.join('\n')*/}
-          </Row>
-        );
-      })}
-    </ChordsContainer>
+              })}
+              {/*rows.join('\n')*/}
+            </Row>
+          );
+        })}
+      </ChordsContainer>
+
+      <ActionsContainer>
+        <Button onClick={() => setTransposed((transposed) => transposed + 1)}>
+          <PlusIcon size={16} />
+        </Button>
+
+        <Button onClick={() => setTransposed((transposed) => transposed - 1)}>
+          <MinusIcon size={16} />
+        </Button>
+      </ActionsContainer>
+    </Container>
   );
 };
 
@@ -112,6 +134,10 @@ const ChordsContainer = styled(Container)`
   max-height: Calc(100vh - 200px);
   width: 100%;
   flex-wrap: wrap;
+`;
+
+const ActionsContainer = styled(Container)`
+  border-top: 1px solid ${(props) => props.theme.colors.gray.main};
 `;
 
 const Row = styled.span`

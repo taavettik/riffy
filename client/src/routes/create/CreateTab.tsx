@@ -109,7 +109,7 @@ export const CreateTab = () => {
       id: track.id,
       track: track.name,
       artist: track.artist,
-      label: `${track.name} - ${track.artist?.name}`,
+      label: `${track.name} - ${track.artist?.name ?? ''}`,
     })) ?? [];
 
   return (
