@@ -6,12 +6,12 @@ RUN ls
 
 RUN yarn install --frozen-lockfile && \
   npm run build && \
-  rm -r node_modules && \
-  mkdir -p /usr/share/nginx/html
+  rm -r node_modules
 
 FROM nginx
 
-RUN mv /build/dist/* /usr/share/nginx/html
+RUN mkdir -p /usr/share/nginx/html && \
+  mv /build/dist/* /usr/share/nginx/html
 
 COPY ./nginx.conf /etc/nginx/nginx.conf
 
