@@ -33,6 +33,7 @@ export const Upload = () => {
       onCompleted: () => {
         history.goBack();
       },
+      refetchQueries: ['GetTabs'],
     },
   );
 
@@ -168,6 +169,7 @@ const CREATE_TABS = gql`
     createTabs(tabs: $tabs) {
       id
       artist {
+        id
         tabs {
           id
         }
