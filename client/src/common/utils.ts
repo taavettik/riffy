@@ -6,12 +6,20 @@ const chords = [
   'G#',
   'A',
   'A#',
-  ['B', 'C'],
+  ['B', 'H'],
   'C',
   'C#',
   'D',
   'D#',
 ];
+
+export function range(num: number) {
+  const arr: number[] = [];
+  for (let i = 0; i < num; i++) {
+    arr.push(i + 1);
+  }
+  return arr;
+}
 
 export function cap(index: number): number {
   if (index < 0) {
@@ -45,3 +53,34 @@ export function transposeChord(chord: string, steps: number) {
     match.length,
   )}`;
 }
+
+export function transposeChordRow(row: string, steps: number) {
+  const words = row.split(/(\s+)/g);
+  const transposed = words.map((word) =>
+    word.trim() === '' ? undefined : transposeChord(word, steps),
+  );
+  const str = words.reduce((str, cur, i) => {
+    const prev = words[i - 1] as string | undefined;
+    const prevTransposed = transposed[i - 1];
+    if (cur.trim() === '') {
+      if (!prevTransposed || !prev) {
+        return str + cur;
+      }
+      const diff = prevTransposed.length - prev.length;
+      if (diff > 0) {
+        return str + cur.slice(diff);
+      } else {
+        const spaces = range(Math.abs(diff))
+          .map(() => ' ')
+          .join('');
+        return `${str}${spaces}${cur}`;
+      }
+    }
+    return str + (transposed[i] ?? '');
+  }, '');
+  return str;
+}
+
+const row = 'A#    F';
+const trans = transposeChordRow(row, 1);
+console.log(`${row}\n${trans}`, row.length, trans.length);

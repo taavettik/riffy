@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { h } from 'preact';
 import { Container } from './Container';
-import { cap, transposeChord } from '../utils';
+import { cap, transposeChord, transposeChordRow } from '../utils';
 import { useState } from 'preact/hooks';
 import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
@@ -84,18 +84,17 @@ export const Chords = ({ chords }: { chords: string }) => {
                   return null;
                 }
                 if (row.type === 'chords') {
-                  const words = row.text.split(/(\s+)/g);
+                  const chordRow = transposed
+                    ? transposeChordRow(row.text, transposed)
+                    : row.text;
+                  const words = chordRow.split(/(\s+)/g);
                   return (
                     <span key={`${i}-${j}`}>
                       {words.map((word) =>
                         word.trim() === '' ? (
                           <span>{word}</span>
                         ) : (
-                          <Chord>
-                            {transposed
-                              ? transposeChord(word, transposed)
-                              : word}
-                          </Chord>
+                          <Chord>{word}</Chord>
                         ),
                       )}
                       <br />
