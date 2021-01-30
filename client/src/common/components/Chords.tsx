@@ -5,7 +5,8 @@ import { cap, transposeChord } from '../utils';
 import { useState } from 'preact/hooks';
 import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
-import { Body } from './Typography';
+import { Body, Label } from './Typography';
+import { Spacing } from './Spacing';
 
 type ChordRow =
   | {
@@ -115,17 +116,29 @@ export const Chords = ({ chords }: { chords: string }) => {
       </ChordsContainer>
 
       <ActionsContainer>
-        <Button onClick={() => setTransposed((transposed) => transposed + 1)}>
-          <PlusIcon size={16} />
-        </Button>
+        <Container>
+          <Container>
+            <Label>Tranpose:</Label>
+          </Container>
 
-        <Container width={40} alignItems="center">
-          <Body textAlign="center">+{cap(transposed)}</Body>
+          <Spacing dir="x" amount={16} />
+
+          <ActionButton
+            onClick={() => setTransposed((transposed) => transposed + 1)}
+          >
+            <PlusIcon size={16} />
+          </ActionButton>
+
+          <Container width={40} alignItems="center">
+            <Body textAlign="center">+{cap(transposed)}</Body>
+          </Container>
+
+          <ActionButton
+            onClick={() => setTransposed((transposed) => transposed - 1)}
+          >
+            <MinusIcon size={16} />
+          </ActionButton>
         </Container>
-
-        <Button onClick={() => setTransposed((transposed) => transposed - 1)}>
-          <MinusIcon size={16} />
-        </Button>
       </ActionsContainer>
     </Container>
   );
@@ -141,8 +154,18 @@ const ChordsContainer = styled(Container)`
   flex-wrap: wrap;
 `;
 
+const ActionButton = styled(Button)`
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  align-items: center;
+`;
+
 const ActionsContainer = styled(Container)`
   border-top: 1px solid ${(props) => props.theme.colors.gray.main};
+  padding-top: 16px;
+  align-items: center;
+  justify-content: flex-end;
 `;
 
 const Row = styled.span`

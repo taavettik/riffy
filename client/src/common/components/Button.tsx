@@ -1,11 +1,22 @@
 import styled from 'styled-components';
-import { layout, LayoutProps } from 'styled-system';
+import {
+  flexbox,
+  FlexboxProps,
+  layout,
+  LayoutProps,
+  padding,
+  PaddingProps,
+} from 'styled-system';
 
 export const Button = styled.button<
-  { variant?: 'primary' | 'secondary' } & LayoutProps
+  { variant?: 'primary' | 'secondary' } & LayoutProps &
+    PaddingProps &
+    FlexboxProps
 >`
-  ${layout}
   padding: 10px;
+  ${padding}
+  ${layout}
+  ${flexbox}
   display: flex;
   justify-content: center;
   cursor: pointer;
