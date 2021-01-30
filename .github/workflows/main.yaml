@@ -35,4 +35,4 @@ jobs:
           file: ./client/Dockerfile.build
           platforms: linux/386,linux/amd64
           push: true
-          tags: ghcr.io/taavettik/riffy_client:latest
+          tags: ghcr.io/taavettik/riffy-client:latest
