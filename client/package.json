@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "parcel build index.html",
+    "build": "parcel build index.html --public-url ./",
     "serve": "sirv build --port 4759 --cors --single",
     "dev": "parcel index.html",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
