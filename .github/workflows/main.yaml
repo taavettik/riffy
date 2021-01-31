@@ -125,4 +125,6 @@ jobs:
       - name: Install sqitch
         run: sudo apt install sqitch
       - name: Deploy
-        run: cd database && sqitch deploy --target db:pg://riffy:${{ secrets.DB_PASSWORD }}@$95.217.8.74/riffy
+        run: cd database && sqitch deploy --target db:pg://riffy@95.217.8.74/riffy
+        env:
+          SQITCH_PASSWORD: ${{ secrets.DB_PASSWORD }}
