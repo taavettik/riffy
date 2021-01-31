@@ -62,6 +62,10 @@ jobs:
       - uses: Azure/k8s-deploy@v1.3
         with:
           manifests: kubernetes/client.yaml
+      - uses: azure/setup-kubectl@v1
+        id: install
+      - name: Rollout restart
+        run: kubectl rollout restart deployment riffy-client-deployment
 
   
   build-server:
