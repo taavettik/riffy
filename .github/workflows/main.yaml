@@ -5,6 +5,20 @@ on:
     branches: master
 
 jobs:
+  deploy-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up k8s
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBERNETES_CONFIG }}
+      - uses: azure/k8s-create-secret@v1
+        with:
+          secret-type: 'generic'
+          arguments:  --from-literal=password=${{ secrets.DB_PASSWORD }} --from-literal=username=riffy
+          secret-name: riffy-db-credentials
+
   build-client:
     runs-on: ubuntu-latest
     steps:
