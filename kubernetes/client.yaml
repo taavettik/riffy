@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: riffy-client
+  labels:
+    app: riffy-client
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    name: riffy-client
+  selector:
+    app: riffy-client
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: riffy-client-deployment
+  labels:
+    app: riffy-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: riffy-client
+  template:
+    metadata:
+      labels:
+        app: riffy-client
+    spec:
+      containers:
+      - name: riffy-client
+        image: taavettik/riffy-client:latest
+        ports:
+        - containerPort: 80
