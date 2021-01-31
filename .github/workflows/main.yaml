@@ -96,3 +96,33 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: taavettik/riffy-server:latest
+
+  deploy-server:
+    runs-on: ubuntu-latest
+    needs: build-server
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up k8s
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBERNETES_CONFIG }}
+      - uses: Azure/k8s-deploy@v1.3
+        with:
+          manifests: kubernetes/server.yaml
+      - uses: azure/setup-kubectl@v1
+        id: install
+      - name: Rollout restart
+        run: kubectl rollout restart deployment riffy-server-deployment
+
+  db-deploy:
+    runs-on: ubuntu-latest
+    needs: deploy-secrets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install sqitch
+        run: sudo apt install sqitch
+      - name: Deploy
+        run: cd database && sqitch deploy --target db:pg://riffy:${{ secrets.DB_PASSWORD }}@$95.217.8.74/riffy
