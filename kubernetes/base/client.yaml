@@ -3,35 +3,35 @@ kind: Service
 metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  name: riffy-client
+  name: ${PROJECT_NAME}-client
   labels:
-    app: riffy-client
+    app: ${PROJECT_NAME}-client
 spec:
   ports:
   - port: 80
     targetPort: 80
-    name: riffy-client
+    name: ${PROJECT_NAME}-client
   selector:
-    app: riffy-client
+    app: ${PROJECT_NAME}-client
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: riffy-client-deployment
+  name: ${PROJECT_NAME}-client
   labels:
-    app: riffy-client
+    app: ${PROJECT_NAME}-client
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: riffy-client
+      app: ${PROJECT_NAME}-client
   template:
     metadata:
       labels:
-        app: riffy-client
+        app: ${PROJECT_NAME}-client
     spec:
       containers:
-      - name: riffy-client
-        image: taavettik/riffy-client:latest
+      - name: ${PROJECT_NAME}-client
+        image: taavettik/riffy-client:${PROJECT_ENV}
         ports:
         - containerPort: 80

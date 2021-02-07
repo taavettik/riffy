@@ -3,32 +3,32 @@ kind: Service
 metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  name: riffy-redis
+  name: ${PROJECT_NAME}-redis
   labels:
-    app: riffy-redis
+    app: ${PROJECT_NAME}-redis
 spec:
   ports:
   - port: 6379
-    name: riffy-redis
+    name: ${PROJECT_NAME}-redis
   selector:
-    app: riffy-redis
+    app: ${PROJECT_NAME}-redis
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: riffy-redis-deployment
+  name: ${PROJECT_NAME}-redis
   labels:
-    app: riffy-redis
+    app: ${PROJECT_NAME}-redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: riffy-redis
+      app: ${PROJECT_NAME}-redis
   template:
     metadata:
       labels:
-        app: riffy-redis
+        app: ${PROJECT_NAME}-redis
     spec:
       containers:
-      - name: riffy-redis
+      - name: ${PROJECT_NAME}-redis
         image: redis

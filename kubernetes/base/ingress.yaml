@@ -1,25 +1,25 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: riffy-client-ingress
+  name: ${PROJECT_NAME}-client-ingress
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   tls:
-    - secretName: riffy-kukkonen-dev-tls
+    - secretName: riffy-tls
       hosts:
-        - riffy.kukkonen.dev
+        - ${HOST}
         - kukkonen.dev
   rules:
-  - host: riffy.kukkonen.dev
+  - host: ${HOST}
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: riffy-client
+            name: ${PROJECT_NAME}-client
             port:
               number: 80

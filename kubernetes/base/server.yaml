@@ -3,48 +3,48 @@ kind: Service
 metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  name: riffy-server
+  name: ${PROJECT_NAME}-server
   labels:
-    app: riffy-server
+    app: ${PROJECT_NAME}-server
 spec:
   ports:
   - port: 1234
-    name: riffy-server
+    name: ${PROJECT_NAME}-server
   selector:
-    app: riffy-server
+    app: ${PROJECT_NAME}-server
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: riffy-server-deployment
+  name: ${PROJECT_NAME}-server
   labels:
-    app: riffy-server
+    app: ${PROJECT_NAME}-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: riffy-server
+      app: ${PROJECT_NAME}-server
   template:
     metadata:
       labels:
-        app: riffy-server
+        app: ${PROJECT_NAME}-server
     spec:
       containers:
-      - name: riffy-server
+      - name: ${PROJECT_NAME}-server
         image: taavettik/riffy-server:latest
         env:
         - name: "PORT"
           value: "1234"
         - name: "DB_HOST"
           value: "95.217.8.74"
-        # TODO: mount these as volumes
+        # TODO: mount these as volumes (maybe)
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: riffy-db-credentials
+              name: ${PROJECT_NAME}-db-credentials
               key: password
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: riffy-db-credentials
+              name: ${PROJECT_NAME}-db-credentials
               key: username
