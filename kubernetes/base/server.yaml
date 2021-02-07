@@ -48,7 +48,4 @@ spec:
               name: ${PROJECT_NAME}-db-credentials
               key: password
         - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: ${PROJECT_NAME}-db-credentials
-              key: username
+          value: riffy_${PROJECT_ENV}
