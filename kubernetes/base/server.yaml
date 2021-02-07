@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: ${PROJECT_NAME}-server
-        image: taavettik/riffy-server:latest
+        image: taavettik/riffy-server:${PROJECT_ENV}
         env:
         - name: "PORT"
           value: "1234"
