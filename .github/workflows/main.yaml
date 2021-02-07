@@ -41,7 +41,7 @@ jobs:
           tags: 'taavettik/riffy-client:${{ env.PROJECT_ENV }}'
 
   
-  build-client:
+  build-server:
     runs-on: ubuntu-latest
     needs: deploy-secrets
     steps:
