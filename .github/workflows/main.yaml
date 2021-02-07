@@ -74,8 +74,9 @@ jobs:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBERNETES_CONFIG }}
       - uses: azure/setup-kubectl@v1
-      - run: . kubernetes/project.sh; \
-          kubectl kustomize "kubernetes/overlays/${PROJECT_ENV}" |envsubst |kubectl apply -f -; \
+      - run: >
+          . kubernetes/project.sh;
+          kubectl kustomize "kubernetes/overlays/${PROJECT_ENV}" |envsubst |kubectl apply -f -;
           kubectl rollout restart deployment riffy-client -n "riffy-${{ env.PROJECT_ENV }}"
       - name: Rollout restart
         run: kubectl rollout restart deployment riffy-client
