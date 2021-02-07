@@ -101,6 +101,6 @@ jobs:
       - name: Deploy
         run: >
           cd database;
-          sqitch deploy --target db:pg://riffy_${{ env.PROJECT_ENV }}@95.217.8.74/${{ env.PROJECT_ENV }}
+          sqitch deploy --target db:pg://riffy_${{ env.PROJECT_ENV }}@95.217.8.74/riffy_${{ env.PROJECT_ENV }}
         env:
           SQITCH_PASSWORD: ${{ secrets[env.SECRET_NAME] }}
