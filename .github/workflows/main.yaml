@@ -93,9 +93,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - uses: rlespinasse/github-slug-action@v3.x
+      - run: 'echo "PROJECT_ENV=$(. ./kubernetes/ci.sh;)" >> $GITHUB_ENV'
+      - run: 'echo "SECRET_NAME=DB_PASSWORD_${{ env.PROJECT_ENV }}" >> $GITHUB_ENV'
       - name: Install sqitch
         run: sudo apt install sqitch
       - name: Deploy
-        run: cd database && sqitch deploy --target db:pg://riffy@95.217.8.74/riffy
+        run: >
+          cd database;
+          sqitch deploy --target db:pg://riffy_${{ env.PROJECT_ENV }}@95.217.8.74/${{ env.PROJECT_ENV }}
         env:
-          SQITCH_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          SQITCH_PASSWORD: ${{ secrets[env.SECRET_NAME] }}
