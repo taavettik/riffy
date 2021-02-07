@@ -11,9 +11,6 @@ runs:
   using: "composite"
   steps:
     - uses: rlespinasse/github-slug-action@v3.x
-    -
-      name: Checkout
-      uses: actions/checkout@v2
     - run: 'echo "PROJECT_ENV=$(GITHUB_REF_SLUG=dev; . ./kubernetes/ci.sh;)" >> $GITHUB_ENV'
     -
       name: Set up QEMU
