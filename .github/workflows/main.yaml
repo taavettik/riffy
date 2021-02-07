@@ -62,9 +62,9 @@ jobs:
           push: true
           tags: 'taavettik/riffy-server:${{ env.PROJECT_ENV }}'
     
-  deploy-client:
+  deploy:
     runs-on: ubuntu-latest
-    needs: build-client
+    needs: [build-client, build-server]
     steps:
       - uses: actions/checkout@v2
       - uses: rlespinasse/github-slug-action@v3.x
@@ -77,9 +77,9 @@ jobs:
       - run: >
           . kubernetes/project.sh;
           kubectl kustomize "kubernetes/overlays/${PROJECT_ENV}" |envsubst |kubectl apply -f -;
-          kubectl rollout restart deployment riffy-client -n "riffy-${{ env.PROJECT_ENV }}"
-      - name: Rollout restart
-        run: kubectl rollout restart deployment riffy-client
+          kubectl rollout restart deployment
+          riffy-client riffy-server riffy-redis
+          -n "riffy-${{ env.PROJECT_ENV }}"
 
   db-deploy:
     runs-on: ubuntu-latest
