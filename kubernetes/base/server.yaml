@@ -37,6 +37,10 @@ spec:
           value: "1234"
         - name: "DB_HOST"
           value: "95.217.8.74"
+        - name: "DB_NAME"
+          value: riffy_${PROJECT_ENV}
+        - name: "PROJECT_ENV"
+          value: ${PROJECT_ENV}
         # TODO: mount these as volumes (maybe)
         - name: DB_PASSWORD
           valueFrom:
