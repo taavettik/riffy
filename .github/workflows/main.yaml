@@ -10,6 +10,9 @@ jobs:
   deploy-secrets:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - uses: rlespinasse/github-slug-action@v3.x
+      - run: 'echo "PROJECT_ENV=$(. ./kubernetes/ci.sh;)" >> $GITHUB_ENV'
       - name: Set up k8s
         uses: azure/k8s-set-context@v1
         with:
@@ -17,6 +20,7 @@ jobs:
           kubeconfig: ${{ secrets.KUBERNETES_CONFIG }}
       - uses: azure/k8s-create-secret@v1
         with:
+          namespace: 'riffy-${{ env.PROJECT_ENV }}'
           secret-type: 'generic'
           arguments:  --from-literal=password=${{ secrets.DB_PASSWORD }} --from-literal=username=riffy
           secret-name: riffy-db-credentials
