@@ -78,7 +78,6 @@ export const Tab = () => {
       showBackButton
     >
       <Chords chords={data.getTab.chords} />
-
       <ConfirmModal
         open={open}
         onClose={() => setOpen(false)}
