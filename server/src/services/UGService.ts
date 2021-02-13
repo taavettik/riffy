@@ -40,9 +40,7 @@ export class UGService {
     );
     const results = data.store.page.data.results;
 
-    console.log(results);
-
-    return results
+    const formatted = results
       .map((r: any) =>
         r.type === 'Chords' || r.type === 'Tabs'
           ? {
@@ -57,6 +55,15 @@ export class UGService {
       )
       .filter(Boolean)
       .slice(0, 10) as UgSearchResult[];
+
+    return formatted.sort((a, b) => {
+      const aName = `${a.trackArtist} - ${a.trackTitle}`.toLocaleLowerCase();
+      const bName = `${b.trackArtist} - ${b.trackTitle}`.toLocaleLowerCase();
+      if (aName !== bName) {
+        return 0;
+      }
+      return a.rating * a.votes > b.rating * b.votes ? -1 : 1;
+    });
   }
 
   async getTab(url: string, redis: PromiseRedisClient) {
