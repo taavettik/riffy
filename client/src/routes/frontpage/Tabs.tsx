@@ -13,6 +13,7 @@ import { TabLink } from '../../common/components/TabLink';
 import { GetArtists } from '../../generated/GetArtists';
 import { DropZone } from '../../common/components/DropZone';
 import { Modal } from '../../common/components/Modal';
+import { Tooltip } from '../../common/components/Tooltip';
 
 export const Tabs = () => {
   const { data, refetch } = useQuery<GetArtists>(GET_ARTISTS);
