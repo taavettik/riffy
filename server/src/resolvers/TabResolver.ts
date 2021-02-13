@@ -93,6 +93,9 @@ export class UgSearchResult {
   votes: number;
 
   @Field()
+  rating: number;
+
+  @Field()
   version: number;
 }
 

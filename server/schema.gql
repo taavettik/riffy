@@ -79,6 +79,7 @@ input TabData {
 }
 
 type UgSearchResult {
+  rating: Float!
   trackArtist: String!
   trackTitle: String!
   url: String!

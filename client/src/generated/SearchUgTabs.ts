@@ -13,6 +13,7 @@ export interface SearchUgTabs_searchUgTabs {
   trackArtist: string;
   url: string;
   votes: number;
+  rating: number;
   version: number;
 }
 

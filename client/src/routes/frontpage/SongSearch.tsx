@@ -68,6 +68,7 @@ const SEARCH_UG_TABS = gql`
       trackArtist
       url
       votes
+      rating
       version
     }
   }

@@ -49,6 +49,7 @@ export class UGService {
               trackTitle: r.song_name,
               trackArtist: r.artist_name,
               votes: r.votes,
+              rating: r.rating,
               version: r.version ?? 1,
               url: r.tab_url,
             }
