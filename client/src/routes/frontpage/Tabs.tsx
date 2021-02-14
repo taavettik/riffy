@@ -14,6 +14,8 @@ import { GetArtists } from '../../generated/GetArtists';
 import { DropZone } from '../../common/components/DropZone';
 import { Modal } from '../../common/components/Modal';
 import { Tooltip } from '../../common/components/Tooltip';
+import { CreateArtistModal } from '../../common/components/modals/CreateArtistModal';
+import { fieldNameFromStoreName } from '@apollo/client/cache/inmemory/helpers';
 
 export const Tabs = () => {
   const { data, refetch } = useQuery<GetArtists>(GET_ARTISTS);
@@ -28,6 +30,11 @@ export const Tabs = () => {
   const [selected, setSelected] = useState<null | { id: string; name: string }>(
     state?.selected ?? null,
   );
+
+  const [createArtistModal, toggleCreateArtistModal] = useState(false);
+  const [files, setFiles] = useState<
+    { chords: string; trackArtist: string; trackTitle: string }[]
+  >([]);
 
   const history = useHistory();
 
@@ -51,9 +58,6 @@ export const Tabs = () => {
   return (
     <DropZone
       onDrop={(files) => {
-        // TODO: support for bulk uploading
-        const [file] = files;
-
         const parsedFiles = files.map((file) => {
           const nameParts = file.name.split('.');
           const filename =
@@ -66,10 +70,19 @@ export const Tabs = () => {
 
           return {
             chords: file.content,
-            trackArtist: artist,
+            trackArtist: artist ?? '',
             trackTitle: title,
           };
         });
+
+        setFiles(parsedFiles);
+
+        const artistsSet = parsedFiles.every((file) => file.trackArtist);
+
+        if (!artistsSet) {
+          toggleCreateArtistModal(true);
+          return;
+        }
 
         history.push('/upload', {
           tabs: parsedFiles,
@@ -147,6 +160,19 @@ export const Tabs = () => {
           </TabLink>
         </Container>
       </Container>
+
+      <CreateArtistModal
+        open={createArtistModal}
+        onClose={() => toggleCreateArtistModal(false)}
+        onContinue={(artist) =>
+          history.push('/upload', {
+            tabs: files.map((file) => ({
+              ...file,
+              trackArtist: file.trackArtist || artist,
+            })),
+          })
+        }
+      />
     </DropZone>
   );
 };
