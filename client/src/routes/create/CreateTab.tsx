@@ -134,7 +134,7 @@ export const CreateTab = () => {
                 });
                 setArtist({
                   id: '',
-                  label: item.artist,
+                  label: artist.label || item.artist,
                 });
               }}
             />
