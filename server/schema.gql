@@ -49,6 +49,8 @@ type Mutation {
   createTabs(tabs: [TabData!]!): [Tab!]!
   deleteTab(id: String!): Artist!
   editTab(chords: String!, id: String!): Tab!
+  setExternalTabTransposition(transposition: Float!, url: String!): ExternalTab!
+  setTabTransposition(id: String!, transposition: Float!): Tab!
 }
 
 type Query {
@@ -77,6 +79,7 @@ type Tab {
   id: String!
   isrc: String
   trackTitle: String!
+  transposition: Float!
 }
 
 input TabData {

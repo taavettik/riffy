@@ -48,6 +48,9 @@ export class Tab extends BaseTab {
     return this.trackArtist ? formatArtistId(this.trackArtist) : null;
   }
 
+  @Field()
+  transposition: number;
+
   @Field(() => String, { nullable: true })
   isrc?: string;
 }
@@ -176,6 +179,16 @@ export class TabResolver {
       tab.artistId,
       ctx.state.tx,
     );
+  }
+
+  @FieldResolver(() => Number)
+  async transposition(@Root() tab: Tab, @Ctx() ctx: Context) {
+    const data = await this.tabService.getTabTransposition(
+      ctx.state.user,
+      { id: tab.id },
+      ctx.state.tx,
+    );
+    return data?.transposition ?? 0;
   }
 
   @Authorized()
@@ -316,6 +329,44 @@ export class TabResolver {
       ...r,
       chords: '',
     }));
+  }
+
+  @Authorized()
+  @Mutation(() => Tab)
+  async setTabTransposition(
+    @Arg('id') id: string,
+    @Arg('transposition') transposition: number,
+    @Ctx() ctx: Context,
+  ) {
+    await this.tabService.setTabTransposition(
+      ctx.state.user,
+      { id },
+      transposition,
+      ctx.state.tx,
+    );
+    return this.tabService.get(id, ctx.state.tx);
+  }
+
+  @Authorized()
+  @Mutation(() => ExternalTab)
+  async setExternalTabTransposition(
+    @Arg('url') url: string,
+    @Arg('transposition') transposition: number,
+    @Ctx() ctx: Context,
+  ) {
+    await this.tabService.setTabTransposition(
+      ctx.state.user,
+      {
+        url,
+      },
+      transposition,
+      ctx.state.tx,
+    );
+    const tab = await this.ug.getTab(url, ctx.state.redis);
+    return {
+      ...tab,
+      url,
+    };
   }
 
   @Authorized()

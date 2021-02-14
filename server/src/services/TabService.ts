@@ -191,4 +191,49 @@ export class TabService {
       },
     );
   }
+
+  @CamelCase
+  async setTabTransposition(
+    accountId: string,
+    params: { id: string } | { url: string },
+    transposition: number,
+    tx: Db,
+  ) {
+    return tx.none(
+      `
+      insert into view_history (${
+        'id' in params ? 'tab_id' : 'tab_url'
+      }, account_id, transposition)
+      values (${
+        'id' in params ? '$(id)' : '$(url)'
+      }, $(accountId), $(transposition))
+      on conflict (${'id' in params ? 'tab_id' : 'tab_url'}, account_id)
+      do update set transposition = excluded.transposition
+    `,
+      {
+        ...params,
+        accountId,
+        transposition,
+      },
+    );
+  }
+
+  @CamelCase
+  async getTabTransposition(
+    accountId: string,
+    params: { id: string } | { url: string },
+    tx: Db,
+  ) {
+    return tx.oneOrNone<{ transposition: number }>(
+      `
+      select transposition from view_history
+      where account_id = $(accountId) and
+      ${'id' in params ? `tab_id = $(id)` : 'tab_url = $(url)'}
+    `,
+      {
+        ...params,
+        accountId,
+      },
+    );
+  }
 }
