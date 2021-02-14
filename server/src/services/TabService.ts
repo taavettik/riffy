@@ -19,8 +19,6 @@ export class TabService {
       chords: string;
       title: string;
       artist?: string;
-      mbTrackId?: string;
-      mbArtistId?: string;
     },
     tx: Db,
   ): Promise<string> {
@@ -56,8 +54,8 @@ export class TabService {
 
     const { id } = await tx.one(
       `
-      insert into tab (track_title, chords, account_id, track_artist, mb_track_id, mb_artist_id)
-      values ($(title), $(chords), $(accountId), $(artist), $(mbTrackId), $(mbArtistId))
+      insert into tab (track_title, chords, account_id, track_artist)
+      values ($(title), $(chords), $(accountId), $(artist))
       returning id`,
       {
         accountId,

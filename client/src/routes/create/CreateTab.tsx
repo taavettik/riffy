@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { useHistory, useLocation } from 'react-router';
@@ -11,10 +11,15 @@ import { Spacing } from '../../common/components/Spacing';
 import { Body, Label } from '../../common/components/Typography';
 import { useDebounce } from '../../common/hooks';
 import { theme } from '../../common/theme';
+import { Tag } from '../../common/components/Tag';
 import {
   CreateTab as ICreateTab,
   CreateTabVariables,
 } from '../../generated/CreateTab';
+import {
+  FetchTrackInfo,
+  FetchTrackInfoVariables,
+} from '../../generated/FetchTrackInfo';
 import {
   GetArtistSuggestions,
   GetArtistSuggestionsVariables,
@@ -27,6 +32,7 @@ import {
   GetTrackSuggestions,
   GetTrackSuggestionsVariables,
 } from '../../generated/GetTrackSuggestions';
+import { Tooltip } from '../../common/components/Tooltip';
 
 export const CreateTab = () => {
   const loc = useLocation<{
@@ -43,7 +49,7 @@ export const CreateTab = () => {
     setArtist({ id: '', label: loc.state.trackArtist || '' });
     setTrack({ id: '', label: loc.state.trackTitle || '' });
     setChords(loc.state.chords || '');
-  }, [loc.state]);
+  }, [loc?.state]);
 
   const debouncedArtist = useDebounce(500, artist.label);
   const debouncedTrack = useDebounce(500, track.label);
@@ -61,10 +67,36 @@ export const CreateTab = () => {
     GetTrackSuggestionsVariables
   >(GET_TRACK_SUGGETSIONS, {
     variables: {
-      query: debouncedTrack,
+      title: debouncedTrack,
     },
     fetchPolicy: 'no-cache',
   });
+
+  const [fetchTrackInfo, { data: trackInfo }] = useLazyQuery<
+    FetchTrackInfo,
+    FetchTrackInfoVariables
+  >(FETCH_TRACK_INFO, {
+    variables: {
+      id: Number(track.id),
+    },
+  });
+
+  useEffect(() => {
+    if (!track.id || Number.isNaN(Number(track.id))) {
+      return;
+    }
+    fetchTrackInfo();
+  }, [track.id]);
+
+  useEffect(() => {
+    if (!trackInfo) {
+      return;
+    }
+    if (artist.label === trackInfo.fetchTrackInfo.artist) {
+      return;
+    }
+    setTrack((track) => ({ id: '', label: track.label }));
+  }, [artist.label, trackInfo]);
 
   const { data: conflicts } = useQuery<
     GetConflictingTabs,
@@ -98,18 +130,16 @@ export const CreateTab = () => {
         title: track.label,
         artist: artist.label,
         chords: chords,
-        trackId: track.id || undefined,
-        artistId: artist.id || undefined,
       },
     });
   };
 
   const trackItems =
     tracks?.searchTracks.map((track) => ({
-      id: track.id,
-      track: track.name,
+      id: track.id.toString(),
+      track: track.title,
       artist: track.artist,
-      label: `${track.name} - ${track.artist?.name ?? ''}`,
+      label: `${track.title} - ${track.artist}`,
     })) ?? [];
 
   return (
@@ -117,12 +147,30 @@ export const CreateTab = () => {
       <Container width="100%" height="100%" flexDirection="row">
         <Container maxWidth="300px" width="100%" flexDirection="column">
           <Container width="100%" flexDirection="column" height="100%">
-            <Body>Artist</Body>
+            <Body>Title</Body>
+
             <Spacing dir="y" amount={4} />
+
+            <Search
+              items={trackItems}
+              onChange={(value) =>
+                value !== track.label && setTrack({ id: '', label: value })
+              }
+              onSelect={(item) => {
+                setTrack({ id: item.id, label: item.track });
+                setArtist({ id: '', label: item.artist });
+              }}
+              value={track.label}
+            />
+
+            <Spacing dir="y" amount={8} />
+
+            <Body>Artist</Body>
+
             <Search
               items={
                 artists?.searchArtists.map((artist) => ({
-                  id: artist.id,
+                  id: artist.id.toString(),
                   label: artist.name,
                 })) ?? []
               }
@@ -131,22 +179,6 @@ export const CreateTab = () => {
                 value !== artist.label && setArtist({ id: '', label: value })
               }
               value={artist.label}
-            />
-            <Spacing dir="y" amount={8} />
-            <Body>Title</Body>
-            <Spacing dir="y" amount={4} />
-            <Search
-              items={trackItems}
-              onChange={(value) =>
-                value !== track.label && setTrack({ id: '', label: value })
-              }
-              onSelect={(item) => {
-                setTrack({ id: item.id, label: item.track });
-                if (item.artist) {
-                  setArtist({ id: item.artist.id, label: item.artist.name });
-                }
-              }}
-              value={track.label}
             />
 
             <Spacing dir="y" amount={8} />
@@ -193,14 +225,22 @@ const GET_ARTIST_SUGGESTIONS = gql`
 `;
 
 const GET_TRACK_SUGGETSIONS = gql`
-  query GetTrackSuggestions($query: String!) {
-    searchTracks(query: $query) {
+  query GetTrackSuggestions($title: String!, $artist: String) {
+    searchTracks(title: $title, artist: $artist) {
       id
-      artist {
-        id
-        name
-      }
-      name
+      artist
+      title
+    }
+  }
+`;
+
+const FETCH_TRACK_INFO = gql`
+  query FetchTrackInfo($id: Float!) {
+    fetchTrackInfo(id: $id) {
+      id
+      artist
+      title
+      isrc
     }
   }
 `;
@@ -214,20 +254,8 @@ const GET_CONFLICTING_TABS = gql`
 `;
 
 const CREATE_TAB = gql`
-  mutation CreateTab(
-    $title: String!
-    $chords: String!
-    $artist: String!
-    $trackId: String
-    $artistId: String
-  ) {
-    createTab(
-      title: $title
-      chords: $chords
-      artist: $artist
-      mbId: $trackId
-      mbArtistId: $artistId
-    ) {
+  mutation CreateTab($title: String!, $chords: String!, $artist: String!) {
+    createTab(title: $title, chords: $chords, artist: $artist) {
       id
       artist {
         id
