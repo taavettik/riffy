@@ -62,6 +62,9 @@ export class ExternalTab extends BaseTab {
 
   @Field()
   trackArtist: string;
+
+  @Field()
+  transposition: number;
 }
 
 @ObjectType()
@@ -315,9 +318,15 @@ export class TabResolver {
   @Query(() => ExternalTab, { nullable: true })
   async getUgTab(@Arg('url') url: string, @Ctx() ctx: Context) {
     const tab = await this.ug.getTab(url, ctx.state.redis);
+    const transposition = await this.tabService.getTabTransposition(
+      ctx.state.user,
+      { url },
+      ctx.state.tx,
+    );
     return {
       ...tab,
       url,
+      transposition: transposition?.transposition ?? 0,
     };
   }
 

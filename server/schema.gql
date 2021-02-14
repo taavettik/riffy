@@ -28,6 +28,7 @@ type ExternalTab {
   chords: String!
   trackArtist: String!
   trackTitle: String!
+  transposition: Float!
   url: String!
 }
 

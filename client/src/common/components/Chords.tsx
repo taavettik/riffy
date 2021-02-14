@@ -60,11 +60,11 @@ export const Chords = ({
 }: {
   chords: string;
   onTranspose?: (steps: number) => void;
-  initialTransposition: number;
+  initialTransposition?: number;
 }) => {
   const parsed = parseChords(chords);
 
-  const [transposed, setTransposed] = useState(initialTransposition);
+  const [transposed, setTransposed] = useState(initialTransposition ?? 0);
 
   /**
    * Chord rows grouped so that chords and corresponding lyrics are in
