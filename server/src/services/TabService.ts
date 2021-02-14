@@ -140,6 +140,8 @@ export class TabService {
     tab: { url: string } | { id: string },
     tx: Db,
   ) {
+    const transposition = await this.getTabTransposition(accountId, tab, tx);
+
     // Couldn't figure out how to do this with a ON CONFLICT -clause
     await tx.none(
       `
@@ -160,14 +162,15 @@ export class TabService {
 
     return tx.none(
       `
-      insert into view_history (account_id, tab_url, tab_id) values
-      ($(accountId), $(url), $(id))
+      insert into view_history (account_id, tab_url, tab_id, transposition) values
+      ($(accountId), $(url), $(id), $(transposition))
     `,
       {
         accountId,
         url: null,
         id: null,
         ...tab,
+        transposition: transposition?.transposition ?? 0,
       },
     );
   }
