@@ -33,6 +33,7 @@ import {
   GetTrackSuggestionsVariables,
 } from '../../generated/GetTrackSuggestions';
 import { Tooltip } from '../../common/components/Tooltip';
+import { MusicSearch } from '../../common/components/MusicSearch';
 
 export const CreateTab = () => {
   const loc = useLocation<{
@@ -50,27 +51,6 @@ export const CreateTab = () => {
     setTrack({ id: '', label: loc.state.trackTitle || '' });
     setChords(loc.state.chords || '');
   }, [loc?.state]);
-
-  const debouncedArtist = useDebounce(500, artist.label);
-  const debouncedTrack = useDebounce(500, track.label);
-  const { data: artists } = useQuery<
-    GetArtistSuggestions,
-    GetArtistSuggestionsVariables
-  >(GET_ARTIST_SUGGESTIONS, {
-    variables: {
-      query: debouncedArtist,
-    },
-    fetchPolicy: 'no-cache',
-  });
-  const { data: tracks } = useQuery<
-    GetTrackSuggestions,
-    GetTrackSuggestionsVariables
-  >(GET_TRACK_SUGGETSIONS, {
-    variables: {
-      title: debouncedTrack,
-    },
-    fetchPolicy: 'no-cache',
-  });
 
   const [fetchTrackInfo, { data: trackInfo }] = useLazyQuery<
     FetchTrackInfo,
@@ -134,14 +114,6 @@ export const CreateTab = () => {
     });
   };
 
-  const trackItems =
-    tracks?.searchTracks.map((track) => ({
-      id: track.id.toString(),
-      track: track.title,
-      artist: track.artist,
-      label: `${track.title} - ${track.artist}`,
-    })) ?? [];
-
   return (
     <Page title="Create tab" showBackButton>
       <Container width="100%" height="100%" flexDirection="row">
@@ -151,34 +123,31 @@ export const CreateTab = () => {
 
             <Spacing dir="y" amount={4} />
 
-            <Search
-              items={trackItems}
-              onChange={(value) =>
-                value !== track.label && setTrack({ id: '', label: value })
-              }
+            <MusicSearch
+              type="track"
+              value={track}
+              onChange={(track) => setTrack({ id: '', label: track })}
               onSelect={(item) => {
-                setTrack({ id: item.id, label: item.track });
-                setArtist({ id: '', label: item.artist });
+                setTrack({
+                  id: item.id,
+                  label: item.track,
+                });
+                setArtist({
+                  id: '',
+                  label: item.artist,
+                });
               }}
-              value={track.label}
             />
 
             <Spacing dir="y" amount={8} />
 
             <Body>Artist</Body>
 
-            <Search
-              items={
-                artists?.searchArtists.map((artist) => ({
-                  id: artist.id.toString(),
-                  label: artist.name,
-                })) ?? []
-              }
+            <MusicSearch
+              type="artist"
+              value={artist}
+              onChange={(artist) => setArtist({ id: '', label: artist })}
               onSelect={(item) => setArtist(item)}
-              onChange={(value) =>
-                value !== artist.label && setArtist({ id: '', label: value })
-              }
-              value={artist.label}
             />
 
             <Spacing dir="y" amount={8} />
@@ -214,25 +183,6 @@ export const CreateTab = () => {
     </Page>
   );
 };
-
-const GET_ARTIST_SUGGESTIONS = gql`
-  query GetArtistSuggestions($query: String!) {
-    searchArtists(query: $query) {
-      id
-      name
-    }
-  }
-`;
-
-const GET_TRACK_SUGGETSIONS = gql`
-  query GetTrackSuggestions($title: String!, $artist: String) {
-    searchTracks(title: $title, artist: $artist) {
-      id
-      artist
-      title
-    }
-  }
-`;
 
 const FETCH_TRACK_INFO = gql`
   query FetchTrackInfo($id: Float!) {
