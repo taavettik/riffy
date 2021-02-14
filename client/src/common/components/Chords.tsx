@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { h } from 'preact';
 import { Container } from './Container';
 import { cap, transposeChord, transposeChordRow } from '../utils';
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
 import { Body, Label } from './Typography';
@@ -53,10 +53,18 @@ function parseChords(raw: string): ChordRow[] {
   return parsed;
 }
 
-export const Chords = ({ chords }: { chords: string }) => {
+export const Chords = ({
+  chords,
+  onTranspose,
+  initialTransposition,
+}: {
+  chords: string;
+  onTranspose?: (steps: number) => void;
+  initialTransposition: number;
+}) => {
   const parsed = parseChords(chords);
 
-  const [transposed, setTransposed] = useState(0);
+  const [transposed, setTransposed] = useState(initialTransposition);
 
   /**
    * Chord rows grouped so that chords and corresponding lyrics are in
@@ -69,6 +77,13 @@ export const Chords = ({ chords }: { chords: string }) => {
     }
     return [...arr, [cur]];
   }, [] as ChordRow[][]);
+
+  useEffect(() => {
+    if (!onTranspose) {
+      return;
+    }
+    onTranspose(transposed);
+  }, [transposed]);
 
   return (
     <Container flexDirection="column" width="100%">

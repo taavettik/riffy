@@ -4,27 +4,20 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetTab
+// GraphQL mutation operation: SetTabTransposition
 // ====================================================
 
-export interface GetTab_getTab_artist {
-  __typename: "Artist";
-  name: string;
-}
-
-export interface GetTab_getTab {
+export interface SetTabTransposition_setTabTransposition {
   __typename: "Tab";
   id: string;
-  chords: string;
-  trackTitle: string;
-  artist: GetTab_getTab_artist | null;
   transposition: number;
 }
 
-export interface GetTab {
-  getTab: GetTab_getTab;
+export interface SetTabTransposition {
+  setTabTransposition: SetTabTransposition_setTabTransposition;
 }
 
-export interface GetTabVariables {
+export interface SetTabTranspositionVariables {
   id: string;
+  transposition: number;
 }

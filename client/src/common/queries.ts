@@ -9,6 +9,7 @@ export const GET_TAB = gql`
       artist {
         name
       }
+      transposition
     }
   }
 `;
