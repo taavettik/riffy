@@ -20,11 +20,12 @@ import {
   SetTabTransposition,
   SetTabTranspositionVariables,
 } from '../../generated/SetTabTransposition';
+import { useMountQuery } from '../../common/hooks';
 
 export const Tab = () => {
   const { id } = useParams<{ id: string }>();
 
-  const { data } = useQuery<GetTab, GetTabVariables>(GET_TAB, {
+  const { data } = useMountQuery<GetTab, GetTabVariables>(GET_TAB, {
     variables: {
       id,
     },
