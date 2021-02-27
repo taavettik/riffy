@@ -8,14 +8,12 @@ import { Spacing } from '../../common/components/Spacing';
 import { Body, Heading, Subheading } from '../../common/components/Typography';
 import { GetTabs, GetTabsVariables } from '../../generated/GetTabs';
 import { useEffect, useState } from 'preact/hooks';
-import { AddIcon } from '../../common/icons';
+import { AddIcon, BackIcon } from '../../common/icons';
 import { TabLink } from '../../common/components/TabLink';
 import { GetArtists } from '../../generated/GetArtists';
 import { DropZone } from '../../common/components/DropZone';
-import { Modal } from '../../common/components/Modal';
-import { Tooltip } from '../../common/components/Tooltip';
 import { CreateArtistModal } from '../../common/components/modals/CreateArtistModal';
-import { fieldNameFromStoreName } from '@apollo/client/cache/inmemory/helpers';
+import { IconButton } from '../../common/components/IconButton';
 
 export const Tabs = () => {
   const { data, refetch } = useQuery<GetArtists>(GET_ARTISTS);
@@ -95,7 +93,31 @@ export const Tabs = () => {
         height="100%"
         flexDirection="column"
       >
-        <Subheading>{showTabs ? selected?.name : 'My Artists'}</Subheading>
+        <Container alignItems="center">
+          {showTabs ? (
+            <>
+              <IconButton
+                onClick={() => {
+                  setSelected(null);
+                  history.replace({
+                    pathname,
+                    state: {
+                      selected: null,
+                    },
+                  });
+                }}
+                icon={BackIcon}
+                size={32}
+              />
+
+              <Spacing dir="x" amount={8} />
+
+              <Subheading width="auto">{selected?.name}</Subheading>
+            </>
+          ) : (
+            <Subheading>My Artists</Subheading>
+          )}
+        </Container>
 
         <Spacing dir="y" amount={16} />
 
@@ -199,40 +221,8 @@ const GET_TABS = gql`
   }
 `;
 
-const Row = styled(Container)`
+const TabRow = styled(Container)`
   border-bottom: 1px solid black;
   width: 100%;
   flex-wrap: wrap;
-`;
-
-const TableLink = styled(Link)`
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  text-decoration: none;
-  color: black;
-  min-height: 40px;
-  min-width: 200px;
-  display: flex;
-  padding-left: 4px;
-  &:hover {
-    background-color: ${(props) => props.theme.colors.primary.lightest};
-  }
-  flex: 1;
-`;
-
-const Table = styled.table`
-  border-spacing: 0;
-  border-collapse: collapse;
-  width: 100%;
-
-  td {
-    border-bottom: 1px solid black;
-    cursor: pointer;
-    margin: 0;
-    padding: 0;
-  }
-
-  tr {
-  }
 `;
