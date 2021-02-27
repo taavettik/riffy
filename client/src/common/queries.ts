@@ -13,3 +13,11 @@ export const GET_TAB = gql`
     }
   }
 `;
+
+export const GET_CONFLICTING_TABS = gql`
+  query GetConflictingTabs($title: String!, $artist: String!) {
+    getConflictingTabs(title: $title, artist: $artist) {
+      id
+    }
+  }
+`;

@@ -16,15 +16,28 @@ function getElementIndex(el: HTMLElement) {
   return children.findIndex((child) => child === el);
 }
 
+interface Offset {
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+}
+
 type Position = 'left' | 'right' | 'top' | 'bottom';
 
 interface Props {
   children: JSX.Element;
   title: JSX.Element | string;
   position?: Position;
+  offset?: Offset;
 }
 
-export const Tooltip = ({ children, title, position = 'bottom' }: Props) => {
+export const Tooltip = ({
+  children,
+  title,
+  position = 'bottom',
+  offset,
+}: Props) => {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const [visible, setVisible] = useState(false);
@@ -98,7 +111,18 @@ export const Tooltip = ({ children, title, position = 'bottom' }: Props) => {
       {visible &&
         title &&
         createPortal(
-          <TooltipContainer left={left} right={right} top={top} bottom={bottom}>
+          <TooltipContainer
+            style={{
+              marginRight: offset?.right,
+              marginLeft: offset?.left,
+              marginTop: offset?.top,
+              marginBottom: offset?.bottom,
+            }}
+            left={left}
+            right={right}
+            top={top}
+            bottom={bottom}
+          >
             {title}
           </TooltipContainer>,
           document.body,

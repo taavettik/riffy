@@ -34,6 +34,7 @@ import {
 } from '../../generated/GetTrackSuggestions';
 import { Tooltip } from '../../common/components/Tooltip';
 import { MusicSearch } from '../../common/components/MusicSearch';
+import { GET_CONFLICTING_TABS } from '../../common/queries';
 
 export const CreateTab = () => {
   const loc = useLocation<{
@@ -191,14 +192,6 @@ const FETCH_TRACK_INFO = gql`
       artist
       title
       isrc
-    }
-  }
-`;
-
-const GET_CONFLICTING_TABS = gql`
-  query GetConflictingTabs($title: String!, $artist: String!) {
-    getConflictingTabs(title: $title, artist: $artist) {
-      id
     }
   }
 `;
