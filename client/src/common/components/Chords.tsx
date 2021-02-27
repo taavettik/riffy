@@ -29,7 +29,7 @@ function parseChords(raw: string): ChordRow[] {
       word
         .toLocaleLowerCase()
         .match(
-          /^([abcdefgh]#?m?(sus)?)[1-9]?(\/([abcdefgh]#?m?(sus)?)[1-9]?)?$/g,
+          /^([abcdefgh](?:b|#)?m?(sus)?)[1-9]?(\/([abcdefgh](?:b|#)?m?(sus)?)[1-9]?)?$/g,
         ),
     );
     if (row.trim() === '') {
