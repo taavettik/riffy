@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db": "docker-compose exec -u ${UID}:${GID} database sqitch",
-    "db:connect": "docker-compose exec database psql -U postgres -d riffy"
+    "db": "docker-compose exec -u \"$(id -u):$(id -g)\" database sqitch",
+    "db:connect": "docker-compose exec database psql -U postgres -d riffy",
+    "db:import": "docker-compose exec database psql -U postgres -d riffy -f"
   },
   "keywords": [],
   "author": "",

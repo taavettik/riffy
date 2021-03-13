@@ -9,6 +9,15 @@ export const GET_TAB = gql`
       artist {
         name
       }
+      transposition
+    }
+  }
+`;
+
+export const GET_CONFLICTING_TABS = gql`
+  query GetConflictingTabs($title: String!, $artist: String!) {
+    getConflictingTabs(title: $title, artist: $artist) {
+      id
     }
   }
 `;

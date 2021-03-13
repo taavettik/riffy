@@ -14,6 +14,11 @@ type Artist {
   tabs: [Tab!]!
 }
 
+type ArtistSearchResult {
+  id: Float!
+  name: String!
+}
+
 type BaseTab {
   chords: String!
   trackTitle: String!
@@ -23,6 +28,7 @@ type ExternalTab {
   chords: String!
   trackArtist: String!
   trackTitle: String!
+  transposition: Float!
   url: String!
 }
 
@@ -40,16 +46,19 @@ type MBTrack {
 type Mutation {
   addRecentExternalTab(url: String!): Boolean!
   addRecentTab(id: String!): Boolean!
-  createTab(artist: String!, chords: String!, mbArtistId: String, mbId: String, title: String!): Tab!
+  createTab(artist: String!, chords: String!, title: String!): Tab!
   createTabs(tabs: [TabData!]!): [Tab!]!
   deleteTab(id: String!): Artist!
   editTab(chords: String!, id: String!): Tab!
+  setExternalTabTransposition(transposition: Float!, url: String!): ExternalTab!
+  setTabTransposition(id: String!, transposition: Float!): Tab!
 }
 
 type Query {
   convertToEncoding(data: String!, encoding: String!): String!
   currentAccount: Account!
   detectEncoding(data: String!): String!
+  fetchTrackInfo(id: Float!): TrackInfo!
   getArtist(id: String!): Artist
   getArtists: [Artist!]!
   getConflictingTabs(artist: String!, title: String!): [Tab!]!
@@ -58,8 +67,8 @@ type Query {
   getUgTab(url: String!): ExternalTab
   login(name: String!, password: String!): String!
   recentTabs: [RecentTab!]!
-  searchArtists(query: String!): [MBArtist!]!
-  searchTracks(query: String!): [MBTrack!]!
+  searchArtists(query: String!): [ArtistSearchResult!]!
+  searchTracks(artist: String, title: String!): [TrackSearchResult!]!
   searchUgTabs(query: String!): [UgSearchResult!]!
 }
 
@@ -69,7 +78,9 @@ type Tab {
   artist: Artist
   chords: String!
   id: String!
+  isrc: String
   trackTitle: String!
+  transposition: Float!
 }
 
 input TabData {
@@ -78,7 +89,21 @@ input TabData {
   trackTitle: String!
 }
 
+type TrackInfo {
+  artist: String!
+  id: Float!
+  isrc: String!
+  title: String!
+}
+
+type TrackSearchResult {
+  artist: String!
+  id: Float!
+  title: String!
+}
+
 type UgSearchResult {
+  rating: Float!
   trackArtist: String!
   trackTitle: String!
   url: String!
