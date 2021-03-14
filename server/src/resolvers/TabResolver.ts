@@ -377,7 +377,7 @@ export class TabResolver {
       transposition,
       ctx.state.tx,
     );
-    const tab = await this.ug.getTab(url, ctx.state.redis);
+    const tab = await this.getUgTab(url, ctx);
     return {
       ...tab,
       url,
