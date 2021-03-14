@@ -33,5 +33,6 @@ spec:
       containers:
       - name: ${PROJECT_NAME}-client
         image: taavettik/riffy-client:${PROJECT_ENV}
+        imagePullPolicy: Always
         ports:
         - containerPort: 80

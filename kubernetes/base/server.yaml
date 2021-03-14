@@ -32,6 +32,7 @@ spec:
       containers:
       - name: ${PROJECT_NAME}-server
         image: taavettik/riffy-server:${PROJECT_ENV}
+        imagePullPolicy: Always
         env:
         - name: "PORT"
           value: "1234"
