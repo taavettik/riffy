@@ -10,6 +10,10 @@ import { Spacing } from '../../common/components/Spacing';
 import { UgIcon } from '../../common/components/UgIcon';
 import { DownloadIcon } from '../../common/icons';
 import { GetUgTab, GetUgTabVariables } from '../../generated/GetUgTab';
+import {
+  SetExternalTabTransposition,
+  SetExternalTabTranspositionVariables,
+} from '../../generated/SetExternalTabTransposition';
 
 export const Ug = () => {
   const { url } = useParams<{ url: string }>();
@@ -27,6 +31,11 @@ export const Ug = () => {
       url: decodedUrl,
     },
   });
+
+  const [setTransposition] = useMutation<
+    SetExternalTabTransposition,
+    SetExternalTabTranspositionVariables
+  >(SET_EXTERNAL_TAB_TRANSPOSITION);
 
   useEffect(() => {
     addRecent();
@@ -68,7 +77,18 @@ export const Ug = () => {
     >
       <Spacing dir="y" amount={16} />
 
-      <Chords chords={chords || 'No chords found'} />
+      <Chords
+        chords={chords || 'No chords found'}
+        onTranspose={(transposition) =>
+          setTransposition({
+            variables: {
+              url: decodedUrl,
+              transposition,
+            },
+          })
+        }
+        initialTransposition={data.getUgTab?.transposition}
+      />
     </Page>
   );
 };
@@ -79,6 +99,16 @@ const GET_UG_TAB = gql`
       trackTitle
       trackArtist
       chords
+      transposition
+    }
+  }
+`;
+
+const SET_EXTERNAL_TAB_TRANSPOSITION = gql`
+  mutation SetExternalTabTransposition($url: String!, $transposition: Float!) {
+    setExternalTabTransposition(url: $url, transposition: $transposition) {
+      url
+      transposition
     }
   }
 `;

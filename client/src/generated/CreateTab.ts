@@ -35,6 +35,4 @@ export interface CreateTabVariables {
   title: string;
   chords: string;
   artist: string;
-  trackId?: string | null;
-  artistId?: string | null;
 }

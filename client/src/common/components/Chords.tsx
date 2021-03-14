@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { h } from 'preact';
 import { Container } from './Container';
 import { cap, transposeChord, transposeChordRow } from '../utils';
-import { useState } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
 import { Body, Label } from './Typography';
@@ -29,7 +29,7 @@ function parseChords(raw: string): ChordRow[] {
       word
         .toLocaleLowerCase()
         .match(
-          /^([abcdefgh]#?m?(sus)?)[1-9]?(\/([abcdefgh]#?m?(sus)?)[1-9]?)?$/g,
+          /^([abcdefgh](?:b|#)?m?(sus)?)[1-9]?(\/([abcdefgh](?:b|#)?m?(sus)?)[1-9]?)?$/g,
         ),
     );
     if (row.trim() === '') {
@@ -53,10 +53,18 @@ function parseChords(raw: string): ChordRow[] {
   return parsed;
 }
 
-export const Chords = ({ chords }: { chords: string }) => {
+export const Chords = ({
+  chords,
+  onTranspose,
+  initialTransposition,
+}: {
+  chords: string;
+  onTranspose?: (steps: number) => void;
+  initialTransposition?: number;
+}) => {
   const parsed = parseChords(chords);
 
-  const [transposed, setTransposed] = useState(0);
+  const [transposed, setTransposed] = useState(initialTransposition ?? 0);
 
   /**
    * Chord rows grouped so that chords and corresponding lyrics are in
@@ -70,9 +78,32 @@ export const Chords = ({ chords }: { chords: string }) => {
     return [...arr, [cur]];
   }, [] as ChordRow[][]);
 
+  useEffect(() => {
+    if (!onTranspose) {
+      return;
+    }
+    onTranspose(transposed);
+  }, [transposed]);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
   return (
     <Container flexDirection="column" width="100%">
-      <ChordsContainer>
+      <ChordsContainer
+        ref={containerRef}
+        onWheel={(e) => {
+          const container = containerRef.current;
+          if (!container) {
+            return;
+          }
+          // check if container has y-scrollbar
+          if (container.scrollHeight !== container.clientHeight) {
+            return;
+          }
+          // if not, scroll in x
+          container.scrollBy(e.deltaY, 0);
+        }}
+      >
         {blocks.map((block, i) => {
           if (block[0].type === 'separator') {
             return <Separator key={i} />;

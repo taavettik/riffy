@@ -4,27 +4,26 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetTab
+// GraphQL query operation: SearchTabs
 // ====================================================
 
-export interface GetTab_getTab_artist {
+export interface SearchTabs_searchTabs_artist {
   __typename: "Artist";
+  id: string;
   name: string;
 }
 
-export interface GetTab_getTab {
+export interface SearchTabs_searchTabs {
   __typename: "Tab";
   id: string;
-  chords: string;
   trackTitle: string;
-  artist: GetTab_getTab_artist | null;
-  transposition: number;
+  artist: SearchTabs_searchTabs_artist | null;
 }
 
-export interface GetTab {
-  getTab: GetTab_getTab;
+export interface SearchTabs {
+  searchTabs: SearchTabs_searchTabs[];
 }
 
-export interface GetTabVariables {
-  id: string;
+export interface SearchTabsVariables {
+  query: string;
 }

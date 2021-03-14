@@ -16,6 +16,7 @@ export interface CreateTabs_createTabs_artist_tabs {
 
 export interface CreateTabs_createTabs_artist {
   __typename: "Artist";
+  id: string;
   tabs: CreateTabs_createTabs_artist_tabs[];
 }
 
