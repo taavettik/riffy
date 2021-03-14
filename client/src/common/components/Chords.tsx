@@ -7,6 +7,7 @@ import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
 import { Body, Label } from './Typography';
 import { Spacing } from './Spacing';
+import { Analyzer } from './Analyzer';
 
 type ChordRow =
   | {
@@ -170,6 +171,8 @@ export const Chords = ({
           </ActionButton>
         </Container>
       </ActionsContainer>
+
+      <Analyzer />
     </Container>
   );
 };
