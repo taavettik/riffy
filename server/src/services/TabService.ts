@@ -135,6 +135,27 @@ export class TabService {
     );
   }
 
+  @CamelCase
+  async search(accountId: string, searchTerm: string, tx: Db) {
+    return tx.any(
+      `
+      select * from tab
+      where
+        account_id = $(accountId) and
+        (
+          similarity($(search), track_title) > 0.2 or
+          similarity($(search), track_artist) > 0.2
+        )
+      order by similarity(lower($(search)), lower(concat(track_title, ' ', track_artist))) desc
+      limit 10
+    `,
+      {
+        search: searchTerm,
+        accountId,
+      },
+    );
+  }
+
   async addRecent(
     accountId: string,
     tab: { url: string } | { id: string },

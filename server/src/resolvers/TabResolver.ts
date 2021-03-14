@@ -264,6 +264,12 @@ export class TabResolver {
   }
 
   @Authorized()
+  @Query(() => [Tab])
+  async searchTabs(@Ctx() ctx: Context, @Arg('query') query: string) {
+    return this.tabService.search(ctx.state.user, query, ctx.state.tx);
+  }
+
+  @Authorized()
   @Query(() => [ArtistSearchResult])
   async searchArtists(@Arg('query') query: string) {
     return this.deezer.searchArtists(query);

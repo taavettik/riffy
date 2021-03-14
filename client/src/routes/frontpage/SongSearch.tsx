@@ -1,8 +1,9 @@
 import { Search } from '../../common/components/Search';
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { useHistory } from 'react-router';
-import { gql, useLazyQuery, useMutation } from '@apollo/client';
+import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { compareTwoStrings } from 'string-similarity';
 import {
   SearchUgTabs,
   SearchUgTabsVariables,
@@ -12,8 +13,24 @@ import { range } from '../../common/utils';
 import { StarIcon, StarHalfIcon, StarEmptyIcon } from '../../common/icons';
 import { Container } from '../../common/components/Container';
 import { Spacing } from '../../common/components/Spacing';
+import { SearchTabs, SearchTabsVariables } from '../../generated/SearchTabs';
+import { useDebounce } from '../../common/hooks';
 
 const UG_REGEX = /^https:\/\/tabs\.ultimate-guitar\.com/g;
+
+type TabOption = {
+  id: string;
+  label: string;
+} & (
+  | {
+      type: 'tab';
+    }
+  | {
+      type: 'ug';
+      rating: number;
+      votes: number;
+    }
+);
 
 export const SongSearch = () => {
   const [value, setValue] = useState('');
@@ -25,32 +42,55 @@ export const SongSearch = () => {
       }
     : undefined;
 
-  const [search, { data }] = useLazyQuery<SearchUgTabs, SearchUgTabsVariables>(
-    SEARCH_UG_TABS,
-    {
-      fetchPolicy: 'no-cache',
-    },
-  );
+  const debouncedValue = useDebounce(500, value);
 
-  const options = [
-    ...(data?.searchUgTabs.map((tab) => ({
-      id: tab.url,
-      label: `${tab.trackArtist} - ${tab.trackTitle} (ver ${tab.version})`,
-      rating: tab.rating,
-      votes: tab.votes,
-    })) ?? []),
-    ugOption,
-  ].filter(Boolean) as {
-    id: string;
-    label: string;
-    rating: number;
-    votes: number;
-  }[];
+  const [searchUg, { data: ugTabs }] = useLazyQuery<
+    SearchUgTabs,
+    SearchUgTabsVariables
+  >(SEARCH_UG_TABS, {
+    fetchPolicy: 'no-cache',
+  });
+  const [search, { data: tabs }] = useLazyQuery<
+    SearchTabs,
+    SearchTabsVariables
+  >(SEARCH_TABS);
+
+  useEffect(() => {
+    search({
+      variables: {
+        query: debouncedValue,
+      },
+    });
+  }, [debouncedValue]);
+
+  const ugOptions = ugTabs
+    ? ugTabs.searchUgTabs.map((tab) => ({
+        type: 'ug',
+        id: tab.url,
+        label: `${tab.trackArtist} - ${tab.trackTitle} (ver ${tab.version})`,
+        rating: tab.rating,
+        votes: tab.votes,
+      }))
+    : [];
+
+  const tabOptions = tabs
+    ? tabs.searchTabs.map((tab) => ({
+        type: 'tab',
+        id: tab.id,
+        label: `${tab.artist?.name ?? ''} - ${tab.trackTitle}`,
+      }))
+    : [];
+
+  const options = [...ugOptions, ...tabOptions].sort((a, b) => {
+    return (
+      compareTwoStrings(value, b.label) - compareTwoStrings(value, b.label)
+    );
+  }) as TabOption[];
 
   const history = useHistory();
 
   const executeSearch = () => {
-    search({ variables: { query: value } });
+    searchUg({ variables: { query: value } });
   };
 
   return (
@@ -59,6 +99,10 @@ export const SongSearch = () => {
       value={value}
       onChange={(value) => setValue(value)}
       onSelect={(item) => {
+        if (item.type === 'tab') {
+          history.push(`/tab/${item.id}`);
+          return;
+        }
         history.push(`/ug/${encodeURIComponent(item.id)}`);
       }}
       width={300}
@@ -69,7 +113,12 @@ export const SongSearch = () => {
           }
         },
       }}
+      placeholder="Search tabs..."
       renderItem={(item) => {
+        if (item.type === 'tab') {
+          return <div>{item.label}</div>;
+        }
+
         const halfStar = Math.round(item.rating * 2) % 2 === 1;
         const fullStars = Math.floor(item.rating);
         const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
@@ -106,6 +155,19 @@ const SEARCH_UG_TABS = gql`
       votes
       rating
       version
+    }
+  }
+`;
+
+const SEARCH_TABS = gql`
+  query SearchTabs($query: String!) {
+    searchTabs(query: $query) {
+      id
+      trackTitle
+      artist {
+        id
+        name
+      }
     }
   }
 `;

@@ -27,6 +27,7 @@ export const Search = <I extends Item>({
   onSelect?: (item: I) => void;
   value: string;
   inputProps?: React.HTMLAttributes<HTMLInputElement>;
+  placeholder?: string;
   renderItem?: (item: I) => JSX.Element | string;
 }) => {
   const inputRef = useRef<HTMLInputElement>();

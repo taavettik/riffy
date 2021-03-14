@@ -68,6 +68,7 @@ type Query {
   login(name: String!, password: String!): String!
   recentTabs: [RecentTab!]!
   searchArtists(query: String!): [ArtistSearchResult!]!
+  searchTabs(query: String!): [Tab!]!
   searchTracks(artist: String, title: String!): [TrackSearchResult!]!
   searchUgTabs(query: String!): [UgSearchResult!]!
 }
