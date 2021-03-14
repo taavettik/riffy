@@ -9,6 +9,7 @@ import { LayoutProps } from 'styled-system';
 export interface Item {
   id: string;
   label: string;
+  disabled?: boolean;
 }
 
 // TODO: accessibility
@@ -24,7 +25,7 @@ export const Search = <I extends Item>({
 }: LayoutProps & {
   items: I[];
   onChange: (value: string) => void;
-  onSelect?: (item: I) => void;
+  onSelect?: (item: I, setCancelled: (target: boolean) => void) => void;
   value: string;
   inputProps?: React.HTMLAttributes<HTMLInputElement>;
   placeholder?: string;
@@ -62,12 +63,13 @@ export const Search = <I extends Item>({
     if (!item) {
       return;
     }
+    let close = false;
     if (onSelect) {
-      onSelect(item);
+      onSelect(item, (target) => (close = target));
     } else {
       onChange(item.label);
     }
-    setOpen(false);
+    setOpen(close);
   };
 
   return (
@@ -93,11 +95,17 @@ export const Search = <I extends Item>({
                   <Body>No results found</Body>
                 </Container>
               )}
-              {items.map((item, i) => (
-                <Option key={i} onClick={() => onItemSelect(item.id)}>
-                  {renderItem ? renderItem(item) : item.label}
-                </Option>
-              ))}
+              {items.map((item, i) =>
+                item.disabled ? (
+                  <Container paddingLeft="8px">
+                    {renderItem ? renderItem(item) : item.label}
+                  </Container>
+                ) : (
+                  <Option key={i} onClick={() => onItemSelect(item.id)}>
+                    {renderItem ? renderItem(item) : item.label}
+                  </Option>
+                ),
+              )}
             </List>
           </Popover>
         )}

@@ -30,10 +30,14 @@ type TabOption = {
       rating: number;
       votes: number;
     }
+  | {
+      type: 'label';
+    }
 );
 
 export const SongSearch = () => {
   const [value, setValue] = useState('');
+  const [lastUgSearch, setLastUgSearch] = useState('');
 
   const ugOption = value.match(UG_REGEX)
     ? {
@@ -81,16 +85,30 @@ export const SongSearch = () => {
       }))
     : [];
 
-  const options = [...ugOptions, ...tabOptions].sort((a, b) => {
-    return (
-      compareTwoStrings(value, b.label) - compareTwoStrings(value, b.label)
-    );
-  }) as TabOption[];
+  const labelOptions =
+    lastUgSearch === value
+      ? []
+      : [
+          {
+            type: 'label',
+            id: 'label',
+            label: 'Press enter to search UG',
+          },
+        ];
+
+  const options = [...ugOptions, ...tabOptions]
+    .sort((a, b) => {
+      return (
+        compareTwoStrings(value, a.label) - compareTwoStrings(value, b.label)
+      );
+    })
+    .concat(labelOptions) as TabOption[];
 
   const history = useHistory();
 
   const executeSearch = () => {
     searchUg({ variables: { query: value } });
+    setLastUgSearch(value);
   };
 
   return (
@@ -98,7 +116,13 @@ export const SongSearch = () => {
       items={options}
       value={value}
       onChange={(value) => setValue(value)}
-      onSelect={(item) => {
+      onSelect={(item, cancel) => {
+        if (item.type === 'label') {
+          // don't close the search options
+          cancel(true);
+          executeSearch();
+          return;
+        }
         if (item.type === 'tab') {
           history.push(`/tab/${item.id}`);
           return;
@@ -116,6 +140,10 @@ export const SongSearch = () => {
       placeholder="Search tabs..."
       renderItem={(item) => {
         if (item.type === 'tab') {
+          return <div>{item.label}</div>;
+        }
+
+        if (item.type === 'label') {
           return <div>{item.label}</div>;
         }
 
