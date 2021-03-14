@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { h } from 'preact';
 import { Container } from './Container';
 import { cap, transposeChord, transposeChordRow } from '../utils';
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
 import { Body, Label } from './Typography';
@@ -85,9 +85,25 @@ export const Chords = ({
     onTranspose(transposed);
   }, [transposed]);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
   return (
     <Container flexDirection="column" width="100%">
-      <ChordsContainer>
+      <ChordsContainer
+        ref={containerRef}
+        onWheel={(e) => {
+          const container = containerRef.current;
+          if (!container) {
+            return;
+          }
+          // check if container has y-scrollbar
+          if (container.scrollHeight !== container.clientHeight) {
+            return;
+          }
+          // if not, scroll in x
+          container.scrollBy(e.deltaY, 0);
+        }}
+      >
         {blocks.map((block, i) => {
           if (block[0].type === 'separator') {
             return <Separator key={i} />;
