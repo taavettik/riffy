@@ -30,13 +30,11 @@ export function cap(index: number): number {
 
 export function transposeChord(chord: string, steps: number) {
   const matchingChords = chords.filter((c) => {
+    const comparison = chord.slice(0, c.length).toLocaleUpperCase();
     if (Array.isArray(c)) {
-      return c.some(
-        (version) =>
-          version === chord.slice(0, version.length).toLocaleUpperCase(),
-      );
+      return c.some((version) => version === comparison);
     }
-    return chord.slice(0, c.length).toLocaleUpperCase() === c;
+    return comparison === c;
   });
 
   // Find the longest chord, e.g. C# instead of C

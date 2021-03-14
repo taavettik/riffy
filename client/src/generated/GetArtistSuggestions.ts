@@ -8,8 +8,8 @@
 // ====================================================
 
 export interface GetArtistSuggestions_searchArtists {
-  __typename: "ArtistSearchResult";
-  id: number;
+  __typename: "MBArtist";
+  id: string;
   name: string;
 }
 

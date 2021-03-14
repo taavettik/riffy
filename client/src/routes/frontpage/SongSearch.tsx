@@ -7,11 +7,6 @@ import {
   SearchUgTabs,
   SearchUgTabsVariables,
 } from '../../generated/SearchUgTabs';
-import { Tooltip } from '../../common/components/Tooltip';
-import { range } from '../../common/utils';
-import { StarIcon, StarHalfIcon, StarEmptyIcon } from '../../common/icons';
-import { Container } from '../../common/components/Container';
-import { Spacing } from '../../common/components/Spacing';
 
 const UG_REGEX = /^https:\/\/tabs\.ultimate-guitar\.com/g;
 
@@ -36,16 +31,9 @@ export const SongSearch = () => {
     ...(data?.searchUgTabs.map((tab) => ({
       id: tab.url,
       label: `${tab.trackArtist} - ${tab.trackTitle} (ver ${tab.version})`,
-      rating: tab.rating,
-      votes: tab.votes,
     })) ?? []),
     ugOption,
-  ].filter(Boolean) as {
-    id: string;
-    label: string;
-    rating: number;
-    votes: number;
-  }[];
+  ].filter(Boolean) as { id: string; label: string }[];
 
   const history = useHistory();
 
@@ -69,30 +57,6 @@ export const SongSearch = () => {
           }
         },
       }}
-      renderItem={(item) => {
-        const halfStar = Math.round(item.rating * 2) % 2 === 1;
-        const fullStars = Math.floor(item.rating);
-        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-        return (
-          <Tooltip
-            title={
-              <Container alignItems="center">
-                {range(fullStars).map((i) => (
-                  <StarIcon key={i} />
-                ))}
-                {halfStar && <StarHalfIcon />}
-                {range(emptyStars).map((i) => (
-                  <StarEmptyIcon key={i} />
-                ))}
-                <Spacing dir="x" amount={4} />({item.votes})
-              </Container>
-            }
-            position="right"
-          >
-            <div>{item.label}</div>
-          </Tooltip>
-        );
-      }}
     ></Search>
   );
 };
@@ -104,7 +68,6 @@ const SEARCH_UG_TABS = gql`
       trackArtist
       url
       votes
-      rating
       version
     }
   }

@@ -18,7 +18,6 @@ export interface GetTab_getTab {
   chords: string;
   trackTitle: string;
   artist: GetTab_getTab_artist | null;
-  transposition: number;
 }
 
 export interface GetTab {

@@ -19,6 +19,8 @@ export class TabService {
       chords: string;
       title: string;
       artist?: string;
+      mbTrackId?: string;
+      mbArtistId?: string;
     },
     tx: Db,
   ): Promise<string> {
@@ -54,8 +56,8 @@ export class TabService {
 
     const { id } = await tx.one(
       `
-      insert into tab (track_title, chords, account_id, track_artist)
-      values ($(title), $(chords), $(accountId), $(artist))
+      insert into tab (track_title, chords, account_id, track_artist, mb_track_id, mb_artist_id)
+      values ($(title), $(chords), $(accountId), $(artist), $(mbTrackId), $(mbArtistId))
       returning id`,
       {
         accountId,
@@ -140,8 +142,6 @@ export class TabService {
     tab: { url: string } | { id: string },
     tx: Db,
   ) {
-    const transposition = await this.getTabTransposition(accountId, tab, tx);
-
     // Couldn't figure out how to do this with a ON CONFLICT -clause
     await tx.none(
       `
@@ -162,15 +162,14 @@ export class TabService {
 
     return tx.none(
       `
-      insert into view_history (account_id, tab_url, tab_id, transposition) values
-      ($(accountId), $(url), $(id), $(transposition))
+      insert into view_history (account_id, tab_url, tab_id) values
+      ($(accountId), $(url), $(id))
     `,
       {
         accountId,
         url: null,
         id: null,
         ...tab,
-        transposition: transposition?.transposition ?? 0,
       },
     );
   }
@@ -190,51 +189,6 @@ export class TabService {
       limit 10
     `,
       {
-        accountId,
-      },
-    );
-  }
-
-  @CamelCase
-  async setTabTransposition(
-    accountId: string,
-    params: { id: string } | { url: string },
-    transposition: number,
-    tx: Db,
-  ) {
-    return tx.none(
-      `
-      insert into view_history (${
-        'id' in params ? 'tab_id' : 'tab_url'
-      }, account_id, transposition)
-      values (${
-        'id' in params ? '$(id)' : '$(url)'
-      }, $(accountId), $(transposition))
-      on conflict (${'id' in params ? 'tab_id' : 'tab_url'}, account_id)
-      do update set transposition = excluded.transposition
-    `,
-      {
-        ...params,
-        accountId,
-        transposition,
-      },
-    );
-  }
-
-  @CamelCase
-  async getTabTransposition(
-    accountId: string,
-    params: { id: string } | { url: string },
-    tx: Db,
-  ) {
-    return tx.oneOrNone<{ transposition: number }>(
-      `
-      select transposition from view_history
-      where account_id = $(accountId) and
-      ${'id' in params ? `tab_id = $(id)` : 'tab_url = $(url)'}
-    `,
-      {
-        ...params,
         accountId,
       },
     );

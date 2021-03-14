@@ -6,7 +6,7 @@
   "scripts": {
     "build": "parcel build index.html",
     "serve": "sirv build --port 4759 --cors --single",
-    "dev": "parcel index.html --hmr-port 3031",
+    "dev": "parcel index.html",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "test": "jest ./tests",
     "apollo:generate": "apollo client:codegen --includes='./src/**/*.{ts,tsx}' --localSchemaFile=../server/schema.gql --outputFlat src/generated --target typescript --tagName=gql"

@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { h } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { useHistory, useLocation } from 'react-router';
@@ -9,15 +9,8 @@ import { FileData } from '../../common/components/DropZone';
 import { Input, TextArea } from '../../common/components/Input';
 import { Page } from '../../common/components/Page';
 import { Spacing } from '../../common/components/Spacing';
-import { Tooltip } from '../../common/components/Tooltip';
 import { Body, Label } from '../../common/components/Typography';
-import { GET_CONFLICTING_TABS } from '../../common/queries';
-import { theme } from '../../common/theme';
 import { CreateTabs, CreateTabsVariables } from '../../generated/CreateTabs';
-import {
-  GetConflictingTabs,
-  GetConflictingTabsVariables,
-} from '../../generated/GetConflictingTabs';
 import { TabData } from '../../generated/globalTypes';
 
 export const Upload = () => {
@@ -133,25 +126,8 @@ const TabRow = ({
   onChange: (tab: TabData) => void;
   onFocus: () => void;
 }) => {
-  const { data: conflicts } = useQuery<
-    GetConflictingTabs,
-    GetConflictingTabsVariables
-  >(GET_CONFLICTING_TABS, {
-    variables: {
-      title: tab.trackTitle,
-      artist: tab.trackArtist,
-    },
-  });
-
-  const conflictCount = conflicts?.getConflictingTabs.length ?? 0;
-  const hasConflict = conflictCount > 0;
-
   return (
-    <RowContainer
-      selected={selected}
-      conflict={hasConflict}
-      onClick={() => onFocus()}
-    >
+    <RowContainer selected={selected} onClick={() => onFocus()}>
       <Container flex={1} flexDirection="column">
         <Label>Artist</Label>
 
@@ -165,29 +141,7 @@ const TabRow = ({
       <Spacing dir="x" amount={16} />
 
       <Container flex={1} flexDirection="column">
-        {hasConflict ? (
-          <TooltipContainer>
-            <Tooltip
-              title={
-                <span>
-                  A tab with this name already exists.
-                  <br />
-                  The contents will be overridden
-                </span>
-              }
-              position="right"
-              offset={{ left: 8 }}
-            >
-              <Label
-                color={conflictCount > 0 ? theme.colors.error.main : undefined}
-              >
-                Title
-              </Label>
-            </Tooltip>
-          </TooltipContainer>
-        ) : (
-          <Label>Title</Label>
-        )}
+        <Label>Title</Label>
 
         <Input
           onFocus={() => onFocus()}
@@ -199,26 +153,14 @@ const TabRow = ({
   );
 };
 
-const TooltipContainer = styled.div`
-  width: fit-content;
-`;
-
-const RowContainer = styled(Container)<{
-  selected: boolean;
-  conflict?: boolean;
-}>`
+const RowContainer = styled(Container)<{ selected: boolean }>`
   border-left: 2px solid ${(p) => p.theme.colors.gray.main};
   ${(p) =>
-    p.selected
-      ? `
+    p.selected &&
+    `
   border-color: ${p.theme.colors.primary.main};
   border-width: 4px;
-  `
-      : ''}
-  ${(p) =>
-    p.conflict
-      ? `border-color: ${p.theme.colors.error.main};`
-      : ''}
+  `}
   padding: 16px;
 `;
 

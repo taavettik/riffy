@@ -12,7 +12,6 @@ export interface GetUgTab_getUgTab {
   trackTitle: string;
   trackArtist: string;
   chords: string;
-  transposition: number;
 }
 
 export interface GetUgTab {

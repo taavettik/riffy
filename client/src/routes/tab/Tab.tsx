@@ -16,16 +16,11 @@ import { useEffect, useState } from 'preact/hooks';
 import { DeleteIcon, EditIcon } from '../../common/icons';
 import { Spacing } from '../../common/components/Spacing';
 import { ConfirmModal } from '../../common/components/ConfirmModal';
-import {
-  SetTabTransposition,
-  SetTabTranspositionVariables,
-} from '../../generated/SetTabTransposition';
-import { useMountQuery } from '../../common/hooks';
 
 export const Tab = () => {
   const { id } = useParams<{ id: string }>();
 
-  const { data } = useMountQuery<GetTab, GetTabVariables>(GET_TAB, {
+  const { data } = useQuery<GetTab, GetTabVariables>(GET_TAB, {
     variables: {
       id,
     },
@@ -37,11 +32,6 @@ export const Tab = () => {
       variables: { id },
     },
   );
-
-  const [setTransposition] = useMutation<
-    SetTabTransposition,
-    SetTabTranspositionVariables
-  >(SET_TRANSPOSITION);
 
   const [deleteTab] = useMutation(DELETE_TAB, {
     variables: { id },
@@ -87,18 +77,8 @@ export const Tab = () => {
       }
       showBackButton
     >
-      <Chords
-        chords={data.getTab.chords}
-        onTranspose={(transposition) =>
-          setTransposition({
-            variables: {
-              id,
-              transposition,
-            },
-          })
-        }
-        initialTransposition={data.getTab.transposition}
-      />
+      <Chords chords={data.getTab.chords} />
+
       <ConfirmModal
         open={open}
         onClose={() => setOpen(false)}
@@ -111,15 +91,6 @@ export const Tab = () => {
 const ADD_RECENT_TAB = gql`
   mutation AddRecentTab($id: String!) {
     addRecentTab(id: $id)
-  }
-`;
-
-const SET_TRANSPOSITION = gql`
-  mutation SetTabTransposition($id: String!, $transposition: Float!) {
-    setTabTransposition(id: $id, transposition: $transposition) {
-      id
-      transposition
-    }
   }
 `;
 

@@ -21,7 +21,6 @@ import { uniqBy } from 'lodash';
 import { UGService } from '../services/UGService';
 import { ArtistService, formatArtistId } from '../services/ArtistService';
 import { Artist } from './ArtistResolver';
-import { DeezerService } from '../services/DeezerService';
 
 @ObjectType()
 class BaseTab {
@@ -47,12 +46,6 @@ export class Tab extends BaseTab {
   get artistId() {
     return this.trackArtist ? formatArtistId(this.trackArtist) : null;
   }
-
-  @Field()
-  transposition: number;
-
-  @Field(() => String, { nullable: true })
-  isrc?: string;
 }
 
 @ObjectType()
@@ -62,9 +55,6 @@ export class ExternalTab extends BaseTab {
 
   @Field()
   trackArtist: string;
-
-  @Field()
-  transposition: number;
 }
 
 @ObjectType()
@@ -89,42 +79,6 @@ export class MBTrack {
 }
 
 @ObjectType()
-export class TrackSearchResult {
-  @Field()
-  id: number;
-
-  @Field()
-  artist: string;
-
-  @Field()
-  title: string;
-}
-
-@ObjectType()
-export class ArtistSearchResult {
-  @Field()
-  id: number;
-
-  @Field()
-  name: string;
-}
-
-@ObjectType()
-export class TrackInfo {
-  @Field()
-  id: number;
-
-  @Field()
-  artist: string;
-
-  @Field()
-  title: string;
-
-  @Field()
-  isrc: string;
-}
-
-@ObjectType()
 export class UgSearchResult {
   @Field()
   trackTitle: string;
@@ -137,9 +91,6 @@ export class UgSearchResult {
 
   @Field()
   votes: number;
-
-  @Field()
-  rating: number;
 
   @Field()
   version: number;
@@ -169,7 +120,6 @@ export class TabResolver {
     private readonly artistService: ArtistService,
     private readonly mb: MBService,
     private readonly ug: UGService,
-    private readonly deezer: DeezerService,
   ) {}
 
   @FieldResolver(() => Artist)
@@ -182,16 +132,6 @@ export class TabResolver {
       tab.artistId,
       ctx.state.tx,
     );
-  }
-
-  @FieldResolver(() => Number)
-  async transposition(@Root() tab: Tab, @Ctx() ctx: Context) {
-    const data = await this.tabService.getTabTransposition(
-      ctx.state.user,
-      { id: tab.id },
-      ctx.state.tx,
-    );
-    return data?.transposition ?? 0;
   }
 
   @Authorized()
@@ -208,6 +148,8 @@ export class TabResolver {
             title: tab.trackTitle,
             artist: tab.trackArtist,
             chords: tab.chords,
+            mbTrackId: undefined,
+            mbArtistId: undefined,
           },
           ctx.state.tx,
         ),
@@ -226,14 +168,25 @@ export class TabResolver {
     @Arg('title') title: string,
     @Arg('chords') chords: string,
     @Arg('artist') artist: string,
+    @Arg('mbId', () => String, { nullable: true }) mbId: string | undefined,
+    @Arg('mbArtistId', () => String, { nullable: true })
+    mbArtistId: string | undefined,
     @Ctx() ctx: Context,
   ) {
+    const mbArtist = mbArtistId
+      ? await this.mb.getEntity('artist', mbArtistId)
+      : undefined;
+    const mbTrack = mbId
+      ? await this.mb.getEntity('recording', mbId)
+      : undefined;
     const id = await this.tabService.create(
       ctx.state.user,
       {
-        title,
-        artist,
+        title: mbTrack?.title ? mbTrack.title : title,
+        artist: mbArtist?.name ? mbArtist.name : artist,
         chords,
+        mbTrackId: mbId,
+        mbArtistId: mbArtist?.id,
       },
       ctx.state.tx,
     );
@@ -264,38 +217,22 @@ export class TabResolver {
   }
 
   @Authorized()
-  @Query(() => [ArtistSearchResult])
+  @Query(() => [MBArtist])
   async searchArtists(@Arg('query') query: string) {
-    return this.deezer.searchArtists(query);
+    const data = await this.mb.search('artist', query);
+    return data.artists.filter((result) => Number(result.score) > 80);
   }
 
   @Authorized()
-  @Query(() => [TrackSearchResult])
-  async searchTracks(
-    @Arg('title') title: string,
-    @Arg('artist', () => String, { nullable: true }) artist: string | undefined,
-  ) {
-    const data = await this.deezer.search({
-      track: title,
-      artist,
-    });
-    return uniqBy(
-      data.map((entry) => ({
-        ...entry,
-        artist: entry.artist.name,
-      })),
-      (track) => `${track.title} - ${track.artist}`,
-    ).slice(0, 10);
-  }
-
-  @Authorized()
-  @Query(() => TrackInfo)
-  async fetchTrackInfo(@Arg('id') id: number) {
-    const track = await this.deezer.getTrack(id);
-    return {
-      ...track,
-      artist: track.artist.name,
-    };
+  @Query(() => [MBTrack])
+  async searchTracks(@Arg('query') query: string) {
+    const data = await this.mb.search('recording', query);
+    const formatted = data.recordings.map((r) => ({
+      id: r.id,
+      name: r.title,
+      artist: r['artist-credit'][0]?.artist,
+    }));
+    return uniqBy(formatted, (entry) => entry.id);
   }
 
   @Authorized()
@@ -318,15 +255,9 @@ export class TabResolver {
   @Query(() => ExternalTab, { nullable: true })
   async getUgTab(@Arg('url') url: string, @Ctx() ctx: Context) {
     const tab = await this.ug.getTab(url, ctx.state.redis);
-    const transposition = await this.tabService.getTabTransposition(
-      ctx.state.user,
-      { url },
-      ctx.state.tx,
-    );
     return {
       ...tab,
       url,
-      transposition: transposition?.transposition ?? 0,
     };
   }
 
@@ -338,44 +269,6 @@ export class TabResolver {
       ...r,
       chords: '',
     }));
-  }
-
-  @Authorized()
-  @Mutation(() => Tab)
-  async setTabTransposition(
-    @Arg('id') id: string,
-    @Arg('transposition') transposition: number,
-    @Ctx() ctx: Context,
-  ) {
-    await this.tabService.setTabTransposition(
-      ctx.state.user,
-      { id },
-      transposition,
-      ctx.state.tx,
-    );
-    return this.tabService.get(id, ctx.state.tx);
-  }
-
-  @Authorized()
-  @Mutation(() => ExternalTab)
-  async setExternalTabTransposition(
-    @Arg('url') url: string,
-    @Arg('transposition') transposition: number,
-    @Ctx() ctx: Context,
-  ) {
-    await this.tabService.setTabTransposition(
-      ctx.state.user,
-      {
-        url,
-      },
-      transposition,
-      ctx.state.tx,
-    );
-    const tab = await this.ug.getTab(url, ctx.state.redis);
-    return {
-      ...tab,
-      url,
-    };
   }
 
   @Authorized()

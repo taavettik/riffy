@@ -19,7 +19,6 @@ export const Search = <I extends Item>({
   onSelect,
   value,
   inputProps,
-  renderItem,
   ...props
 }: LayoutProps & {
   items: I[];
@@ -27,7 +26,6 @@ export const Search = <I extends Item>({
   onSelect?: (item: I) => void;
   value: string;
   inputProps?: React.HTMLAttributes<HTMLInputElement>;
-  renderItem?: (item: I) => JSX.Element | string;
 }) => {
   const inputRef = useRef<HTMLInputElement>();
   const anchorRef = useRef<HTMLDivElement>();
@@ -94,7 +92,7 @@ export const Search = <I extends Item>({
               )}
               {items.map((item, i) => (
                 <Option key={i} onClick={() => onItemSelect(item.id)}>
-                  {renderItem ? renderItem(item) : item.label}
+                  {item.label}
                 </Option>
               ))}
             </List>
