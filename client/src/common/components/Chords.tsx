@@ -21,23 +21,25 @@ type ChordRow =
       type: 'separator';
     };
 
+function isChord(word: string) {
+  return Boolean(
+    word.match(
+      /^([ABCDEFGH](?:b|#)?m?(sus)?)[1-9]?(\/([ABCDEFGH](?:b|#)?m?(sus)?)[1-9]?)?$/g,
+    ),
+  );
+}
+
 function parseChords(raw: string): ChordRow[] {
   const rows = raw.split(/\n/g);
   const parsed = rows.map((row) => {
     const words = row.split(/\s+/g).filter((row) => row.trim() !== '');
-    const chords = words.map((word) =>
-      word
-        .toLocaleLowerCase()
-        .match(
-          /^([abcdefgh](?:b|#)?m?(sus)?)[1-9]?(\/([abcdefgh](?:b|#)?m?(sus)?)[1-9]?)?$/g,
-        ),
-    );
+    const chords = words.map((word) => isChord(word));
     if (row.trim() === '') {
       return {
         type: 'separator',
       } as ChordRow;
     }
-    if (chords.every(Boolean) && chords.length > 0) {
+    if (chords.some(Boolean) && chords.length > 0) {
       return {
         type: 'chords',
         words,
@@ -119,15 +121,16 @@ export const Chords = ({
                     ? transposeChordRow(row.text, transposed)
                     : row.text;
                   const words = chordRow.split(/(\s+)/g);
+
                   return (
                     <span key={`${i}-${j}`}>
-                      {words.map((word) =>
-                        word.trim() === '' ? (
+                      {words.map((word) => {
+                        return word.trim() === '' || !isChord(word) ? (
                           <span>{word}</span>
                         ) : (
                           <Chord>{word}</Chord>
-                        ),
-                      )}
+                        );
+                      })}
                       <br />
                     </span>
                   );
