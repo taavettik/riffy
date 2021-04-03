@@ -7,6 +7,8 @@ import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
 import { Body, Label } from './Typography';
 import { Spacing } from './Spacing';
+import { usePopup } from '../hooks/usePopup';
+import { createPortal } from 'preact/compat';
 
 type ChordRow =
   | {
@@ -89,6 +91,8 @@ export const Chords = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const { setOpen: togglePopup, body } = usePopup();
+
   return (
     <Container flexDirection="column" width="100%">
       <ChordsContainer
@@ -150,6 +154,8 @@ export const Chords = ({
 
       <ActionsContainer>
         <Container>
+          <ActionButton onClick={() => togglePopup(true)}>asd</ActionButton>
+
           <Container>
             <Label>Tranpose:</Label>
           </Container>
@@ -173,6 +179,8 @@ export const Chords = ({
           </ActionButton>
         </Container>
       </ActionsContainer>
+
+      {body && createPortal(<div>hello world!</div>, body)}
     </Container>
   );
 };
