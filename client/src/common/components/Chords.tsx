@@ -1,7 +1,7 @@
 import styled, { StyleSheetManager } from 'styled-components';
 import { h } from 'preact';
 import { Container } from './Container';
-import { cap, transposeChord, transposeChordRow } from '../utils';
+import { cap, noop, transposeChord, transposeChordRow } from '../utils';
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
@@ -62,10 +62,14 @@ export const Chords = ({
   chords,
   onTranspose,
   initialTransposition,
+  popupOpen = false,
+  togglePopup = noop,
 }: {
   chords: string;
   onTranspose?: (steps: number) => void;
   initialTransposition?: number;
+  popupOpen?: boolean;
+  togglePopup?: (target: boolean) => void;
 }) => {
   const parsed = parseChords(chords);
 
@@ -92,8 +96,6 @@ export const Chords = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [popupOpen, togglePopup] = useState(false);
-
   return (
     <Container flexDirection="column" width="100%">
       <ChordsContainer
@@ -117,8 +119,6 @@ export const Chords = ({
 
       <ActionsContainer>
         <Container>
-          <ActionButton onClick={() => togglePopup(true)}>asd</ActionButton>
-
           <Container>
             <Label>Tranpose:</Label>
           </Container>

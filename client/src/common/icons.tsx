@@ -9,4 +9,5 @@ export {
   MdStarHalf as StarHalfIcon,
   MdStarBorder as StarEmptyIcon,
   MdArrowBack as BackIcon,
+  MdOpenInNew as PopupIcon,
 } from 'react-icons/md';
