@@ -4,11 +4,11 @@ import { createPortal, useEffect, useMemo, useState } from 'preact/compat';
 import { ServerStyleSheet, ThemeProvider, useTheme } from 'styled-components';
 import { usePopup } from '../hooks/usePopup';
 
-export const PopupWindow: React.FC<{ open: boolean }> = ({
-  children,
-  open,
-}) => {
-  const { setOpen: togglePopup, body } = usePopup();
+export const PopupWindow: React.FC<{
+  open: boolean;
+  onStateChange?: (target: boolean) => void;
+}> = ({ children, open, onStateChange }) => {
+  const { setOpen: togglePopup, body } = usePopup({ onStateChange });
 
   const [html, setHtml] = useState('');
   const [css, setCss] = useState('');
@@ -33,7 +33,6 @@ export const PopupWindow: React.FC<{ open: boolean }> = ({
       </>,
     );
     const styleTags = sheet.getStyleTags();
-    console.log(styleTags);
 
     setHtml(html);
     setCss(styleTags);

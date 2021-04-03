@@ -94,8 +94,6 @@ export const Chords = ({
 
   const [popupOpen, togglePopup] = useState(false);
 
-  const popupContainerRef = useRef<HTMLDivElement>(null);
-
   return (
     <Container flexDirection="column" width="100%">
       <ChordsContainer
@@ -145,7 +143,10 @@ export const Chords = ({
         </Container>
       </ActionsContainer>
 
-      <PopupWindow open={popupOpen}>
+      <PopupWindow
+        open={popupOpen}
+        onStateChange={(target) => togglePopup(target)}
+      >
         <ChordsContainer height="100%">
           <ChordContent chordBlocks={blocks} transposed={transposed} />
         </ChordsContainer>
