@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { StyleSheetManager } from 'styled-components';
 import { h } from 'preact';
 import { Container } from './Container';
 import { cap, transposeChord, transposeChordRow } from '../utils';
@@ -9,6 +9,7 @@ import { Body, Label } from './Typography';
 import { Spacing } from './Spacing';
 import { usePopup } from '../hooks/usePopup';
 import { createPortal } from 'preact/compat';
+import { PopupWindow } from './PopupWindow';
 
 type ChordRow =
   | {
@@ -91,7 +92,9 @@ export const Chords = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { setOpen: togglePopup, body } = usePopup();
+  const [popupOpen, togglePopup] = useState(false);
+
+  const popupContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <Container flexDirection="column" width="100%">
@@ -109,47 +112,9 @@ export const Chords = ({
           // if not, scroll in x
           container.scrollBy(e.deltaY, 0);
         }}
+        maxHeight="Calc(100vh - 200px)"
       >
-        {blocks.map((block, i) => {
-          if (block[0].type === 'separator') {
-            return <Separator key={i} />;
-          }
-          return (
-            <Row key={i}>
-              {block.map((row, j) => {
-                if (row.type === 'separator') {
-                  return null;
-                }
-                if (row.type === 'chords') {
-                  const chordRow = transposed
-                    ? transposeChordRow(row.text, transposed)
-                    : row.text;
-                  const words = chordRow.split(/(\s+)/g);
-
-                  return (
-                    <span key={`${i}-${j}`}>
-                      {words.map((word) => {
-                        return word.trim() === '' || !isChord(word) ? (
-                          <span>{word}</span>
-                        ) : (
-                          <Chord>{word}</Chord>
-                        );
-                      })}
-                      <br />
-                    </span>
-                  );
-                }
-                return (
-                  <span key={`${i}-${j}`}>
-                    {row.text}
-                    <br />
-                  </span>
-                );
-              })}
-              {/*rows.join('\n')*/}
-            </Row>
-          );
-        })}
+        <ChordContent chordBlocks={blocks} transposed={transposed} />
       </ChordsContainer>
 
       <ActionsContainer>
@@ -180,8 +145,68 @@ export const Chords = ({
         </Container>
       </ActionsContainer>
 
-      {body && createPortal(<div>hello world!</div>, body)}
+      <PopupWindow open={popupOpen}>
+        <ChordsContainer height="100%">
+          <ChordContent chordBlocks={blocks} transposed={transposed} />
+        </ChordsContainer>
+      </PopupWindow>
     </Container>
+  );
+};
+
+/**
+ * Renders the supplied parsed chords
+ */
+const ChordContent = ({
+  chordBlocks,
+  transposed,
+}: {
+  chordBlocks: ChordRow[][];
+  transposed?: number;
+}) => {
+  return (
+    <>
+      {chordBlocks.map((block, i) => {
+        if (block[0].type === 'separator') {
+          return <Separator key={i} />;
+        }
+        return (
+          <Row key={i}>
+            {block.map((row, j) => {
+              if (row.type === 'separator') {
+                return null;
+              }
+              if (row.type === 'chords') {
+                const chordRow = transposed
+                  ? transposeChordRow(row.text, transposed)
+                  : row.text;
+                const words = chordRow.split(/(\s+)/g);
+
+                return (
+                  <span key={`${i}-${j}`}>
+                    {words.map((word) => {
+                      return word.trim() === '' || !isChord(word) ? (
+                        <span>{word}</span>
+                      ) : (
+                        <Chord>{word}</Chord>
+                      );
+                    })}
+                    <br />
+                  </span>
+                );
+              }
+              return (
+                <span key={`${i}-${j}`}>
+                  {row.text}
+                  <br />
+                </span>
+              );
+            })}
+            {/*rows.join('\n')*/}
+          </Row>
+        );
+      })}
+    </>
   );
 };
 
@@ -190,7 +215,6 @@ const ChordsContainer = styled(Container)`
   font-family: monospace;
   flex-direction: column;
   overflow: auto;
-  max-height: Calc(100vh - 200px);
   width: 100%;
   flex-wrap: wrap;
 `;
