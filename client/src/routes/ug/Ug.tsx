@@ -1,6 +1,6 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { h } from 'preact';
-import { useEffect } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import { useHistory, useParams } from 'react-router';
 import { Chords } from '../../common/components/Chords';
 import { Container } from '../../common/components/Container';
@@ -14,6 +14,7 @@ import {
   SetExternalTabTransposition,
   SetExternalTabTranspositionVariables,
 } from '../../generated/SetExternalTabTransposition';
+import { PopupButton } from '../tab/Tab';
 
 export const Ug = () => {
   const { url } = useParams<{ url: string }>();
@@ -40,6 +41,8 @@ export const Ug = () => {
   useEffect(() => {
     addRecent();
   }, []);
+
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const history = useHistory();
 
@@ -70,7 +73,17 @@ export const Ug = () => {
         </Container>
       }
       actions={
-        <IconButton onClick={() => onImport()} size={32} icon={DownloadIcon} />
+        <>
+          <PopupButton onClick={() => setPopupOpen(true)} />
+
+          <Spacing dir="x" amount={24} />
+
+          <IconButton
+            onClick={() => onImport()}
+            size={24}
+            icon={DownloadIcon}
+          />
+        </>
       }
       backButtonLink={'/'}
       showBackButton
@@ -88,6 +101,8 @@ export const Ug = () => {
           })
         }
         initialTransposition={data.getUgTab?.transposition}
+        popupOpen={popupOpen}
+        togglePopup={setPopupOpen}
       />
     </Page>
   );

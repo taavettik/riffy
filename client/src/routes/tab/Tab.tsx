@@ -71,19 +71,7 @@ export const Tab = () => {
       title={`${data.getTab.artist?.name || ''} - ${data.getTab.trackTitle}`}
       actions={
         <>
-          <IconButton
-            icon={PopupIcon}
-            size={24}
-            onClick={() => {
-              setPopupOpen(true);
-              if (!(document.activeElement instanceof HTMLElement)) {
-                return;
-              }
-              // remove focus from the button after clicking
-              // not sure about accessibility
-              document.activeElement.blur();
-            }}
-          />
+          <PopupButton onClick={() => setPopupOpen(true)} />
 
           <Spacing dir="x" amount={24} />
 
@@ -124,6 +112,24 @@ export const Tab = () => {
         onConfirm={() => onDelete()}
       />
     </Page>
+  );
+};
+
+export const PopupButton = ({ onClick }: { onClick: () => void }) => {
+  return (
+    <IconButton
+      icon={PopupIcon}
+      size={24}
+      onClick={() => {
+        onClick();
+        if (!(document.activeElement instanceof HTMLElement)) {
+          return;
+        }
+        // remove focus from the button after clicking
+        // not sure about accessibility
+        document.activeElement.blur();
+      }}
+    />
   );
 };
 

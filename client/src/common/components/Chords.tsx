@@ -165,6 +165,8 @@ const ChordContent = ({
   chordBlocks: ChordRow[][];
   transposed?: number;
 }) => {
+  console.log(chordBlocks[3]?.[0]);
+
   return (
     <>
       {chordBlocks.map((block, i) => {
@@ -186,6 +188,10 @@ const ChordContent = ({
                 return (
                   <span key={`${i}-${j}`}>
                     {words.map((word) => {
+                      if (word.length === 0 || word === '\r') {
+                        return null;
+                      }
+
                       return word.trim() === '' || !isChord(word) ? (
                         <span>{word}</span>
                       ) : (
