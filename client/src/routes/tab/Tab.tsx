@@ -71,7 +71,7 @@ export const Tab = () => {
       title={`${data.getTab.artist?.name || ''} - ${data.getTab.trackTitle}`}
       actions={
         <>
-          <PopupButton onClick={() => setPopupOpen(true)} />
+          <PopupButton onClick={() => setPopupOpen((open) => !open)} />
 
           <Spacing dir="x" amount={24} />
 

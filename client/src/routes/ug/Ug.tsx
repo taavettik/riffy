@@ -74,7 +74,7 @@ export const Ug = () => {
       }
       actions={
         <>
-          <PopupButton onClick={() => setPopupOpen(true)} />
+          <PopupButton onClick={() => setPopupOpen((open) => !open)} />
 
           <Spacing dir="x" amount={24} />
 
