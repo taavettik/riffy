@@ -95,6 +95,7 @@ export const Chords = ({
   }, [transposed]);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const popupWindowRef = useRef<Window>(null);
 
   return (
     <Container flexDirection="column" width="100%">
@@ -114,6 +115,12 @@ export const Chords = ({
         }}
         maxHeight="Calc(100vh - 200px)"
       >
+        {popupOpen && (
+          <ChordsOverlay onClick={() => popupWindowRef.current.focus()}>
+            <Body width="auto">You have the chords opened in a popup</Body>
+          </ChordsOverlay>
+        )}
+
         <ChordContent chordBlocks={blocks} transposed={transposed} />
       </ChordsContainer>
 
@@ -146,6 +153,7 @@ export const Chords = ({
       <PopupWindow
         open={popupOpen}
         onStateChange={(target) => togglePopup(target)}
+        windowRef={popupWindowRef}
       >
         <ChordsContainer height="100%">
           <ChordContent chordBlocks={blocks} transposed={transposed} />
@@ -219,11 +227,35 @@ const ChordContent = ({
 
 const ChordsContainer = styled(Container)`
   white-space: pre-wrap;
-  font-family: monospace;
   flex-direction: column;
   overflow: auto;
   width: 100%;
   flex-wrap: wrap;
+  position: relative;
+
+  span {
+    font-family: monospace !important;
+  }
+`;
+
+const ChordsOverlay = styled.button`
+  display: flex;
+  position: absolute;
+  left: -32px;
+  top: -32px;
+  width: Calc(100% + 32px);
+  height: Calc(100% + 32px);
+  align-items: center;
+  justify-content: center;
+  background: #ffffffbb;
+  border: none;
+  cursor: pointer;
+
+  :focus,
+  :hover {
+    outline: none;
+    background-color: ${(props) => props.theme.colors.primary.main}66;
+  }
 `;
 
 const ActionButton = styled(Button)`

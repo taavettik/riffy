@@ -39,5 +39,6 @@ export function usePopup({ name, onStateChange = noop }: UsePopupOptions = {}) {
   return {
     setOpen,
     body: window?.document.body,
+    window,
   };
 }
