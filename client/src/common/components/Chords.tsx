@@ -1,12 +1,15 @@
-import styled from 'styled-components';
+import styled, { StyleSheetManager } from 'styled-components';
 import { h } from 'preact';
 import { Container } from './Container';
-import { cap, transposeChord, transposeChordRow } from '../utils';
+import { cap, noop, transposeChord, transposeChordRow } from '../utils';
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { Button } from './Button';
 import { PlusIcon, MinusIcon } from '../icons';
 import { Body, Label } from './Typography';
 import { Spacing } from './Spacing';
+import { usePopup } from '../hooks/usePopup';
+import { createPortal } from 'preact/compat';
+import { PopupWindow } from './PopupWindow';
 
 type ChordRow =
   | {
@@ -59,10 +62,14 @@ export const Chords = ({
   chords,
   onTranspose,
   initialTransposition,
+  popupOpen = false,
+  togglePopup = noop,
 }: {
   chords: string;
   onTranspose?: (steps: number) => void;
   initialTransposition?: number;
+  popupOpen?: boolean;
+  togglePopup?: (target: boolean) => void;
 }) => {
   const parsed = parseChords(chords);
 
@@ -88,6 +95,7 @@ export const Chords = ({
   }, [transposed]);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const popupWindowRef = useRef<Window>(null);
 
   return (
     <Container flexDirection="column" width="100%">
@@ -105,47 +113,15 @@ export const Chords = ({
           // if not, scroll in x
           container.scrollBy(e.deltaY, 0);
         }}
+        maxHeight="Calc(100vh - 200px)"
       >
-        {blocks.map((block, i) => {
-          if (block[0].type === 'separator') {
-            return <Separator key={i} />;
-          }
-          return (
-            <Row key={i}>
-              {block.map((row, j) => {
-                if (row.type === 'separator') {
-                  return null;
-                }
-                if (row.type === 'chords') {
-                  const chordRow = transposed
-                    ? transposeChordRow(row.text, transposed)
-                    : row.text;
-                  const words = chordRow.split(/(\s+)/g);
+        {popupOpen && (
+          <ChordsOverlay onClick={() => popupWindowRef.current.focus()}>
+            <Body width="auto">You have the chords opened in a popup</Body>
+          </ChordsOverlay>
+        )}
 
-                  return (
-                    <span key={`${i}-${j}`}>
-                      {words.map((word) => {
-                        return word.trim() === '' || !isChord(word) ? (
-                          <span>{word}</span>
-                        ) : (
-                          <Chord>{word}</Chord>
-                        );
-                      })}
-                      <br />
-                    </span>
-                  );
-                }
-                return (
-                  <span key={`${i}-${j}`}>
-                    {row.text}
-                    <br />
-                  </span>
-                );
-              })}
-              {/*rows.join('\n')*/}
-            </Row>
-          );
-        })}
+        <ChordContent chordBlocks={blocks} transposed={transposed} />
       </ChordsContainer>
 
       <ActionsContainer>
@@ -173,18 +149,111 @@ export const Chords = ({
           </ActionButton>
         </Container>
       </ActionsContainer>
+
+      <PopupWindow
+        open={popupOpen}
+        onStateChange={(target) => togglePopup(target)}
+        windowRef={popupWindowRef}
+      >
+        <ChordsContainer height="100%">
+          <ChordContent chordBlocks={blocks} transposed={transposed} />
+        </ChordsContainer>
+      </PopupWindow>
     </Container>
+  );
+};
+
+/**
+ * Renders the supplied parsed chords
+ */
+const ChordContent = ({
+  chordBlocks,
+  transposed,
+}: {
+  chordBlocks: ChordRow[][];
+  transposed?: number;
+}) => {
+  return (
+    <>
+      {chordBlocks.map((block, i) => {
+        if (block[0].type === 'separator') {
+          return <Separator key={i} />;
+        }
+        return (
+          <Row key={i}>
+            {block.map((row, j) => {
+              if (row.type === 'separator') {
+                return null;
+              }
+              if (row.type === 'chords') {
+                const chordRow = transposed
+                  ? transposeChordRow(row.text, transposed)
+                  : row.text;
+                const words = chordRow.split(/(\s+)/g);
+
+                return (
+                  <span key={`${i}-${j}`}>
+                    {words.map((word) => {
+                      if (word.length === 0 || word === '\r') {
+                        return null;
+                      }
+
+                      return word.trim() === '' || !isChord(word) ? (
+                        <span>{word}</span>
+                      ) : (
+                        <Chord>{word}</Chord>
+                      );
+                    })}
+                    <br />
+                  </span>
+                );
+              }
+              return (
+                <span key={`${i}-${j}`}>
+                  {row.text}
+                  <br />
+                </span>
+              );
+            })}
+            {/*rows.join('\n')*/}
+          </Row>
+        );
+      })}
+    </>
   );
 };
 
 const ChordsContainer = styled(Container)`
   white-space: pre-wrap;
-  font-family: monospace;
   flex-direction: column;
   overflow: auto;
-  max-height: Calc(100vh - 200px);
   width: 100%;
   flex-wrap: wrap;
+  position: relative;
+
+  span {
+    font-family: monospace !important;
+  }
+`;
+
+const ChordsOverlay = styled.button`
+  display: flex;
+  position: absolute;
+  left: -32px;
+  top: -32px;
+  width: Calc(100% + 32px);
+  height: Calc(100% + 32px);
+  align-items: center;
+  justify-content: center;
+  background: #ffffffbb;
+  border: none;
+  cursor: pointer;
+
+  :focus,
+  :hover {
+    outline: none;
+    background-color: ${(props) => props.theme.colors.primary.lightest}bb;
+  }
 `;
 
 const ActionButton = styled(Button)`
