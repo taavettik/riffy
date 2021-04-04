@@ -254,7 +254,7 @@ const ChordsOverlay = styled.button`
   :focus,
   :hover {
     outline: none;
-    background-color: ${(props) => props.theme.colors.primary.main}66;
+    background-color: ${(props) => props.theme.colors.primary.lightest}bb;
   }
 `;
 
