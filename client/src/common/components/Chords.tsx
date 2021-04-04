@@ -173,8 +173,6 @@ const ChordContent = ({
   chordBlocks: ChordRow[][];
   transposed?: number;
 }) => {
-  console.log(chordBlocks[3]?.[0]);
-
   return (
     <>
       {chordBlocks.map((block, i) => {
