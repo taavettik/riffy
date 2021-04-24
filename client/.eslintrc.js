@@ -19,7 +19,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    project: './tsconfig.json'
+    project: `${__dirname}/tsconfig.json`
   },
   rules: {
     "@typescript-eslint/explicit-function-return-type": "off",

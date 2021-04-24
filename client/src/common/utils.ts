@@ -28,26 +28,48 @@ export function cap(index: number): number {
   return index % chords.length;
 }
 
+/**
+ * Returns the chord in `chord`-param that matches the first parameter,
+ * or undefined if no match is found
+ *
+ * @example
+ *
+ * getMatch('A', 'A')
+ * // -> 'A'
+ *
+ * getMatch('A', ['H', 'B'])
+ * // -> undefined
+ *
+ * getMatch('H', ['H', 'B'])
+ * // -> 'H'
+ */
+function getMatch(comparison: string, chord: string | string[]) {
+  if (Array.isArray(chord)) {
+    return chord.find(
+      (version) =>
+        version === comparison.slice(0, version.length).toLocaleUpperCase(),
+    );
+  }
+  return comparison.slice(0, chord.length).toLocaleUpperCase() === chord
+    ? chord
+    : undefined;
+}
+
 export function transposeChord(chord: string, steps: number) {
-  const matchingChords = chords.filter((c) => {
-    if (Array.isArray(c)) {
-      return c.some(
-        (version) =>
-          version === chord.slice(0, version.length).toLocaleUpperCase(),
-      );
-    }
-    return chord.slice(0, c.length).toLocaleUpperCase() === c;
-  });
+  const matchingChords = chords
+    .map((c, index) => ({ match: getMatch(chord, c), index }))
+    .filter((c) => c.match) as {
+    match: string;
+    index: number;
+  }[];
 
   // Find the longest chord, e.g. C# instead of C
-  const match = matchingChords.reduce((longest, chord) =>
-    chord.length > longest.length ? chord : longest,
+  const { match, index } = matchingChords.reduce((longest, chord) =>
+    chord.match.length > longest.match.length ? chord : longest,
   );
 
   // Yes, yes, the entire thing could be a reducer
   // but why though
-  const index = chords.indexOf(match);
-
   const newIndex = cap(index + steps);
   const newChord = chords[newIndex];
 
@@ -82,10 +104,6 @@ export function transposeChordRow(row: string, steps: number) {
   }, '');
   return str;
 }
-
-const row = 'A#    F';
-const trans = transposeChordRow(row, 1);
-console.log(`${row}\n${trans}`, row.length, trans.length);
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function noop() {}
