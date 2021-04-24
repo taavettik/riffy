@@ -86,3 +86,6 @@ export function transposeChordRow(row: string, steps: number) {
 const row = 'A#    F';
 const trans = transposeChordRow(row, 1);
 console.log(`${row}\n${trans}`, row.length, trans.length);
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export function noop() {}

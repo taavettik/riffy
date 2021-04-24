@@ -34,6 +34,9 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-size: ${(props) => props.theme.typography.body.fontSize as any}px;
     background-color: ${(props) => props.theme.colors.gray.lighter};
+  }
+
+  * {
     font-family: 'Noto Sans', sans-serif;
   }
 `;

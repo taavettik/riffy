@@ -7,7 +7,10 @@ export const IconButton = ({
   icon,
   onClick,
   ...props
-}: { icon: ComponentType; onClick?: () => void } & IconBaseProps) => {
+}: {
+  icon: ComponentType;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+} & Omit<IconBaseProps, 'onClick'>) => {
   return <Button onClick={onClick}>{h(icon, { ...props } as any)}</Button>;
 };
 

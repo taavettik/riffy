@@ -13,7 +13,7 @@ import {
   AddRecentTabVariables,
 } from '../../generated/AddRecentTab';
 import { useEffect, useState } from 'preact/hooks';
-import { DeleteIcon, EditIcon } from '../../common/icons';
+import { DeleteIcon, EditIcon, PopupIcon } from '../../common/icons';
 import { Spacing } from '../../common/components/Spacing';
 import { ConfirmModal } from '../../common/components/ConfirmModal';
 import {
@@ -60,6 +60,7 @@ export const Tab = () => {
   };
 
   const [open, setOpen] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
 
   if (!data) {
     return <div></div>;
@@ -70,6 +71,10 @@ export const Tab = () => {
       title={`${data.getTab.artist?.name || ''} - ${data.getTab.trackTitle}`}
       actions={
         <>
+          <PopupButton onClick={() => setPopupOpen((open) => !open)} />
+
+          <Spacing dir="x" amount={24} />
+
           <IconButton
             icon={DeleteIcon}
             size={24}
@@ -98,6 +103,8 @@ export const Tab = () => {
           })
         }
         initialTransposition={data.getTab.transposition}
+        popupOpen={popupOpen}
+        togglePopup={setPopupOpen}
       />
       <ConfirmModal
         open={open}
@@ -105,6 +112,24 @@ export const Tab = () => {
         onConfirm={() => onDelete()}
       />
     </Page>
+  );
+};
+
+export const PopupButton = ({ onClick }: { onClick: () => void }) => {
+  return (
+    <IconButton
+      icon={PopupIcon}
+      size={24}
+      onClick={() => {
+        onClick();
+        if (!(document.activeElement instanceof HTMLElement)) {
+          return;
+        }
+        // remove focus from the button after clicking
+        // not sure about accessibility
+        document.activeElement.blur();
+      }}
+    />
   );
 };
 
