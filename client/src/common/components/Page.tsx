@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { MdArrowBack } from 'react-icons/md';
 import { useHistory } from 'react-router';
+import styled from 'styled-components';
 import { Card } from './Card';
 import { Container } from './Container';
 import { Grid, GridArea } from './Grid';
@@ -16,7 +17,7 @@ export const Page: React.FC<{
 }> = ({ children, backButtonLink, title, showBackButton, actions }) => {
   const history = useHistory();
   return (
-    <Container padding={30} width="100%">
+    <OuterContainer padding={30} width="100%">
       <Card
         heading={
           <Container width="100%" justifyContent="space-between">
@@ -45,6 +46,12 @@ export const Page: React.FC<{
       >
         {children}
       </Card>
-    </Container>
+    </OuterContainer>
   );
 };
+
+const OuterContainer = styled(Container)`
+  @media only screen and (max-width: 600px) {
+    padding: 0;
+  }
+`;
