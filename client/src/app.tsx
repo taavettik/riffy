@@ -105,7 +105,6 @@ const App = () => {
 
 const Page = styled.div`
   width: 100%;
-  height: 90%;
   position: absolute;
   display: flex;
 `;

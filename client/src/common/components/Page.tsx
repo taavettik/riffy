@@ -51,7 +51,10 @@ export const Page: React.FC<{
 };
 
 const OuterContainer = styled(Container)`
-  @media only screen and (max-width: 600px) {
+  height: Calc(100vh - 120px);
+
+  ${(props) => props.theme.mobile} {
     padding: 0;
+    height: Calc(100vh - 66px);
   }
 `;
