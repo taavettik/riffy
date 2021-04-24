@@ -20,8 +20,12 @@ export const Page: React.FC<{
     <OuterContainer padding={30} width="100%">
       <Card
         heading={
-          <Container width="100%" justifyContent="space-between">
-            <Container alignItems="center">
+          <Container
+            width="100%"
+            justifyContent="space-between"
+            flexWrap="wrap"
+          >
+            <Container height="64px" alignItems="center">
               {showBackButton ? (
                 <>
                   <IconButton
@@ -38,7 +42,8 @@ export const Page: React.FC<{
               ) : null}
               <Subheading>{title}</Subheading>
             </Container>
-            <Container>{actions ?? null}</Container>
+
+            <Container height="64px">{actions ?? null}</Container>
           </Container>
         }
         width={'100%'}
