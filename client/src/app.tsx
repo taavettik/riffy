@@ -43,7 +43,6 @@ const GlobalStyle = createGlobalStyle`
     height: Calc(100vh - 128px);
 
     ${(props) => props.theme.mobile} {
-      height: 100vh;
       padding: 0;
     }
   }

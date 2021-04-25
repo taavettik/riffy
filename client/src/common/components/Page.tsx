@@ -19,7 +19,7 @@ export const Page: React.FC<{
   return (
     <Container height="100%" flexDirection="column">
       <Container width="100%" justifyContent="space-between" flexWrap="wrap">
-        <Container height="64px" alignItems="center">
+        <Container minHeight="64px" alignItems="center">
           {showBackButton ? (
             <>
               <IconButton
@@ -37,7 +37,7 @@ export const Page: React.FC<{
           <Subheading>{title}</Subheading>
         </Container>
 
-        <Container height="64px">{actions ?? null}</Container>
+        <Container minHeight="64px">{actions ?? null}</Container>
       </Container>
 
       <Content>{children}</Content>
