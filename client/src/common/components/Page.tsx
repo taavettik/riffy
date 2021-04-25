@@ -40,6 +40,8 @@ export const Page: React.FC<{
         <Container minHeight="64px">{actions ?? null}</Container>
       </Container>
 
+      <Spacing dir="y" amount={16} />
+
       <Content>{children}</Content>
     </Container>
   );

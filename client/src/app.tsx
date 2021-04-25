@@ -113,14 +113,9 @@ const App = () => {
   );
 };
 
-const Page = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
-
 const Card = styled.div`
   width: 100%;
+  max-width: 1600px;
   height: 100%;
   padding: 32px;
   border: 1px solid ${(props) => props.theme.colors.gray.main};
