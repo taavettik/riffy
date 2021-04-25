@@ -4,14 +4,12 @@ import { useEffect, useState } from 'preact/hooks';
 import { useHistory, useLocation } from 'react-router';
 import { Button } from '../../common/components/Button';
 import { Container } from '../../common/components/Container';
-import { Input, TextArea } from '../../common/components/Input';
+import { TextArea } from '../../common/components/Input';
 import { Page } from '../../common/components/Page';
-import { Item, Search } from '../../common/components/Search';
+import { Item } from '../../common/components/Search';
 import { Spacing } from '../../common/components/Spacing';
-import { Body, Label } from '../../common/components/Typography';
-import { useDebounce } from '../../common/hooks';
+import { Body } from '../../common/components/Typography';
 import { theme } from '../../common/theme';
-import { Tag } from '../../common/components/Tag';
 import {
   CreateTab as ICreateTab,
   CreateTabVariables,
@@ -21,18 +19,9 @@ import {
   FetchTrackInfoVariables,
 } from '../../generated/FetchTrackInfo';
 import {
-  GetArtistSuggestions,
-  GetArtistSuggestionsVariables,
-} from '../../generated/GetArtistSuggestions';
-import {
   GetConflictingTabs,
   GetConflictingTabsVariables,
 } from '../../generated/GetConflictingTabs';
-import {
-  GetTrackSuggestions,
-  GetTrackSuggestionsVariables,
-} from '../../generated/GetTrackSuggestions';
-import { Tooltip } from '../../common/components/Tooltip';
 import { MusicSearch } from '../../common/components/MusicSearch';
 import { GET_CONFLICTING_TABS } from '../../common/queries';
 
@@ -172,7 +161,6 @@ export const CreateTab = () => {
           <Spacing dir="y" amount={4} />
           <TextArea
             spellCheck={'false'}
-            width="100%"
             height="100%"
             resize="none"
             onChange={(e) => setChords(e.target.value)}

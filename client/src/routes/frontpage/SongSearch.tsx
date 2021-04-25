@@ -129,7 +129,7 @@ export const SongSearch = () => {
         }
         history.push(`/ug/${encodeURIComponent(item.id)}`);
       }}
-      width={300}
+      width="auto"
       inputProps={{
         onKeyDown: (e) => {
           if (e.key === 'Enter') {

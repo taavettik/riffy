@@ -58,3 +58,35 @@ export function useMountQuery<Query = any, Variables = any>(
 
   return queryData;
 }
+
+// also used in theme.ts, todo: refactor
+const MOBILE_SCREEN_WIDTH = 600;
+
+function getDimensions() {
+  return {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
+}
+
+/**
+ * Hook for subscribing to window dimensions
+ *
+ * @example
+ *
+ * const { width, height } = useDimensions();
+ */
+export function useDimensions() {
+  const [dimensions, setDimensions] = useState(getDimensions());
+
+  useEffect(() => {
+    const onResize = () => {
+      setDimensions(getDimensions());
+    };
+
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  return { ...dimensions, isMobile: dimensions.width <= MOBILE_SCREEN_WIDTH };
+}

@@ -55,15 +55,14 @@ export const EditTab = () => {
 
   return (
     <Page
-      title={`Editing ${tab.artist?.name} - ${tab.trackTitle}`}
+      title={`Editing ${tab.artist?.name ?? ''} - ${tab.trackTitle}`}
       showBackButton
     >
       <Container width="100%" height="100%" flexDirection="column">
         <TextArea
           spellCheck="false"
-          width="100%"
-          height="100%"
           resize="none"
+          height="100%"
           onChange={(e) => setChords(e.target.value)}
         >
           {chords}

@@ -1,4 +1,4 @@
-import { Grid, GridArea } from '../../common/components/Grid';
+import { GridArea } from '../../common/components/Grid';
 import { h } from 'preact';
 import { Card } from '../../common/components/Card';
 import { Container } from '../../common/components/Container';
@@ -10,15 +10,12 @@ import { Page } from '../../common/components/Page';
 import { Input } from '../../common/components/Input';
 import { SongSearch } from './SongSearch';
 import { RecentTabs } from './RecentTabs';
+import styled from 'styled-components';
 
 export const Frontpage = () => {
   return (
     <Page title="Overview" actions={<SongSearch />}>
-      <Grid
-        width="100%"
-        gridAreas={['tabs recent']}
-        gridTemplateColumns="2fr 1fr"
-      >
+      <Grid>
         <GridArea area="tabs">
           <Tabs />
         </GridArea>
@@ -29,3 +26,17 @@ export const Frontpage = () => {
     </Page>
   );
 };
+
+const Grid = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-areas: 'tabs recent';
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 32px;
+
+  ${(props) => props.theme.mobile} {
+    grid-template-areas: 'tabs' 'recent';
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+`;
