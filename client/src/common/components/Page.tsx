@@ -49,4 +49,5 @@ export const Page: React.FC<{
 
 const Content = styled(Container)`
   overflow: auto;
+  flex: 1;
 `;
