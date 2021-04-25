@@ -8,6 +8,7 @@ import {
   DetectEncoding,
   DetectEncodingVariables,
 } from '../../generated/DetectEncoding';
+import { Container, ContainerProps } from './Container';
 
 export interface FileData {
   name: string;
@@ -18,10 +19,11 @@ export interface FileData {
 export const DropZone = ({
   children,
   onDrop,
+  ...props
 }: {
   children: ComponentChildren;
   onDrop: (files: FileData[]) => void;
-}) => {
+} & ContainerProps) => {
   const [hover, setHover] = useState(false);
 
   const client = useApolloClient();
@@ -71,7 +73,7 @@ export const DropZone = ({
   };
 
   return (
-    <DropZoneContainer onDragEnter={() => setHover(true)}>
+    <DropZoneContainer {...props} onDragEnter={() => setHover(true)}>
       {children}
       <DropTarget
         visible={hover}
@@ -97,7 +99,7 @@ const DETECT_ENCODING = gql`
   }
 `;
 
-const DropZoneContainer = styled.div`
+const DropZoneContainer = styled(Container)`
   position: relative;
   height: 100%;
   z-index: 2;

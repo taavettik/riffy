@@ -55,6 +55,7 @@ export const Tabs = () => {
 
   return (
     <DropZone
+      width="100%"
       onDrop={(files) => {
         const parsedFiles = files.map((file) => {
           const nameParts = file.name.split('.');
@@ -93,8 +94,10 @@ export const Tabs = () => {
         height="100%"
         flexDirection="column"
       >
+        <Spacing dir="y" amount={16} />
+
         <Container alignItems="center">
-          {showTabs ? (
+          {showTabs && (
             <>
               <IconButton
                 onClick={() => {
@@ -114,8 +117,6 @@ export const Tabs = () => {
 
               <Subheading width="auto">{selected?.name}</Subheading>
             </>
-          ) : (
-            <Subheading>My Artists</Subheading>
           )}
         </Container>
 

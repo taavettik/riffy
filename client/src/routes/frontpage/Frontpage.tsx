@@ -11,13 +11,25 @@ import { Input } from '../../common/components/Input';
 import { SongSearch } from './SongSearch';
 import { RecentTabs } from './RecentTabs';
 import styled from 'styled-components';
+import { Tab, TabNav } from '../../common/components/TabNav';
 
 export const Frontpage = () => {
   return (
     <Page title="Overview" actions={<SongSearch />}>
       <Grid>
         <GridArea area="tabs">
-          <Tabs />
+          <TabNav
+            tabs={[
+              { id: 'artists', heading: 'My Artists' },
+              { id: 'favorites', heading: 'Favourites' },
+            ]}
+          >
+            <Tab tabId="artists">
+              <Tabs />
+            </Tab>
+
+            <Tab tabId="favorites">bar</Tab>
+          </TabNav>
         </GridArea>
         <GridArea area="recent">
           <RecentTabs />
