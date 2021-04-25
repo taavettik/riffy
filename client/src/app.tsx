@@ -41,6 +41,11 @@ const GlobalStyle = createGlobalStyle`
     justify-content: center;
     padding: 32px;
     height: Calc(100vh - 128px);
+
+    ${(props) => props.theme.mobile} {
+      height: 100vh;
+      padding: 0;
+    }
   }
 
   * {
