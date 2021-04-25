@@ -10,6 +10,7 @@ import { Spacing } from './Spacing';
 import { usePopup } from '../hooks/usePopup';
 import { createPortal } from 'preact/compat';
 import { PopupWindow } from './PopupWindow';
+import { useDimensions } from '../hooks';
 
 type ChordRow =
   | {
@@ -97,10 +98,13 @@ export const Chords = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const popupWindowRef = useRef<Window>(null);
 
+  const { isMobile } = useDimensions();
+
   return (
-    <Container flexDirection="column" width="100%">
+    <OuterContainer>
       <ChordsContainer
         ref={containerRef}
+        list={isMobile}
         onWheel={(e) => {
           const container = containerRef.current;
           if (!container) {
@@ -159,7 +163,7 @@ export const Chords = ({
           <ChordContent chordBlocks={blocks} transposed={transposed} />
         </ChordsContainer>
       </PopupWindow>
-    </Container>
+    </OuterContainer>
   );
 };
 
@@ -223,16 +227,35 @@ const ChordContent = ({
   );
 };
 
-const ChordsContainer = styled(Container)`
+const ChordsContainer = styled(Container)<{ list?: boolean }>`
   white-space: pre-wrap;
   flex-direction: column;
   overflow: auto;
   width: 100%;
-  flex-wrap: wrap;
   position: relative;
+
+  ${(props) =>
+    props.list
+      ? ``
+      : `
+    flex-wrap: wrap;
+  
+    > span {
+      border-right: 1px solid ${props.theme.colors.gray.main};
+    }
+  `}
 
   span {
     font-family: monospace !important;
+  }
+`;
+
+const OuterContainer = styled(Container)`
+  width: 100%;
+  flex-direction: column;
+
+  ${(props) => props.theme.mobile} {
+    width: Calc(100vw - 66px);
   }
 `;
 
@@ -273,7 +296,6 @@ const ActionsContainer = styled(Container)`
 const Row = styled.span`
   white-space: pre;
   margin-right: 16px;
-  border-right: 1px solid ${(props) => props.theme.colors.gray.main};
 `;
 
 const Chord = styled.span`

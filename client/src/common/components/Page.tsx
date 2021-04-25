@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { MdArrowBack } from 'react-icons/md';
 import { useHistory } from 'react-router';
+import styled from 'styled-components';
 import { Card } from './Card';
 import { Container } from './Container';
 import { Grid, GridArea } from './Grid';
@@ -16,35 +17,37 @@ export const Page: React.FC<{
 }> = ({ children, backButtonLink, title, showBackButton, actions }) => {
   const history = useHistory();
   return (
-    <Container padding={30} width="100%">
-      <Card
-        heading={
-          <Container width="100%" justifyContent="space-between">
-            <Container alignItems="center">
-              {showBackButton ? (
-                <>
-                  <IconButton
-                    onClick={() =>
-                      backButtonLink
-                        ? history.push(backButtonLink)
-                        : history.goBack()
-                    }
-                    icon={MdArrowBack}
-                    size={32}
-                  />
-                  <Spacing dir="x" amount={16} />{' '}
-                </>
-              ) : null}
-              <Subheading>{title}</Subheading>
-            </Container>
-            <Container>{actions ?? null}</Container>
-          </Container>
-        }
-        width={'100%'}
-        height={'100%'}
-      >
-        {children}
-      </Card>
+    <Container height="100%" flexDirection="column">
+      <Container width="100%" justifyContent="space-between" flexWrap="wrap">
+        <Container minHeight="64px" alignItems="center">
+          {showBackButton ? (
+            <>
+              <IconButton
+                onClick={() =>
+                  backButtonLink
+                    ? history.push(backButtonLink)
+                    : history.goBack()
+                }
+                icon={MdArrowBack}
+                size={32}
+              />
+              <Spacing dir="x" amount={16} />{' '}
+            </>
+          ) : null}
+          <Subheading>{title}</Subheading>
+        </Container>
+
+        <Container minHeight="64px">{actions ?? null}</Container>
+      </Container>
+
+      <Spacing dir="y" amount={16} />
+
+      <Content>{children}</Content>
     </Container>
   );
 };
+
+const Content = styled(Container)`
+  overflow: auto;
+  flex: 1;
+`;

@@ -38,4 +38,5 @@ export const theme = {
   },
   borderRadius: '4px',
   typography,
+  mobile: `@media only screen and (max-width: 600px)`,
 };

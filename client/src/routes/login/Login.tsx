@@ -7,6 +7,7 @@ import { Card } from '../../common/components/Card';
 import { Container } from '../../common/components/Container';
 import { Grid, GridArea } from '../../common/components/Grid';
 import { Input } from '../../common/components/Input';
+import { Page } from '../../common/components/Page';
 import { Spacing } from '../../common/components/Spacing';
 import { Label, Body, Subheading } from '../../common/components/Typography';
 import { Login, LoginVariables } from '../../generated/Login';
@@ -38,15 +39,15 @@ export const LoginPage = () => {
   }, [result, history]);
 
   return (
-    <Grid
-      padding={30}
-      width="100%"
-      gridTemplateRows={'1fr'}
-      gridTemplateColumns={'1fr'}
-      gridAreas={['page']}
-    >
-      <GridArea area={'page'}>
-        <Card heading={'Login'} width={'100%'} height={'100%'}>
+    <Page title="Login">
+      <Grid
+        padding={30}
+        width="100%"
+        gridTemplateRows={'1fr'}
+        gridTemplateColumns={'1fr'}
+        gridAreas={['page']}
+      >
+        <GridArea area={'page'}>
           <Container flexDirection="column">
             <form
               onSubmit={(e) => {
@@ -65,17 +66,13 @@ export const LoginPage = () => {
                 placeholder="Password"
               />
               <Spacing dir="y" amount={8} />
-              <Button
-                disabled={!username || !password}
-                width="100%"
-                type="submit"
-              >
+              <Button disabled={!username || !password} type="submit">
                 <Body>Login</Body>
               </Button>
             </form>
           </Container>
-        </Card>
-      </GridArea>
-    </Grid>
+        </GridArea>
+      </Grid>
+    </Page>
   );
 };
