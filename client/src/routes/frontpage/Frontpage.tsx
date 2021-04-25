@@ -12,6 +12,7 @@ import { SongSearch } from './SongSearch';
 import { RecentTabs } from './RecentTabs';
 import styled from 'styled-components';
 import { Tab, TabNav } from '../../common/components/TabNav';
+import { Favourites } from './Favourites';
 
 export const Frontpage = () => {
   return (
@@ -28,7 +29,9 @@ export const Frontpage = () => {
               <Tabs />
             </Tab>
 
-            <Tab tabId="favorites">bar</Tab>
+            <Tab tabId="favorites">
+              <Favourites />
+            </Tab>
           </TabNav>
         </GridArea>
         <GridArea area="recent">
@@ -42,8 +45,8 @@ export const Frontpage = () => {
 const Grid = styled.div`
   width: 100%;
   display: grid;
-  grid-template-areas: 'tabs recent';
-  grid-template-columns: 2fr 1fr;
+  grid-template-areas: 'tabs . recent';
+  grid-template-columns: 5fr 1fr 3fr;
   grid-gap: 32px;
 
   ${(props) => props.theme.mobile} {
