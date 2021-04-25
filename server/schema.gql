@@ -62,6 +62,7 @@ type Query {
   convertToEncoding(data: String!, encoding: String!): String!
   currentAccount: Account!
   detectEncoding(data: String!): String!
+  favouriteTabs: [RecentTab!]!
   fetchTrackInfo(id: Float!): TrackInfo!
   getArtist(id: String!): Artist
   getArtists: [Artist!]!

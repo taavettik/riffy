@@ -321,4 +321,30 @@ export class TabService {
 
     return Boolean(row);
   }
+
+  @CamelCase
+  async getFavouriteTabs(accountId: string, tx: Db) {
+    return tx.any<
+      | {
+          tabUrl: string;
+          id?: never;
+        }
+      | {
+          id: string;
+          tabUrl?: never;
+        }
+    >(
+      `
+      select tab_url, id from (
+        select account_id, tab_url, null as id from favourite_tab
+        union all
+        select account_id, null, id as id from tab where is_favourite = true
+      ) as tab
+      where account_id = $(accountId);
+    `,
+      {
+        accountId,
+      },
+    );
+  }
 }

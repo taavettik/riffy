@@ -148,7 +148,7 @@ export class UgSearchResult {
   version: number;
 }
 
-const RecentTab = createUnionType({
+const TabUnion = createUnionType({
   name: 'RecentTab',
   types: () => [ExternalTab, Tab],
 });
@@ -461,8 +461,28 @@ export class TabResolver {
   }
 
   @Authorized()
-  @Query(() => [RecentTab])
-  async recentTabs(@Ctx() ctx: Context): Promise<typeof RecentTab[]> {
+  @Query(() => [TabUnion])
+  async favouriteTabs(@Ctx() ctx: Context) {
+    const favourites = await this.tabService.getFavouriteTabs(
+      ctx.state.user,
+      ctx.state.tx,
+    );
+
+    return Promise.all(
+      favourites.map(async (tab) => {
+        if (tab.id) {
+          const data = await this.tabService.get(tab.id, ctx.state.tx);
+          return Object.assign(new Tab(), data);
+        }
+        const data = await this.getUgTab(tab.tabUrl as string, ctx);
+        return Object.assign(new ExternalTab(), data);
+      }),
+    );
+  }
+
+  @Authorized()
+  @Query(() => [TabUnion])
+  async recentTabs(@Ctx() ctx: Context): Promise<typeof TabUnion[]> {
     const tabs = await this.tabService.getRecentTabs(
       ctx.state.user,
       ctx.state.tx,
