@@ -17,49 +17,34 @@ export const Page: React.FC<{
 }> = ({ children, backButtonLink, title, showBackButton, actions }) => {
   const history = useHistory();
   return (
-    <OuterContainer padding={30} width="100%">
-      <Card
-        heading={
-          <Container
-            width="100%"
-            justifyContent="space-between"
-            flexWrap="wrap"
-          >
-            <Container height="64px" alignItems="center">
-              {showBackButton ? (
-                <>
-                  <IconButton
-                    onClick={() =>
-                      backButtonLink
-                        ? history.push(backButtonLink)
-                        : history.goBack()
-                    }
-                    icon={MdArrowBack}
-                    size={32}
-                  />
-                  <Spacing dir="x" amount={16} />{' '}
-                </>
-              ) : null}
-              <Subheading>{title}</Subheading>
-            </Container>
+    <Container height="100%" flexDirection="column">
+      <Container width="100%" justifyContent="space-between" flexWrap="wrap">
+        <Container height="64px" alignItems="center">
+          {showBackButton ? (
+            <>
+              <IconButton
+                onClick={() =>
+                  backButtonLink
+                    ? history.push(backButtonLink)
+                    : history.goBack()
+                }
+                icon={MdArrowBack}
+                size={32}
+              />
+              <Spacing dir="x" amount={16} />{' '}
+            </>
+          ) : null}
+          <Subheading>{title}</Subheading>
+        </Container>
 
-            <Container height="64px">{actions ?? null}</Container>
-          </Container>
-        }
-        width={'100%'}
-        height={'100%'}
-      >
-        {children}
-      </Card>
-    </OuterContainer>
+        <Container height="64px">{actions ?? null}</Container>
+      </Container>
+
+      <Content>{children}</Content>
+    </Container>
   );
 };
 
-const OuterContainer = styled(Container)`
-  height: Calc(100vh - 120px);
-
-  ${(props) => props.theme.mobile} {
-    padding: 0;
-    height: Calc(100vh - 66px);
-  }
+const Content = styled(Container)`
+  overflow: auto;
 `;

@@ -36,6 +36,13 @@ const GlobalStyle = createGlobalStyle`
     background-color: ${(props) => props.theme.colors.gray.lighter};
   }
 
+  #app {
+    display: flex;
+    justify-content: center;
+    padding: 32px;
+    height: Calc(100vh - 128px);
+  }
+
   * {
     font-family: 'Noto Sans', sans-serif;
   }
@@ -66,47 +73,56 @@ const ProtectedRoute = (props: RouteProps) => {
 
 const App = () => {
   return (
-    <Page id="app">
-      <ThemeProvider theme={theme}>
-        <ApolloProvider client={client}>
-          <GlobalStyle />
-          <Container margin="0 auto" maxWidth={1600} width={'100%'}>
-            <BrowserRouter>
-              <Switch>
-                <Route path="/login">
-                  <LoginPage />
-                </Route>
-                <ProtectedRoute path="/tab/:id">
-                  <Tab />
-                </ProtectedRoute>
-                <ProtectedRoute path="/edit/:id">
-                  <EditTab />
-                </ProtectedRoute>
-                <ProtectedRoute path="/create">
-                  <CreateTab />
-                </ProtectedRoute>
-                <ProtectedRoute path="/upload">
-                  <Upload />
-                </ProtectedRoute>
-                <ProtectedRoute path="/ug/:url">
-                  <Ug />
-                </ProtectedRoute>
-                <ProtectedRoute path="/">
-                  <Frontpage />
-                </ProtectedRoute>
-              </Switch>
-            </BrowserRouter>
-          </Container>
-        </ApolloProvider>
-      </ThemeProvider>
-    </Page>
+    <ThemeProvider theme={theme}>
+      <ApolloProvider client={client}>
+        <GlobalStyle />
+
+        <Card>
+          <BrowserRouter>
+            <Switch>
+              <Route path="/login">
+                <LoginPage />
+              </Route>
+              <ProtectedRoute path="/tab/:id">
+                <Tab />
+              </ProtectedRoute>
+              <ProtectedRoute path="/edit/:id">
+                <EditTab />
+              </ProtectedRoute>
+              <ProtectedRoute path="/create">
+                <CreateTab />
+              </ProtectedRoute>
+              <ProtectedRoute path="/upload">
+                <Upload />
+              </ProtectedRoute>
+              <ProtectedRoute path="/ug/:url">
+                <Ug />
+              </ProtectedRoute>
+              <ProtectedRoute path="/">
+                <Frontpage />
+              </ProtectedRoute>
+            </Switch>
+          </BrowserRouter>
+        </Card>
+      </ApolloProvider>
+    </ThemeProvider>
   );
 };
 
 const Page = styled.div`
   width: 100%;
-  position: absolute;
   display: flex;
+  flex-direction: column;
+`;
+
+const Card = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: 32px;
+  border: 1px solid ${(props) => props.theme.colors.gray.main};
+  background-color: white;
+  box-shadow: 1px 1px ${(props) => props.theme.colors.gray.light};
+  border-radius: ${(props) => props.theme.borderRadius};
 `;
 
 export default App;
