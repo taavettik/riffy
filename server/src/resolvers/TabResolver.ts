@@ -407,6 +407,38 @@ export class TabResolver {
   }
 
   @Authorized()
+  @Mutation(() => Tab)
+  async markTabFavourite(
+    @Arg('id') tabId: string,
+    @Arg('target') target: boolean,
+    @Ctx() ctx: Context,
+  ) {
+    return this.tabService.markTabFavourite(
+      ctx.state.user,
+      tabId,
+      target,
+      ctx.state.tx,
+    );
+  }
+
+  @Authorized()
+  @Mutation(() => ExternalTab)
+  async markExternalTabFavourite(
+    @Arg('url') tabUrl: string,
+    @Arg('target') target: boolean,
+    @Ctx() ctx: Context,
+  ) {
+    await this.tabService.markExternalTabFavourite(
+      ctx.state.user,
+      tabUrl,
+      target,
+      ctx.state.tx,
+    );
+
+    return this.getUgTab(tabUrl, ctx);
+  }
+
+  @Authorized()
   @Mutation(() => Artist)
   async deleteTab(@Arg('id') id: string, @Ctx() ctx: Context) {
     const tab = await this.tabService.get(id, ctx.state.tx);

@@ -260,4 +260,51 @@ export class TabService {
       },
     );
   }
+
+  @CamelCase
+  async markTabFavourite(
+    accountId: string,
+    tabId: string,
+    target: boolean,
+    tx: Db,
+  ) {
+    return tx.one(
+      `
+      update tab
+      set is_favourite = $(target)
+      where
+        account_id = $(accountId) and
+        id = $(tabId)
+      returning *
+    `,
+      { accountId, tabId, target },
+    );
+  }
+
+  async markExternalTabFavourite(
+    accountId: string,
+    tabUrl: string,
+    target: boolean,
+    tx: Db,
+  ) {
+    if (!target) {
+      return tx.none(
+        `delete from favourite_tab where account_id = $(accountId) and tab_url = $(tabUrl)`,
+        {
+          accountId,
+          tabUrl,
+        },
+      );
+    }
+
+    return tx.none(
+      `
+        insert into favourite_tab (account_id, tab_url) values ($(accountId), $(tabUrl))
+        on conflict (account_id, tab_url) do nothing`,
+      {
+        accountId,
+        tabUrl,
+      },
+    );
+  }
 }

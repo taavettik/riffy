@@ -7,3 +7,4 @@ recently_viewed 2021-01-09T21:07:21Z root <root@2353418f7c66> # Add table for re
 tab_isrc 2021-02-13T20:27:59Z root <root@2353418f7c66> # Add isrc field to tabs
 save_transposition 2021-02-14T09:29:32Z taavettik <taavetti@kukkonen.dev> # Save account chord transposition setting
 tab_favourite 2021-04-25T17:13:50Z riffy <riffy@kukkonen.dev> # Add is_favourite field to tab
+favourite_tabs 2021-04-25T17:16:50Z riffy <riffy@kukkonen.dev> # add favourite_tabs table

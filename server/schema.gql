@@ -50,6 +50,8 @@ type Mutation {
   createTabs(tabs: [TabData!]!): [Tab!]!
   deleteTab(id: String!): Artist!
   editTab(chords: String!, id: String!): Tab!
+  markExternalTabFavourite(target: Boolean!, url: String!): ExternalTab!
+  markTabFavourite(id: String!, target: Boolean!): Tab!
   setExternalTabTransposition(transposition: Float!, url: String!): ExternalTab!
   setTabTransposition(id: String!, transposition: Float!): Tab!
 }
