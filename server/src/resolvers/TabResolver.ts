@@ -31,6 +31,9 @@ class BaseTab {
   @Field()
   trackTitle: string;
 
+  @Field()
+  isFavourite: boolean;
+
   trackArtist: string | null;
 }
 
@@ -329,10 +332,16 @@ export class TabResolver {
       { url },
       ctx.state.tx,
     );
+    const isFavourite = await this.tabService.isExternalTabFavourite(
+      ctx.state.user,
+      url,
+      ctx.state.tx,
+    );
     return {
       ...tab,
       url,
       transposition: transposition?.transposition ?? 0,
+      isFavourite,
     };
   }
 

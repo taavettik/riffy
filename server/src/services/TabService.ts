@@ -307,4 +307,18 @@ export class TabService {
       },
     );
   }
+
+  async isExternalTabFavourite(accountId: string, tabUrl: string, tx: Db) {
+    const row = await tx.oneOrNone(
+      `
+      select * from favourite_tab where account_id = $(accountId) and tab_url = $(tabUrl)
+    `,
+      {
+        accountId,
+        tabUrl,
+      },
+    );
+
+    return Boolean(row);
+  }
 }

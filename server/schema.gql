@@ -21,11 +21,13 @@ type ArtistSearchResult {
 
 type BaseTab {
   chords: String!
+  isFavourite: Boolean!
   trackTitle: String!
 }
 
 type ExternalTab {
   chords: String!
+  isFavourite: Boolean!
   trackArtist: String!
   trackTitle: String!
   transposition: Float!
@@ -81,6 +83,7 @@ type Tab {
   artist: Artist
   chords: String!
   id: String!
+  isFavourite: Boolean!
   isrc: String
   trackTitle: String!
   transposition: Float!
