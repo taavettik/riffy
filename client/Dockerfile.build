@@ -2,7 +2,7 @@ FROM node:alpine AS builder
 
 WORKDIR /build
 COPY . .
-RUN ls
+RUN apk add python3
 
 RUN yarn install --frozen-lockfile && \
   npm run build && \
