@@ -17,7 +17,9 @@ export const Input = styled.input<LayoutProps & FlexboxProps>`
 export const TextArea = styled(Input).attrs({ as: 'textarea' })<
   {
     resize?: React.CSSProperties['resize'];
+    monospace?: boolean;
   } & LayoutProps
 >`
   ${(props) => props.resize && `resize: ${props.resize}`};
+  ${(props) => (props.monospace ? `font-family: monospace;` : '')}
 `;

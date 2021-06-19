@@ -63,6 +63,7 @@ export const EditTab = () => {
           spellCheck="false"
           resize="none"
           height="100%"
+          monospace
           onChange={(e) => setChords(e.target.value)}
         >
           {chords}
