@@ -163,6 +163,7 @@ export const CreateTab = () => {
             spellCheck={'false'}
             height="100%"
             resize="none"
+            monospace
             onChange={(e) => setChords(e.target.value)}
           >
             {chords}
