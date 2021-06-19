@@ -82,7 +82,7 @@ const App = () => {
       <ApolloProvider client={client}>
         <GlobalStyle />
 
-        <TabContext.Provider>
+        <TabContext.Provider value={{}}>
           <Card>
             <BrowserRouter>
               <Switch>
