@@ -23,6 +23,7 @@ import { Tab } from './routes/tab/Tab';
 import { EditTab } from './routes/edit/EditTab';
 import { Ug } from './routes/ug/Ug';
 import { Upload } from './routes/upload/Upload';
+import { TabContext } from './common/components/TabNav';
 
 const client = new ApolloClient({
   uri: config.API_URL,
@@ -81,33 +82,35 @@ const App = () => {
       <ApolloProvider client={client}>
         <GlobalStyle />
 
-        <Card>
-          <BrowserRouter>
-            <Switch>
-              <Route path="/login">
-                <LoginPage />
-              </Route>
-              <ProtectedRoute path="/tab/:id">
-                <Tab />
-              </ProtectedRoute>
-              <ProtectedRoute path="/edit/:id">
-                <EditTab />
-              </ProtectedRoute>
-              <ProtectedRoute path="/create">
-                <CreateTab />
-              </ProtectedRoute>
-              <ProtectedRoute path="/upload">
-                <Upload />
-              </ProtectedRoute>
-              <ProtectedRoute path="/ug/:url">
-                <Ug />
-              </ProtectedRoute>
-              <ProtectedRoute path="/">
-                <Frontpage />
-              </ProtectedRoute>
-            </Switch>
-          </BrowserRouter>
-        </Card>
+        <TabContext.Provider>
+          <Card>
+            <BrowserRouter>
+              <Switch>
+                <Route path="/login">
+                  <LoginPage />
+                </Route>
+                <ProtectedRoute path="/tab/:id">
+                  <Tab />
+                </ProtectedRoute>
+                <ProtectedRoute path="/edit/:id">
+                  <EditTab />
+                </ProtectedRoute>
+                <ProtectedRoute path="/create">
+                  <CreateTab />
+                </ProtectedRoute>
+                <ProtectedRoute path="/upload">
+                  <Upload />
+                </ProtectedRoute>
+                <ProtectedRoute path="/ug/:url">
+                  <Ug />
+                </ProtectedRoute>
+                <ProtectedRoute path="/">
+                  <Frontpage />
+                </ProtectedRoute>
+              </Switch>
+            </BrowserRouter>
+          </Card>
+        </TabContext.Provider>
       </ApolloProvider>
     </ThemeProvider>
   );

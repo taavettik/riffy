@@ -1,17 +1,35 @@
-import { h } from 'preact';
+import { createContext, h } from 'preact';
 import { Container } from './Container';
 import { Heading, Subheading } from './Typography';
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'preact/hooks';
+import { useContext, useEffect, useRef, useState } from 'preact/hooks';
 
 interface TabNavProps {
   tabs: { id: string; heading?: string | JSX.Element }[];
+  id: string;
 }
 
-export const TabNav: React.FC<TabNavProps> = ({ tabs, children }) => {
-  const [activeTab, setActiveTab] = useState<string | undefined>(tabs[0]?.id);
+export const TabContext = createContext<
+  Record<string, { activeTab: string | undefined } | undefined>
+>({});
+
+export const TabNav: React.FC<TabNavProps> = ({ tabs, children, id }) => {
+  const tabCtx = useContext(TabContext);
+  const initialData = tabCtx[id];
+
+  const [activeTab, setActiveTab] = useState<string | undefined>(
+    initialData?.activeTab ?? tabs[0]?.id,
+  );
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    tabCtx[id] = { activeTab };
+  }, [activeTab, id]);
 
   const childArray = Array.isArray(children) ? children : [children];
 

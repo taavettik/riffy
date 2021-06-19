@@ -20,6 +20,7 @@ export const Frontpage = () => {
       <Grid>
         <GridArea area="tabs">
           <TabNav
+            id="frontpage"
             tabs={[
               { id: 'artists', heading: 'My Artists' },
               { id: 'favorites', heading: 'Favourites' },
