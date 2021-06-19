@@ -3,7 +3,7 @@ FROM node:alpine
 WORKDIR /service
 COPY . .
 
-RUN apk add python make g++ && \
+RUN apk add python3 make g++ && \
   yarn install --frozen-lockfile && \
   yarn run build
 
