@@ -14,6 +14,7 @@ import { GetArtists } from '../../generated/GetArtists';
 import { DropZone } from '../../common/components/DropZone';
 import { CreateArtistModal } from '../../common/components/modals/CreateArtistModal';
 import { IconButton } from '../../common/components/IconButton';
+import { TabLinks } from '../../common/components/TabLinks';
 
 export const Tabs = () => {
   const { data, refetch } = useQuery<GetArtists>(GET_ARTISTS);
@@ -139,11 +140,10 @@ export const Tabs = () => {
               >
                 ..
               </TabLink>
-              {tabData?.getArtist?.tabs.map((tab) => (
-                <TabLink key={tab.id} to={`/tab/${tab.id}`}>
-                  {tab.trackTitle}
-                </TabLink>
-              ))}
+
+              {tabData?.getArtist && (
+                <TabLinks tabs={tabData?.getArtist?.tabs} />
+              )}
             </>
           ) : (
             data?.getArtists.map((artist) => (
@@ -217,6 +217,7 @@ const GET_TABS = gql`
       tabs {
         id
         trackTitle
+        isFavourite
       }
     }
   }

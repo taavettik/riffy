@@ -38,6 +38,7 @@ const FAVOURITE_TABS = gql`
         url
         trackTitle
         trackArtist
+        isFavourite
       }
       ... on Tab {
         id
@@ -46,6 +47,7 @@ const FAVOURITE_TABS = gql`
           id
           name
         }
+        isFavourite
       }
     }
   }
