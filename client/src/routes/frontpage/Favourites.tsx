@@ -15,7 +15,7 @@ export const Favourites = () => {
   const tabs = data?.favouriteTabs ?? [];
 
   return (
-    <Container flexDirection="column" width="100%">
+    <Container flexDirection="column" width="100%" overflowY="auto">
       <Spacing dir="y" amount={32} />
 
       {tabs.length === 0 && (
