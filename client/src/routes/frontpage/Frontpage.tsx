@@ -11,13 +11,29 @@ import { Input } from '../../common/components/Input';
 import { SongSearch } from './SongSearch';
 import { RecentTabs } from './RecentTabs';
 import styled from 'styled-components';
+import { Tab, TabNav } from '../../common/components/TabNav';
+import { Favourites } from './Favourites';
 
 export const Frontpage = () => {
   return (
     <Page title="Overview" actions={<SongSearch />}>
       <Grid>
         <GridArea area="tabs">
-          <Tabs />
+          <TabNav
+            id="frontpage"
+            tabs={[
+              { id: 'artists', heading: 'My Artists' },
+              { id: 'favorites', heading: 'Favourites' },
+            ]}
+          >
+            <Tab tabId="artists">
+              <Tabs />
+            </Tab>
+
+            <Tab tabId="favorites">
+              <Favourites />
+            </Tab>
+          </TabNav>
         </GridArea>
         <GridArea area="recent">
           <RecentTabs />
@@ -30,8 +46,8 @@ export const Frontpage = () => {
 const Grid = styled.div`
   width: 100%;
   display: grid;
-  grid-template-areas: 'tabs recent';
-  grid-template-columns: 2fr 1fr;
+  grid-template-areas: 'tabs . recent';
+  grid-template-columns: 5fr 1fr 3fr;
   grid-gap: 32px;
 
   ${(props) => props.theme.mobile} {

@@ -260,4 +260,91 @@ export class TabService {
       },
     );
   }
+
+  @CamelCase
+  async markTabFavourite(
+    accountId: string,
+    tabId: string,
+    target: boolean,
+    tx: Db,
+  ) {
+    return tx.one(
+      `
+      update tab
+      set is_favourite = $(target)
+      where
+        account_id = $(accountId) and
+        id = $(tabId)
+      returning *
+    `,
+      { accountId, tabId, target },
+    );
+  }
+
+  async markExternalTabFavourite(
+    accountId: string,
+    tabUrl: string,
+    target: boolean,
+    tx: Db,
+  ) {
+    if (!target) {
+      return tx.none(
+        `delete from favourite_tab where account_id = $(accountId) and tab_url = $(tabUrl)`,
+        {
+          accountId,
+          tabUrl,
+        },
+      );
+    }
+
+    return tx.none(
+      `
+        insert into favourite_tab (account_id, tab_url) values ($(accountId), $(tabUrl))
+        on conflict (account_id, tab_url) do nothing`,
+      {
+        accountId,
+        tabUrl,
+      },
+    );
+  }
+
+  async isExternalTabFavourite(accountId: string, tabUrl: string, tx: Db) {
+    const row = await tx.oneOrNone(
+      `
+      select * from favourite_tab where account_id = $(accountId) and tab_url = $(tabUrl)
+    `,
+      {
+        accountId,
+        tabUrl,
+      },
+    );
+
+    return Boolean(row);
+  }
+
+  @CamelCase
+  async getFavouriteTabs(accountId: string, tx: Db) {
+    return tx.any<
+      | {
+          tabUrl: string;
+          id?: never;
+        }
+      | {
+          id: string;
+          tabUrl?: never;
+        }
+    >(
+      `
+      select tab_url, id from (
+        select account_id, tab_url, null as id from favourite_tab
+        union all
+        select account_id, null, id as id from tab where is_favourite = true
+      ) as tab
+      where account_id = $(accountId);
+    `,
+      {
+        accountId,
+      },
+    );
+  }
 }

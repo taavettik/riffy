@@ -31,6 +31,9 @@ class BaseTab {
   @Field()
   trackTitle: string;
 
+  @Field()
+  isFavourite: boolean;
+
   trackArtist: string | null;
 }
 
@@ -57,6 +60,11 @@ export class Tab extends BaseTab {
 
 @ObjectType()
 export class ExternalTab extends BaseTab {
+  @Field(() => String)
+  get id() {
+    return this.url;
+  }
+
   @Field()
   url: string;
 
@@ -145,7 +153,7 @@ export class UgSearchResult {
   version: number;
 }
 
-const RecentTab = createUnionType({
+const TabUnion = createUnionType({
   name: 'RecentTab',
   types: () => [ExternalTab, Tab],
 });
@@ -329,10 +337,16 @@ export class TabResolver {
       { url },
       ctx.state.tx,
     );
+    const isFavourite = await this.tabService.isExternalTabFavourite(
+      ctx.state.user,
+      url,
+      ctx.state.tx,
+    );
     return {
       ...tab,
       url,
       transposition: transposition?.transposition ?? 0,
+      isFavourite,
     };
   }
 
@@ -407,6 +421,38 @@ export class TabResolver {
   }
 
   @Authorized()
+  @Mutation(() => Tab)
+  async markTabFavourite(
+    @Arg('id') tabId: string,
+    @Arg('target') target: boolean,
+    @Ctx() ctx: Context,
+  ) {
+    return this.tabService.markTabFavourite(
+      ctx.state.user,
+      tabId,
+      target,
+      ctx.state.tx,
+    );
+  }
+
+  @Authorized()
+  @Mutation(() => ExternalTab)
+  async markExternalTabFavourite(
+    @Arg('url') tabUrl: string,
+    @Arg('target') target: boolean,
+    @Ctx() ctx: Context,
+  ) {
+    await this.tabService.markExternalTabFavourite(
+      ctx.state.user,
+      tabUrl,
+      target,
+      ctx.state.tx,
+    );
+
+    return this.getUgTab(tabUrl, ctx);
+  }
+
+  @Authorized()
   @Mutation(() => Artist)
   async deleteTab(@Arg('id') id: string, @Ctx() ctx: Context) {
     const tab = await this.tabService.get(id, ctx.state.tx);
@@ -420,8 +466,41 @@ export class TabResolver {
   }
 
   @Authorized()
-  @Query(() => [RecentTab])
-  async recentTabs(@Ctx() ctx: Context): Promise<typeof RecentTab[]> {
+  @Query(() => [TabUnion])
+  async favouriteTabs(@Ctx() ctx: Context) {
+    const favourites = await this.tabService.getFavouriteTabs(
+      ctx.state.user,
+      ctx.state.tx,
+    );
+
+    const tabs: typeof TabUnion[] = await Promise.all(
+      favourites.map(async (tab) => {
+        if (tab.id) {
+          const data = await this.tabService.get(tab.id, ctx.state.tx);
+          return Object.assign(new Tab(), data);
+        }
+        const data = await this.getUgTab(tab.tabUrl as string, ctx);
+        return Object.assign(new ExternalTab(), data);
+      }),
+    );
+
+    return tabs.sort((a, b) => {
+      if (a.trackArtist === b.trackArtist) {
+        return a.trackTitle.localeCompare(b.trackTitle);
+      }
+      if (!a.trackArtist) {
+        return -1;
+      }
+      if (!b.trackArtist) {
+        return 1;
+      }
+      return a.trackArtist.localeCompare(b.trackArtist);
+    });
+  }
+
+  @Authorized()
+  @Query(() => [TabUnion])
+  async recentTabs(@Ctx() ctx: Context): Promise<typeof TabUnion[]> {
     const tabs = await this.tabService.getRecentTabs(
       ctx.state.user,
       ctx.state.tx,
