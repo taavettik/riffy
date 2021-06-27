@@ -2,6 +2,8 @@ import { h } from 'preact';
 import { Spacing } from './Spacing';
 import { TabLink } from './TabLink';
 import { UgIcon } from './UgIcon';
+import { Body } from './Typography';
+import { Container } from './Container';
 
 type Tab =
   | {
