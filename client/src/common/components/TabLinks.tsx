@@ -77,8 +77,8 @@ export const TabLinks = ({ tabs }: { tabs: Tab[] }) => {
             <PlainLink to={`/ug/${encodeURIComponent(tab.url)}`}>
               {label}
             </PlainLink>{' '}
-            <Spacing dir="x" amount={8} /> {endAdornment}{' '}
             <Spacing dir="x" amount={8} /> <UgIcon />
+            <Spacing dir="x" amount={8} /> {endAdornment}
           </TabLinkRow>
         );
       })}
