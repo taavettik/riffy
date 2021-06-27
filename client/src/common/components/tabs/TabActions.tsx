@@ -31,12 +31,14 @@ export const TabActions = ({
   const [markTabFavourite] = useMutation<
     MarkTabFavourite,
     MarkTabFavouriteVariables
-  >(MARK_TAB_FAVOURITE);
+  >(MARK_TAB_FAVOURITE, {
+    refetchQueries: ['FavouriteTabs'],
+  });
   const [markExternalTabFavourite] = useMutation<
     MarkExternalTabFavourite,
     MarkExternalTabFavouriteVariables
   >(MARK_EXTERNAL_TAB_FAVOURITE, {
-    refetchQueries: ['getUgTab'],
+    refetchQueries: ['FavouriteTabs', 'GetUgTab'],
   });
 
   const onMarkFavourite = () => {
