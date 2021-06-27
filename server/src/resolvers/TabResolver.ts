@@ -473,7 +473,7 @@ export class TabResolver {
       ctx.state.tx,
     );
 
-    return Promise.all(
+    const tabs: typeof TabUnion[] = await Promise.all(
       favourites.map(async (tab) => {
         if (tab.id) {
           const data = await this.tabService.get(tab.id, ctx.state.tx);
@@ -483,6 +483,19 @@ export class TabResolver {
         return Object.assign(new ExternalTab(), data);
       }),
     );
+
+    return tabs.sort((a, b) => {
+      if (a.trackArtist === b.trackArtist) {
+        return a.trackTitle.localeCompare(b.trackTitle);
+      }
+      if (!a.trackArtist) {
+        return -1;
+      }
+      if (!b.trackArtist) {
+        return 1;
+      }
+      return a.trackArtist.localeCompare(b.trackArtist);
+    });
   }
 
   @Authorized()
