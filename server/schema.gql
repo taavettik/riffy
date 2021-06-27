@@ -27,6 +27,7 @@ type BaseTab {
 
 type ExternalTab {
   chords: String!
+  id: String!
   isFavourite: Boolean!
   trackArtist: String!
   trackTitle: String!

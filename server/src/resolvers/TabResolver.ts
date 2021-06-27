@@ -60,6 +60,11 @@ export class Tab extends BaseTab {
 
 @ObjectType()
 export class ExternalTab extends BaseTab {
+  @Field(() => String)
+  get id() {
+    return this.url;
+  }
+
   @Field()
   url: string;
 
