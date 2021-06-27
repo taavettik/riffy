@@ -10,6 +10,20 @@ export const GET_TAB = gql`
         name
       }
       transposition
+      isFavourite
+    }
+  }
+`;
+
+export const GET_UG_TAB = gql`
+  query GetUgTab($url: String!) {
+    getUgTab(url: $url) {
+      id
+      trackTitle
+      trackArtist
+      chords
+      transposition
+      isFavourite
     }
   }
 `;

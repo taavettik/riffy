@@ -21,11 +21,14 @@ type ArtistSearchResult {
 
 type BaseTab {
   chords: String!
+  isFavourite: Boolean!
   trackTitle: String!
 }
 
 type ExternalTab {
   chords: String!
+  id: String!
+  isFavourite: Boolean!
   trackArtist: String!
   trackTitle: String!
   transposition: Float!
@@ -50,6 +53,8 @@ type Mutation {
   createTabs(tabs: [TabData!]!): [Tab!]!
   deleteTab(id: String!): Artist!
   editTab(chords: String!, id: String!): Tab!
+  markExternalTabFavourite(target: Boolean!, url: String!): ExternalTab!
+  markTabFavourite(id: String!, target: Boolean!): Tab!
   setExternalTabTransposition(transposition: Float!, url: String!): ExternalTab!
   setTabTransposition(id: String!, transposition: Float!): Tab!
 }
@@ -58,6 +63,7 @@ type Query {
   convertToEncoding(data: String!, encoding: String!): String!
   currentAccount: Account!
   detectEncoding(data: String!): String!
+  favouriteTabs: [RecentTab!]!
   fetchTrackInfo(id: Float!): TrackInfo!
   getArtist(id: String!): Artist
   getArtists: [Artist!]!
@@ -79,6 +85,7 @@ type Tab {
   artist: Artist
   chords: String!
   id: String!
+  isFavourite: Boolean!
   isrc: String
   trackTitle: String!
   transposition: Float!

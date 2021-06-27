@@ -19,6 +19,7 @@ export interface GetTab_getTab {
   trackTitle: string;
   artist: GetTab_getTab_artist | null;
   transposition: number;
+  isFavourite: boolean;
 }
 
 export interface GetTab {

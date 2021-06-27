@@ -7,14 +7,15 @@ import { Container } from '../../common/components/Container';
 import { IconButton } from '../../common/components/IconButton';
 import { Page } from '../../common/components/Page';
 import { Spacing } from '../../common/components/Spacing';
+import { TabActions } from '../../common/components/tabs/TabActions';
 import { UgIcon } from '../../common/components/UgIcon';
 import { DownloadIcon } from '../../common/icons';
+import { GET_UG_TAB } from '../../common/queries';
 import { GetUgTab, GetUgTabVariables } from '../../generated/GetUgTab';
 import {
   SetExternalTabTransposition,
   SetExternalTabTranspositionVariables,
 } from '../../generated/SetExternalTabTransposition';
-import { PopupButton } from '../tab/Tab';
 
 export const Ug = () => {
   const { url } = useParams<{ url: string }>();
@@ -74,9 +75,11 @@ export const Ug = () => {
       }
       actions={
         <>
-          <PopupButton onClick={() => setPopupOpen((open) => !open)} />
-
-          <Spacing dir="x" amount={24} />
+          <TabActions
+            url={decodedUrl}
+            isFavourite={data.getUgTab?.isFavourite ?? false}
+            onTogglePopup={() => setPopupOpen((open) => !open)}
+          />
 
           <IconButton
             onClick={() => onImport()}
@@ -107,17 +110,6 @@ export const Ug = () => {
     </Page>
   );
 };
-
-const GET_UG_TAB = gql`
-  query GetUgTab($url: String!) {
-    getUgTab(url: $url) {
-      trackTitle
-      trackArtist
-      chords
-      transposition
-    }
-  }
-`;
 
 const SET_EXTERNAL_TAB_TRANSPOSITION = gql`
   mutation SetExternalTabTransposition($url: String!, $transposition: Float!) {
