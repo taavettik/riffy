@@ -27,7 +27,6 @@ const Button = styled.button`
   padding: 0;
   display: flex;
 
-  &:focus,
   &:hover {
     outline: none;
     color: ${(props) => props.theme.colors.primary.dark};
