@@ -35,13 +35,16 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-size: ${(props) => props.theme.typography.body.fontSize as any}px;
     background-color: ${(props) => props.theme.colors.gray.lighter};
+
+    ${(props) => props.theme.mobile} {
+      background-color: white;
+    }
   }
 
   #app {
     display: flex;
     justify-content: center;
-    padding: 32px;
-    height: Calc(100vh - 128px);
+    padding: 32px 32px 0 32px;
 
     ${(props) => props.theme.mobile} {
       padding: 0;
@@ -125,6 +128,10 @@ const Card = styled.div`
   background-color: white;
   box-shadow: 1px 1px ${(props) => props.theme.colors.gray.light};
   border-radius: ${(props) => props.theme.borderRadius};
+
+  ${(props) => props.theme.mobile} {
+    border: none;
+  }
 `;
 
 export default App;

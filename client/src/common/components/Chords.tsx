@@ -117,7 +117,6 @@ export const Chords = ({
           // if not, scroll in x
           container.scrollBy(e.deltaY, 0);
         }}
-        maxHeight="Calc(100vh - 200px)"
       >
         {popupOpen && (
           <ChordsOverlay onClick={() => popupWindowRef.current.focus()}>
@@ -244,6 +243,10 @@ const ChordsContainer = styled(Container)<{ list?: boolean }>`
       border-right: 1px solid ${props.theme.colors.gray.main};
     }
   `}
+
+  ${(props) => props.theme.mobile} {
+    height: 100%;
+  }
 
   span {
     font-family: monospace !important;

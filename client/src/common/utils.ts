@@ -1,16 +1,16 @@
 const chords = [
   'E',
   'F',
-  'F#',
+  ['F#', 'Gb'],
   'G',
-  'G#',
+  ['G#', 'Ab'],
   'A',
-  'A#',
+  ['A#', 'Bb'],
   ['B', 'H'],
   'C',
-  'C#',
+  ['C#', 'Db'],
   'D',
-  'D#',
+  ['D#', 'Eb'],
 ];
 
 export function range(num: number) {
@@ -47,7 +47,7 @@ function getMatch(comparison: string, chord: string | string[]) {
   if (Array.isArray(chord)) {
     return chord.find(
       (version) =>
-        version === comparison.slice(0, version.length).toLocaleUpperCase(),
+        version.toLocaleUpperCase() === comparison.toLocaleUpperCase(),
     );
   }
   return comparison.slice(0, chord.length).toLocaleUpperCase() === chord
@@ -92,7 +92,8 @@ export function transposeChordRow(row: string, steps: number) {
       }
       const diff = prevTransposed.length - prev.length;
       if (diff > 0) {
-        return str + cur.slice(diff);
+        const rest = cur.slice(diff);
+        return str + (rest.length === 0 ? ' ' : rest);
       } else {
         const spaces = range(Math.abs(diff))
           .map(() => ' ')

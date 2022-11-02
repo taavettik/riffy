@@ -23,7 +23,6 @@ services:
   server:
     container_name: riffy-server
     build: ./server
-    command: npm start
     volumes: 
       - ./server:/service
     environment:
@@ -31,7 +30,6 @@ services:
   client:
     container_name: riffy-client
     build: ./client
-    command: npm run dev
     volumes:
       - ./client:/service
     ports:

@@ -4,7 +4,7 @@ import { Card } from '../../common/components/Card';
 import { Container } from '../../common/components/Container';
 import { Heading, Subheading } from '../../common/components/Typography';
 import { Tabs } from './Tabs';
-import { gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { RouteProps } from 'react-router';
 import { Page } from '../../common/components/Page';
 import { Input } from '../../common/components/Input';
@@ -12,9 +12,14 @@ import { SongSearch } from './SongSearch';
 import { RecentTabs } from './RecentTabs';
 import styled from 'styled-components';
 import { Tab, TabNav } from '../../common/components/TabNav';
-import { Favourites } from './Favourites';
+import { Favourites, FAVOURITE_TABS } from './Favourites';
 
 export const Frontpage = () => {
+  // prefetch data
+  useQuery(FAVOURITE_TABS, {
+    fetchPolicy: 'cache-and-network',
+  });
+
   return (
     <Page title="Overview" actions={<SongSearch />}>
       <Grid>
@@ -51,8 +56,8 @@ const Grid = styled.div`
   grid-gap: 32px;
 
   ${(props) => props.theme.mobile} {
-    grid-template-areas: 'tabs' 'recent';
+    grid-template-areas: 'recent' 'tabs';
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 200px auto;
   }
 `;

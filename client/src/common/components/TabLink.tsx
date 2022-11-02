@@ -14,6 +14,7 @@ export const TabLink = styled(Link)`
   border-width: 0 0 1px 0;
   font-size: 1em;
   cursor: pointer;
+  height: 40px;
 
   :focus {
     outline: none;

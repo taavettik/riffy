@@ -50,4 +50,11 @@ export const Page: React.FC<{
 const Content = styled(Container)`
   overflow: auto;
   flex: 1;
+
+  max-height: calc(100vh - 200px);
+  min-height: calc(100vh - 200px);
+  ${(props) => props.theme.mobile} {
+    max-height: 100%;
+    min-height: calc(100vh - 256px);
+  }
 `;

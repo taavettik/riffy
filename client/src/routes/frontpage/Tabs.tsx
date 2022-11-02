@@ -123,7 +123,7 @@ export const Tabs = () => {
 
         <Spacing dir="y" amount={16} />
 
-        <Container overflowY="auto" flexDirection="column">
+        <Container flexDirection="column">
           {showTabs ? (
             <>
               <TabLink
