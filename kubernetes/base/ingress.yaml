@@ -11,7 +11,6 @@ spec:
     - secretName: riffy-tls
       hosts:
         - ${HOST}
-        - kukkonen.dev
   rules:
   - host: ${HOST}
     http:
