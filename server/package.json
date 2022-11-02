@@ -1,7 +1,7 @@
 {
   "name": "server",
   "scripts": {
-    "start": "nodemon -e ts",
+    "dev": "nodemon -e ts",
     "build": "tsc"
   },
   "version": "1.0.0",
