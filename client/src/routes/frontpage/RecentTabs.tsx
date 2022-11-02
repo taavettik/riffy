@@ -22,7 +22,7 @@ export const RecentTabs = () => {
   }
 
   return (
-    <Container flexDirection="column">
+    <Container flexDirection="column" width="100%">
       <Subheading>Recently viewed</Subheading>
 
       <Spacing dir="y" amount={16} />

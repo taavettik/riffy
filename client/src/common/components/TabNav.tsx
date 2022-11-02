@@ -3,6 +3,7 @@ import { Container } from './Container';
 import { Heading, Subheading } from './Typography';
 import styled from 'styled-components';
 import { useContext, useEffect, useRef, useState } from 'preact/hooks';
+import { Spacing } from './Spacing';
 
 interface TabNavProps {
   tabs: { id: string; heading?: string | JSX.Element }[];
@@ -76,13 +77,27 @@ export const TabNav: React.FC<TabNavProps> = ({ tabs, children, id }) => {
         ))}
       </Container>
 
-      <Container width="100%" height="100%">
+      <Spacing dir="y" amount={16} />
+
+      <InnerContainer>
         {childArray.find((child) => child === activeTabElement) ??
           childArray[0]}
-      </Container>
+      </InnerContainer>
     </Container>
   );
 };
+
+const InnerContainer = styled(Container)`
+  width: 100%;
+  height: 100%;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  ${(p) => p.theme.mobile} {
+    overflow-y: hidden;
+  }
+`;
 
 const TabLink = styled.button<{ active?: boolean }>`
   background: none;

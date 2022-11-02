@@ -31,7 +31,7 @@ export const Favourites = () => {
   );
 };
 
-const FAVOURITE_TABS = gql`
+export const FAVOURITE_TABS = gql`
   query FavouriteTabs {
     favouriteTabs {
       ... on ExternalTab {

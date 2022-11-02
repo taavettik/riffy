@@ -12,7 +12,3 @@ if (process.env.NODE_ENV === 'development') {
 const root = document.getElementById('app')!;
 
 render(<App />, root);
-
-if (module.hot) {
-  module.hot.accept();
-}

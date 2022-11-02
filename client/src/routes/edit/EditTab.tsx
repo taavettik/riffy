@@ -58,7 +58,7 @@ export const EditTab = () => {
       title={`Editing ${tab.artist?.name ?? ''} - ${tab.trackTitle}`}
       showBackButton
     >
-      <Container width="100%" height="100%" flexDirection="column">
+      <Container width="100%" flexDirection="column">
         <TextArea
           spellCheck="false"
           resize="none"
