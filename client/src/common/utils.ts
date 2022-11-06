@@ -63,6 +63,10 @@ export function transposeChord(chord: string, steps: number) {
     index: number;
   }[];
 
+  if (matchingChords.length === 0) {
+    return chord;
+  }
+
   // Find the longest chord, e.g. C# instead of C
   const { match, index } = matchingChords.reduce((longest, chord) =>
     chord.match.length > longest.match.length ? chord : longest,
