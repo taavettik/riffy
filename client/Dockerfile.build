@@ -8,6 +8,8 @@ RUN apk add python3 make g++ && \
   npm run build && \
   rm -r node_modules
 
+RUN ls
+
 FROM nginx
 
 COPY --from=builder /build/dist/* /usr/share/nginx/html/
