@@ -45,12 +45,20 @@ export function cap(index: number): number {
  */
 function getMatch(comparison: string, chord: string | string[]) {
   if (Array.isArray(chord)) {
-    return chord.find(
+    const matches = chord.filter(
       (version) =>
-        version.toLocaleUpperCase() === comparison.toLocaleUpperCase(),
+        version.toLocaleUpperCase() ===
+        comparison.slice(0, version.length).toLocaleUpperCase(),
+    );
+
+    return matches.reduce(
+      (longest, match) =>
+        match.length > (longest?.length ?? 0) ? match : longest,
+      undefined as string | undefined,
     );
   }
-  return comparison.slice(0, chord.length).toLocaleUpperCase() === chord
+  return comparison.slice(0, chord.length).toLocaleUpperCase() ===
+    chord.toLocaleUpperCase()
     ? chord
     : undefined;
 }
@@ -62,6 +70,8 @@ export function transposeChord(chord: string, steps: number) {
     match: string;
     index: number;
   }[];
+
+  console.log(matchingChords);
 
   if (matchingChords.length === 0) {
     return chord;
@@ -84,6 +94,7 @@ export function transposeChord(chord: string, steps: number) {
 
 export function transposeChordRow(row: string, steps: number) {
   const words = row.split(/(\s+)/g);
+
   const transposed = words.map((word) =>
     word.trim() === '' ? undefined : transposeChord(word, steps),
   );
@@ -112,3 +123,5 @@ export function transposeChordRow(row: string, steps: number) {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function noop() {}
+
+console.log(transposeChord('F#m', -2));
