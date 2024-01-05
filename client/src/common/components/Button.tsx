@@ -25,6 +25,7 @@ export const Button = styled.button<
     if (variant === 'primary') {
       return `
         background-color: ${theme.colors.primary.lighter};
+        color: black;
         border: 1px solid ${theme.colors.primary.dark};
         &:focus {
           box-shadow: 0 0 0 1px ${theme.colors.primary.dark};
@@ -33,6 +34,12 @@ export const Button = styled.button<
         &:focus,
         &:hover {
           background-color: ${theme.colors.primary.lightest}
+        }
+
+        &:disabled {
+          background-color: ${theme.colors.primary.light};
+          opacity: 0.5;
+          cursor: not-allowed;
         }
       `;
     }

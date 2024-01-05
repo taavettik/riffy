@@ -25,6 +25,7 @@ services:
     build: ./server
     volumes: 
       - ./server:/service
+      - /service/node_modules
     environment:
       - PORT=1234
   client:
@@ -32,6 +33,7 @@ services:
     build: ./client
     volumes:
       - ./client:/service
+      - /service/node_modules
     ports:
       - "3031:3031"
 

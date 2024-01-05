@@ -1,5 +1,4 @@
-import * as argon from 'argon2';
-import { ValidationContext } from 'graphql';
+import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { Context, DefaultContext } from 'koa';
 import {
@@ -32,7 +31,7 @@ export class Account {
 export class AccountResolver {
   constructor(private readonly accountService: AccountService) {}
 
-  @Query(() => String)
+  @Query(() => Boolean)
   async login(
     @Arg('name') name: string,
     @Arg('password') password: string,
@@ -44,7 +43,7 @@ export class AccountResolver {
       return false;
     }
 
-    const passwordValid = await argon.verify(account.passwordHash, password);
+    const passwordValid = await bcrypt.compare(password, account.passwordHash);
     if (!passwordValid) {
       return false;
     }

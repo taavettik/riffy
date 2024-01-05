@@ -71,7 +71,7 @@ type Query {
   getTab(id: String!): Tab!
   getTabs: [Tab!]!
   getUgTab(url: String!): ExternalTab
-  login(name: String!, password: String!): String!
+  login(name: String!, password: String!): Boolean!
   recentTabs: [RecentTab!]!
   searchArtists(query: String!): [ArtistSearchResult!]!
   searchTabs(query: String!): [Tab!]!

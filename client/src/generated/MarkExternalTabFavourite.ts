@@ -9,7 +9,7 @@
 
 export interface MarkExternalTabFavourite_markExternalTabFavourite {
   __typename: "ExternalTab";
-  url: string;
+  id: string;
   isFavourite: boolean;
 }
 

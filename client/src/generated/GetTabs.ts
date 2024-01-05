@@ -11,6 +11,7 @@ export interface GetTabs_getArtist_tabs {
   __typename: "Tab";
   id: string;
   trackTitle: string;
+  isFavourite: boolean;
 }
 
 export interface GetTabs_getArtist {

@@ -12,6 +12,7 @@ export interface FavouriteTabs_favouriteTabs_ExternalTab {
   url: string;
   trackTitle: string;
   trackArtist: string;
+  isFavourite: boolean;
 }
 
 export interface FavouriteTabs_favouriteTabs_Tab_artist {
@@ -25,6 +26,7 @@ export interface FavouriteTabs_favouriteTabs_Tab {
   id: string;
   trackTitle: string;
   artist: FavouriteTabs_favouriteTabs_Tab_artist | null;
+  isFavourite: boolean;
 }
 
 export type FavouriteTabs_favouriteTabs = FavouriteTabs_favouriteTabs_ExternalTab | FavouriteTabs_favouriteTabs_Tab;

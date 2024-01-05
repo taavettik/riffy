@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface Login {
-  login: string;
+  login: boolean;
 }
 
 export interface LoginVariables {
