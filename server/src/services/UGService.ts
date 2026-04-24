@@ -9,11 +9,14 @@ import { UgSearchResult } from '../resolvers/TabResolver';
 
 const UG_URL = 'https://tabs.ultimate-guitar.com/';
 
-// got-scraping is ESM-only; load it once via dynamic import
+// got-scraping is ESM-only; Function wrapper prevents tsc from compiling
+// the dynamic import into require(), which would fail for ESM packages.
 let gotScrapingPromise: Promise<typeof import('got-scraping')>;
 function getGotScraping() {
   if (!gotScrapingPromise) {
-    gotScrapingPromise = import('got-scraping');
+    gotScrapingPromise = new Function(
+      'return import("got-scraping")',
+    )() as Promise<typeof import('got-scraping')>;
   }
   return gotScrapingPromise;
 }
