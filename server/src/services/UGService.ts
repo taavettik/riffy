@@ -1,4 +1,3 @@
-import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import parse from 'node-html-parser';
 import qs from 'querystring';
 import { URL } from 'url';
@@ -10,19 +9,21 @@ import { UgSearchResult } from '../resolvers/TabResolver';
 
 const UG_URL = 'https://tabs.ultimate-guitar.com/';
 
+// got-scraping is ESM-only; load it once via dynamic import
+let gotScrapingPromise: Promise<typeof import('got-scraping')>;
+function getGotScraping() {
+  if (!gotScrapingPromise) {
+    gotScrapingPromise = import('got-scraping');
+  }
+  return gotScrapingPromise;
+}
+
 @Service()
 export class UGService {
-  http: AxiosInstance;
-
-  constructor() {
-    this.http = Axios.create({
-      baseURL: UG_URL,
-    });
-  }
-
-  private async fetch(url: string, config?: AxiosRequestConfig) {
-    const html = await this.http.get(url, config);
-    const dom = parse(html.data);
+  private async fetch(url: string) {
+    const { gotScraping } = await getGotScraping();
+    const response = await gotScraping(url);
+    const dom = parse(response.body);
     const jsStore = dom.querySelector('.js-store');
     const json = jsStore.getAttribute('data-content');
     if (!json) {
